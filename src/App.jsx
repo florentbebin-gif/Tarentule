@@ -184,24 +184,41 @@ useEffect(() => {
       </div>
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login onLogin={() => navigate('/')} />} />
+        {/* Page racine : on redirige vers /rapport */}
+        <Route path="/" element={<Navigate to="/rapport" replace />} />
+
+        {/* Auth */}
+        <Route
+          path="/login"
+          element={<Login onLogin={() => navigate('/rapport')} />}
+        />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/signup" element={<Signup />} />  
-        {/* Route simulateur */}
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Rapport conseiller */}
         <Route path="/rapport" element={<RapportForm />} />
 
-                {/* Paramètres + sous-pages */}
+        {/* Paramètres + sous-pages */}
         <Route path="/settings" element={<Settings />} />
         <Route path="/settings/impots" element={<SettingsImpots />} />
-        <Route path="/settings/prelevements-sociaux" element={<SettingsPrelevements />}/>
-        <Route path="/settings/fiscalites-contrats" element={<SettingsFiscalites />}/>
-        <Route path="/settings/base-contrat" element={<SettingsBaseContrats />}/>
-        <Route path="/settings/table-mortalite" element={<SettingsTableMortalite />}/>
-
+        <Route
+          path="/settings/prelevements-sociaux"
+          element={<SettingsPrelevements />}
+        />
+        <Route
+          path="/settings/fiscalites-contrats"
+          element={<SettingsFiscalites />}
+        />
+        <Route
+          path="/settings/base-contrat"
+          element={<SettingsBaseContrats />}
+        />
+        <Route
+          path="/settings/table-mortalite"
+          element={<SettingsTableMortalite />}
         />
       </Routes>
+
     </>
   );
 }

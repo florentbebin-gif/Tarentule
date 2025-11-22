@@ -11,6 +11,7 @@ import SettingsFiscalites from './pages/Sous-Settings/SettingsFiscalites';
 import SettingsBaseContrats from './pages/Sous-Settings/SettingsBaseContrats';
 import SettingsTableMortalite from './pages/Sous-Settings/SettingsTableMortalite';
 import Signup from './pages/Signup';
+import RapportForm from './pages/RapportForm';
 
 // -----------------------
 // Icônes SVG "maison"
@@ -189,6 +190,7 @@ useEffect(() => {
         <Route path="/signup" element={<Signup />} />  
         {/* Route simulateur */}
         <Route path="/settings" element={<Settings />} />
+        <Route path="/rapport" element={<RapportForm />} />
 
                 {/* Paramètres + sous-pages */}
         <Route path="/settings" element={<Settings />} />

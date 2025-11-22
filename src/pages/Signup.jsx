@@ -1,121 +1,119 @@
 // src/pages/Signup.jsx
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { supabase } from '../supabaseClient'
-import './Login.css'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
+import './Login.css';
 
 export default function Signup() {
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSignup = async (e) => {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
     // 1) Création du compte dans Supabase Auth
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-    })
+    });
 
     if (signUpError) {
-      setError(signUpError.message)
-      setLoading(false)
-      return
+      setError(signUpError.message || 'Erreur lors de la création du compte.');
+      setLoading(false);
+      return;
     }
 
-    const user = data.user
+    const user = data.user;
 
-    // 2) Création du profil associé
+    // 2) Création du profil associé (table profiles)
     const { error: profileError } = await supabase.from('profiles').insert({
       id: user.id,
       first_name: firstName,
       last_name: lastName,
       role: 'conseiller', // par défaut
-    })
-
-    setLoading(false)
+    });
 
     if (profileError) {
-      setError(profileError.message)
-      return
+      setError(
+        profileError.message || 'Le compte a été créé mais le profil a échoué.'
+      );
+      setLoading(false);
+      return;
     }
 
-    // Redirection vers la page login
-    window.location.href = '/login'
-  }
+    setLoading(false);
+
+    // 3) Redirection vers la page de connexion
+    navigate('/login');
+  };
 
   return (
     <div className="login-wrapper">
       <div className="login-bg" />
-      <div className="login-card">
-        <h1 className="login-title">Tarentule</h1>
-        <p className="login-subtitle">Créer un compte</p>
+      <div className="login-overlay" />
+      <div className="login-grid">
+        <div className="login-title">
+          <h1 className="login-brand">TARENTULE</h1>
+        </div>
+        <div className="login-card">
+          <h2 className="card-title">Création de compte</h2>
 
-        <form className="login-form" onSubmit={handleSignup}>
-          <label className="form-label">
-            Prénom
+          {error && <div className="alert error">{error}</div>}
+
+          <form className="form-grid" onSubmit={handleSignup}>
+            <label>Prénom</label>
             <input
-              className="form-input"
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
             />
-          </label>
 
-          <label className="form-label">
-            Nom
+            <label>Nom</label>
             <input
-              className="form-input"
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
             />
-          </label>
 
-          <label className="form-label">
-            Email
+            <label>Email</label>
             <input
-              className="form-input"
               type="email"
-              placeholder="vous@exemple.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-          </label>
 
-          <label className="form-label">
-            Mot de passe
+            <label>Mot de passe</label>
             <input
-              className="form-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-          </label>
 
-          {error && <p className="error-text">{error}</p>}
+            <button className="btn" type="submit" disabled={loading}>
+              {loading ? 'Création…' : 'Créer mon compte'}
+            </button>
+          </form>
 
-          <button className="btn" type="submit" disabled={loading}>
-            {loading ? 'Création…' : 'Créer mon compte'}
-          </button>
-        </form>
-
-        <div className="login-links">
-          <Link to="/login" className="btn-link">
+          <button
+            className="btn-link"
+            type="button"
+            onClick={() => navigate('/login')}
+          >
             Déjà un compte ? Se connecter
-          </Link>
+          </button>
         </div>
       </div>
     </div>
-  )
+  );
 }

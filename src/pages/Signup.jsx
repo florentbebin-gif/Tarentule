@@ -12,11 +12,13 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setInfo('');
 
     // 1) Création du compte dans Supabase Auth
     const { data, error: signUpError } = await supabase.auth.signUp({
@@ -30,28 +32,16 @@ export default function Signup() {
       return;
     }
 
-    const user = data.user;
-
-    // 2) Création du profil associé (table profiles)
-    const { error: profileError } = await supabase.from('profiles').insert({
-      id: user.id,
-      first_name: firstName,
-      last_name: lastName,
-      role: 'conseiller', // par défaut
-    });
-
-    if (profileError) {
-      setError(
-        profileError.message || 'Le compte a été créé mais le profil a échoué.'
-      );
-      setLoading(false);
-      return;
-    }
+    // 👉 À ce stade le compte est créé dans Supabase.
+    // Si la confirmation par email est activée, l'utilisateur doit cliquer sur le lien reçu.
 
     setLoading(false);
+    setInfo(
+      "Votre compte a été créé. Merci de vérifier votre boîte email et de confirmer votre adresse avant de vous connecter."
+    );
 
-    // 3) Redirection vers la page de connexion
-    navigate('/login');
+    // Option : on peut rediriger vers /login après quelques secondes
+    // setTimeout(() => navigate('/login'), 4000);
   };
 
   return (
@@ -66,6 +56,7 @@ export default function Signup() {
           <h2 className="card-title">Création de compte</h2>
 
           {error && <div className="alert error">{error}</div>}
+          {info && <div className="alert success">{info}</div>}
 
           <form className="form-grid" onSubmit={handleSignup}>
             <label>Prénom</label>

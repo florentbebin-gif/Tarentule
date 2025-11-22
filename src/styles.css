@@ -207,3 +207,76 @@ body {
   background: #cfDED8;
   border-color: #9fbdb2;
 }
+/* Mise en forme spécifique du rapport - section Résultats */
+
+.rapport-section-table {
+  margin-top: 16px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background-color: #fbfbfb;
+}
+
+.rapport-section-title-row {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.rapport-table-header,
+.rapport-table-row {
+  display: grid;
+  grid-template-columns: 60px repeat(5, minmax(0, 1fr)) 120px;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 14px;
+}
+
+.rapport-table-header {
+  font-weight: 600;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 4px;
+}
+
+.rapport-table-row + .rapport-table-row {
+  margin-top: 4px;
+}
+
+.col-ligne {
+  text-align: center;
+}
+
+.rapport-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.rapport-input:focus {
+  outline: none;
+  border-color: #111827;
+}
+
+.rapport-input-note {
+  max-width: 72px;
+}
+
+.manager-cell {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.rapport-comments-block {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.rapport-comments-column textarea {
+  min-height: 80px;
+  resize: vertical;
+}

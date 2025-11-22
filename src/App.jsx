@@ -181,13 +181,8 @@ const isSettingsRoute = path.startsWith('/settings');
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Route simulateur */}
-        <Route path="/sim/placement" element={<Placement />} />
-        <Route path="/sim/credit" element={<Credit />} />
         <Route path="/settings" element={<Settings />} />
 
-        {/* compat /placement => /sim/placement */}
-        <Route path="/placement" element={<Navigate to="/sim/placement" replace />}/>
-        <Route path="/credit" element={<Navigate to="/sim/credit" replace />} />
                 {/* Paramètres + sous-pages */}
         <Route path="/settings" element={<Settings />} />
         <Route path="/settings/impots" element={<SettingsImpots />} />
@@ -196,10 +191,6 @@ const isSettingsRoute = path.startsWith('/settings');
         <Route path="/settings/base-contrat" element={<SettingsBaseContrats />}/>
         <Route path="/settings/table-mortalite" element={<SettingsTableMortalite />}/>
 
-        {/* compat /placement => /sim/placement */}
-        <Route
-          path="/placement"
-          element={<Navigate to="/sim/placement" replace />}
         />
       </Routes>
     </>

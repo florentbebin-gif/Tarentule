@@ -10,6 +10,7 @@ import SettingsPrelevements from './pages/Sous-Settings/SettingsPrelevements';
 import SettingsFiscalites from './pages/Sous-Settings/SettingsFiscalites';
 import SettingsBaseContrats from './pages/Sous-Settings/SettingsBaseContrats';
 import SettingsTableMortalite from './pages/Sous-Settings/SettingsTableMortalite';
+import Signup from './pages/Signup';
 
 // -----------------------
 // Icônes SVG "maison"
@@ -179,7 +180,7 @@ const isSettingsRoute = path.startsWith('/settings');
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login onLogin={() => navigate('/')} />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-
+        <Route path="/signup" element={<Signup />} />  
         {/* Route simulateur */}
         <Route path="/settings" element={<Settings />} />
 

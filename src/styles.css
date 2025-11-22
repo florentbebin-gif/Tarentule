@@ -1,0 +1,209 @@
+/* Variables globales */
+:root {
+  --green: #2C3D38;
+  --beige: #e8ded5;
+  --bg: #f7f7f7;
+  --radius: 12px;
+  --light-green: #8fbf9f;
+}
+
+/* Reset */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+}
+
+/* Topbar */
+.topbar {
+  background: var(--green);
+  color: #fff;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brandbar {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.chip {
+  background: #fff;
+  color: #111;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: var(--beige);
+}
+
+/* Layout Home */
+.tiles-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px; /* espace entre colonnes */
+  max-width: 1100px; /* largeur limitée */
+  margin: 40px auto; /* centré */
+  padding: 0 20px;
+}
+
+.section-card {
+  background: #fff;
+  border: 1px solid #D9D9D9;
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .07);
+}
+
+/* Titre avec barre sous le texte */
+.section-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  height: 4px;
+  background: var(--beige);
+  border-radius: 3px;
+  margin-top: 8px;
+}
+
+.strong-title {
+  font-weight: 800;
+}
+
+.normal-title {
+  font-weight: 400;
+}
+
+/* Tuiles */
+.tile {
+  border: 2px solid #E5E5E5;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transition: border-color .15s;
+}
+
+.tile:hover {
+  border-color: var(--light-green); /* contour vert clair */
+}
+
+.tile-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.tile-icon {
+  width: 44px;
+  height: 44px;
+  border: 1px solid #E5E5E5;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f9f9;
+}
+
+.tile-sep {
+  width: 4px;
+  height: 22px;
+  border-radius: 4px;
+  background: var(--beige);
+}
+
+.tile-title {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.tile-note {
+  color: #666;
+  font-style: italic;
+  margin-left: 4px;
+  font-size: 13px;
+}
+/* largeur de la page Crédit */
+.credit-panel {
+  max-width: 1120px;
+  margin: 32px auto 40px;
+}
+/* Responsive */
+@media (max-width: 768px) {
+  .tiles-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.icon-btn .icon {
+  width: 20px;
+  height: 20px;
+}
+/* Page paramètres – layout de base */
+.settings-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* Barre d’onglets "pilules" */
+.settings-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* Pilules de navigation */
+.settings-pill {
+  border-radius: 999px;              /* forme pilule */
+  background: #f2f2f2;               /* couleur de base */
+  border: 1px solid transparent;
+  padding: 6px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18); /* ombre autour */
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Hover : bord #9FBDB2 */
+.settings-pill:hover {
+  border-color: #9fbdb2;
+}
+
+/* Pilule active : fond #CFDED8 */
+.settings-pill.is-active {
+  background: #cfDED8;
+  border-color: #9fbdb2;
+}

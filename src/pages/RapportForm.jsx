@@ -1,50 +1,52 @@
 // src/pages/RapportForm.jsx
-import React, { useState, useEffect } from 'react'
-import { supabase } from '../supabaseClient'
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
+import './Login.css';
 
 export default function RapportForm() {
-  const [period, setPeriod] = useState('')
-  const [globalScore, setGlobalScore] = useState('')
-  const [comment, setComment] = useState('')
-  const [saved, setSaved] = useState(false)
-  const [error, setError] = useState(null)
-  const [loadingUser, setLoadingUser] = useState(true)
+  const [period, setPeriod] = useState('');
+  const [globalScore, setGlobalScore] = useState('');
+  const [comment, setComment] = useState('');
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
+  const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {
-    // On vérifie que l'utilisateur est connecté
+    // Vérifie que l'utilisateur est connecté
     const checkUser = async () => {
       const {
         data: { user },
-      } = await supabase.auth.getUser()
+      } = await supabase.auth.getUser();
+
       if (!user) {
-        window.location.href = '/login'
+        window.location.href = '/login';
       } else {
-        setLoadingUser(false)
+        setLoadingUser(false);
       }
-    }
-    checkUser()
-  }, [])
+    };
+
+    checkUser();
+  }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError(null)
-    setSaved(false)
+    e.preventDefault();
+    setError('');
+    setSaved(false);
 
     const {
       data: { user },
       error: userError,
-    } = await supabase.auth.getUser()
+    } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      setError('Vous devez être connecté.')
-      return
+      setError('Vous devez être connecté pour enregistrer un rapport.');
+      return;
     }
 
-    // Exemple de données supplémentaires basées sur ton Excel
+    // Tu pourras enrichir cet objet plus tard avec les champs détaillés de ton Excel
     const dataDetails = {
-      // Tu pourras ajouter ici des champs plus détaillés
-      // ex: objectifs, indicateurs, etc.
-    }
+      // exemple : objectifs, indicateurs, etc.
+    };
 
     const { error: insertError } = await supabase.from('reports').insert({
       user_id: user.id,
@@ -52,40 +54,45 @@ export default function RapportForm() {
       global_score: globalScore ? Number(globalScore) : null,
       comment,
       data: dataDetails,
-    })
+    });
 
     if (insertError) {
-      setError(insertError.message)
-      return
+      setError(insertError.message || "Erreur lors de l'enregistrement.");
+      return;
     }
 
-    setSaved(true)
-    setPeriod('')
-    setGlobalScore('')
-    setComment('')
-  }
+    setSaved(true);
+    setPeriod('');
+    setGlobalScore('');
+    setComment('');
+  };
 
   if (loadingUser) {
-    return <p>Chargement…</p>
+    return <p>Chargement…</p>;
   }
 
   return (
-    <div className="page rapport">
-      <h1>Remplir un rapport</h1>
+    <div className="tiles-wrap">
+      <div className="section-card">
+        <div className="section-title strong-title">Rapport du conseiller</div>
 
-      <form onSubmit={handleSubmit} className="simple-form">
-        <label>
-          Période (ex : T1 2025)
+        {error && <div className="alert error">{error}</div>}
+        {saved && (
+          <div className="alert success">
+            Rapport enregistré avec succès.
+          </div>
+        )}
+
+        <form className="form-grid" onSubmit={handleSubmit}>
+          <label>Période (ex : T1 2025)</label>
           <input
             type="text"
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
             required
           />
-        </label>
 
-        <label>
-          Score global (1 à 10)
+          <label>Score global (1 à 10)</label>
           <input
             type="number"
             min="1"
@@ -93,23 +100,19 @@ export default function RapportForm() {
             value={globalScore}
             onChange={(e) => setGlobalScore(e.target.value)}
           />
-        </label>
 
-        <label>
-          Commentaires
-          <textarea
+          <label>Commentaires</label>
+          <input
+            type="text"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-        </label>
 
-        {error && <p className="error-text">{error}</p>}
-        {saved && <p className="success-text">Rapport enregistré.</p>}
-
-        <button className="btn" type="submit">
-          Enregistrer le rapport
-        </button>
-      </form>
+          <button className="btn" type="submit">
+            Enregistrer le rapport
+          </button>
+        </form>
+      </div>
     </div>
-  )
+  );
 }

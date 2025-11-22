@@ -158,8 +158,16 @@ export default function Login({ onLogin }) {
               {loading ? 'Connexion…' : 'Se connecter'}
             </button>
           </form>
+
           <button className="btn-link" onClick={handleForgot}>
             Mot de passe oublié ?
+          </button>
+          <button
+            className="btn-link"
+            type="button"
+            onClick={() => navigate('/signup')}
+          >
+            Créer un compte
           </button>
         </div>
       </div>

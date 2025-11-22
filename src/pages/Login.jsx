@@ -41,7 +41,7 @@ function ResetBox({ onDone, at, rt }) {
       <div className="login-overlay" />
       <div className="login-grid">
         <div className="login-title">
-          <h1 className="login-brand">SER1</h1>
+          <h1 className="login-brand">TARENTULE</h1>
           <div className="login-sub">Simulateur épargne retraite</div>
         </div>
         <div className="login-card">

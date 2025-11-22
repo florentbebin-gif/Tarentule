@@ -5,11 +5,6 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import ForgotPassword from './pages/ForgotPassword';
 import Settings from './pages/Settings';
-import SettingsImpots from './pages/Sous-Settings/SettingsImpots';
-import SettingsPrelevements from './pages/Sous-Settings/SettingsPrelevements';
-import SettingsFiscalites from './pages/Sous-Settings/SettingsFiscalites';
-import SettingsBaseContrats from './pages/Sous-Settings/SettingsBaseContrats';
-import SettingsTableMortalite from './pages/Sous-Settings/SettingsTableMortalite';
 import Signup from './pages/Signup';
 import RapportForm from './pages/RapportForm';
 
@@ -200,23 +195,7 @@ useEffect(() => {
 
         {/* Paramètres + sous-pages */}
         <Route path="/settings" element={<Settings />} />
-        <Route path="/settings/impots" element={<SettingsImpots />} />
-        <Route
-          path="/settings/prelevements-sociaux"
-          element={<SettingsPrelevements />}
-        />
-        <Route
-          path="/settings/fiscalites-contrats"
-          element={<SettingsFiscalites />}
-        />
-        <Route
-          path="/settings/base-contrat"
-          element={<SettingsBaseContrats />}
-        />
-        <Route
-          path="/settings/table-mortalite"
-          element={<SettingsTableMortalite />}
-        />
+
       </Routes>
 
     </>

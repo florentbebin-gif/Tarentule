@@ -139,6 +139,7 @@ export default function RapportForm() {
       {/* 1. RÉSULTATS */}
       <div className="section-card">
         <div className="section-title strong-title">Résultats</div>
+
         <ul className="section-list">
           <li>Performance globale : atteinte des objectifs</li>
           <li>Produits financiers : assurances vie / Capi</li>
@@ -152,111 +153,108 @@ export default function RapportForm() {
           </li>
         </ul>
 
-        <div className="sub-section">
-          <div className="sub-section-title">
-            Objectifs, réalisés & potentiel (conseiller)
+        <div className="rapport-section-table">
+          <div className="rapport-section-title-row">
+            Objectifs, réalisés &amp; potentiel (conseiller)
           </div>
-          <div className="notes-table">
-            <div className="notes-header">
-              <span>Ligne</span>
-              <span>Objectif</span>
-              <span>Réalisé</span>
-              <span>Potentiel 3 mois</span>
-              <span>Potentiel 12 mois</span>
-              <span>Note CGP</span>
-              <span>Manager</span>
+
+          {/* Ligne d’en-tête */}
+          <div className="rapport-table-header">
+            <span className="col-ligne">Ligne</span>
+            <span>Objectif</span>
+            <span>Réalisé</span>
+            <span>Potentiel 3 mois</span>
+            <span>Potentiel 12 mois</span>
+            <span>Note CGP</span>
+            <span>Manager</span>
+          </div>
+
+          {/* 8 lignes comme dans ton Excel */}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div className="rapport-table-row" key={i}>
+              <span className="col-ligne">{i + 1}</span>
+
+              <input
+                className="rapport-input"
+                type="text"
+                value={form.resultats.objectifs[i]}
+                onChange={(e) =>
+                  updateArrayField('resultats', 'objectifs', i, e.target.value)
+                }
+              />
+              <input
+                className="rapport-input"
+                type="text"
+                value={form.resultats.realises[i]}
+                onChange={(e) =>
+                  updateArrayField('resultats', 'realises', i, e.target.value)
+                }
+              />
+              <input
+                className="rapport-input"
+                type="text"
+                value={form.resultats.potentiel3m[i]}
+                onChange={(e) =>
+                  updateArrayField('resultats', 'potentiel3m', i, e.target.value)
+                }
+              />
+              <input
+                className="rapport-input"
+                type="text"
+                value={form.resultats.potentiel12m[i]}
+                onChange={(e) =>
+                  updateArrayField(
+                    'resultats',
+                    'potentiel12m',
+                    i,
+                    e.target.value
+                  )
+                }
+              />
+              <input
+                className="rapport-input rapport-input-note"
+                type="number"
+                min="1"
+                max="10"
+                value={form.resultats.notesCgp[i]}
+                onChange={(e) =>
+                  updateArrayField('resultats', 'notesCgp', i, e.target.value)
+                }
+              />
+
+              {/* zone manager en lecture seule */}
+              <input
+                className="rapport-input manager-cell"
+                type="text"
+                disabled
+                placeholder="Manager"
+              />
             </div>
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div className="notes-row" key={i}>
-                <span>{i + 1}</span>
-                <input
-                  type="text"
-                  value={form.resultats.objectifs[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'resultats',
-                      'objectifs',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input
-                  type="text"
-                  value={form.resultats.realises[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'resultats',
-                      'realises',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input
-                  type="text"
-                  value={form.resultats.potentiel3m[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'resultats',
-                      'potentiel3m',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input
-                  type="text"
-                  value={form.resultats.potentiel12m[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'resultats',
-                      'potentiel12m',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={form.resultats.notesCgp[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'resultats',
-                      'notesCgp',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                {/* zone manager en lecture seule */}
-                <input
-                  type="text"
-                  disabled
-                  placeholder="Manager"
-                />
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
 
-        <label>Commentaires</label>
-        <textarea
-          value={form.resultats.commentaires}
-          onChange={(e) =>
-            updateField('resultats', 'commentaires', e.target.value)
-          }
-        />
+        <div className="rapport-comments-block">
+          <div className="rapport-comments-column">
+            <label>Commentaires</label>
+            <textarea
+              value={form.resultats.commentaires}
+              onChange={(e) =>
+                updateField('resultats', 'commentaires', e.target.value)
+              }
+            />
+          </div>
 
-        <label>Stratégie d’amélioration (manager)</label>
-        <textarea
-          value={form.resultats.strategie}
-          readOnly
-          placeholder="Renseigné par le manager"
-        />
+          <div className="rapport-comments-column">
+            <label>Stratégie d’amélioration (manager)</label>
+            <textarea
+              value={form.resultats.strategie}
+              readOnly
+              placeholder="Renseigné par le manager"
+            />
+          </div>
+        </div>
       </div>
+
 
       {/* 2. PARTENARIAT */}
       <div className="section-card">

@@ -128,12 +128,18 @@ const path = window.location.pathname;
 const isSimRoute = path.startsWith('/sim');
 const isSettingsRoute = path.startsWith('/settings');
 
-  // Redirection si pas connecté
-  useEffect(() => {
-    if (!session && !isRecoveryMode) {
-      navigate('/login');
-    }
-  }, [session, isRecoveryMode, navigate]);
+// Routes accessibles sans être connecté
+const isPublicRoute =
+  path === '/login' ||
+  path === '/signup' ||
+  path === '/forgot-password';
+
+// Redirection si pas connecté
+useEffect(() => {
+  if (!session && !isRecoveryMode && !isPublicRoute) {
+    navigate('/login');
+  }
+}, [session, isRecoveryMode, isPublicRoute, navigate]);
 
   return (
     <>

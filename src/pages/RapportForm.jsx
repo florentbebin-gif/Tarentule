@@ -13,14 +13,14 @@ export default function RapportForm() {
     bienEtre: {
       notesCgp: ['', '', '', ''],
       commentaires: '',
-      strategie: '',
+      strategie: '', // rempli par le manager
     },
     partenariat: {
       objectifs: ['', '', ''],
       realises: ['', '', ''],
       notesCgp: ['', '', ''],
       commentaires: '',
-      strategie: '',
+      strategie: '', // manager
     },
     resultats: {
       objectifs: Array(8).fill(''),
@@ -29,16 +29,16 @@ export default function RapportForm() {
       potentiel12m: Array(8).fill(''),
       notesCgp: Array(8).fill(''),
       commentaires: '',
-      strategie: '',
+      strategie: '', // manager
     },
     technique: {
       notesCgp: ['', '', '', '', ''],
       commentaires: '',
-      strategie: '',
+      strategie: '', // manager
     },
   });
 
-  // Vérifier que l'utilisateur est connecté
+  // Vérifie que l'utilisateur est connecté
   useEffect(() => {
     const checkUser = async () => {
       const {
@@ -95,8 +95,8 @@ export default function RapportForm() {
     const { error: insertError } = await supabase.from('reports').insert({
       user_id: user.id,
       period,
-      global_score: null, // tu pourras ajouter un score global plus tard
-      comment: '', // laissé vide, on travaille par section
+      global_score: null,
+      comment: '',
       data: form,
     });
 
@@ -113,7 +113,8 @@ export default function RapportForm() {
   }
 
   return (
-    <div className="tiles-wrap">
+    <div className="rapport-wrap">
+      {/* En-tête rapport */}
       <div className="section-card">
         <div className="section-title strong-title">
           Rapport du conseiller
@@ -126,179 +127,25 @@ export default function RapportForm() {
           </div>
         )}
 
-        <form className="form-grid" onSubmit={handleSubmit}>
-          <label>Période du rapport (ex : T1 2025)</label>
-          <input
-            type="text"
-            value={period}
-            onChange={(e) => setPeriod(e.target.value)}
-            required
-          />
-        </form>
-      </div>
-
-      {/* BIEN-ÊTRE */}
-      <div className="section-card">
-        <div className="section-title strong-title">Bien-être</div>
-        <ul className="section-list">
-          <li>Équilibre psychologique / Gestion du stress</li>
-          <li>Motivation</li>
-          <li>Niveau d’intégration dans l’équipe et l’entreprise</li>
-          <li>Satisfaction et épanouissement au travail</li>
-        </ul>
-
-        <div className="sub-section">
-          <div className="sub-section-title">Notes CGP (1 à 10)</div>
-          <div className="notes-grid">
-            {form.bienEtre.notesCgp.map((val, i) => (
-              <div key={i} className="note-cell">
-                <span>{i + 1}</span>
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={val}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'bienEtre',
-                      'notesCgp',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-            ))}
-          </div>
-          <div className="sub-note">
-            Les notes Manager seront saisies sur la page Manager et
-            apparaîtront ici en lecture seule.
-          </div>
-        </div>
-
-        <label>Commentaires</label>
-        <textarea
-          value={form.bienEtre.commentaires}
-          onChange={(e) =>
-            updateField('bienEtre', 'commentaires', e.target.value)
-          }
-        />
-
-        <label>Stratégie d’amélioration</label>
-        <textarea
-          value={form.bienEtre.strategie}
-          onChange={(e) =>
-            updateField('bienEtre', 'strategie', e.target.value)
-          }
+        <label>Période du rapport (ex : T1 2025)</label>
+        <input
+          type="text"
+          value={period}
+          onChange={(e) => setPeriod(e.target.value)}
+          required
         />
       </div>
 
-      {/* PARTENARIAT */}
-      <div className="section-card">
-        <div className="section-title strong-title">Partenariat</div>
-        <ul className="section-list">
-          <li>
-            Clubs Experts : Gestion des invitations, relances et animation
-          </li>
-          <li>
-            Animation : entretien du réseau, méthodes de suivi, régularité des
-            visites
-          </li>
-          <li>
-            Prospection : actions pour développer le réseau
-          </li>
-        </ul>
-
-        <div className="sub-section">
-          <div className="sub-section-title">
-            Objectifs & réalisés (conseiller)
-          </div>
-          <div className="notes-table">
-            <div className="notes-header">
-              <span>Ligne</span>
-              <span>Objectif (nb)</span>
-              <span>Réalisé (nb)</span>
-              <span>Note CGP (1 à 10)</span>
-              <span>Manager (lecture seule)</span>
-            </div>
-            {[0, 1, 2].map((i) => (
-              <div className="notes-row" key={i}>
-                <span>{i + 1}</span>
-                <input
-                  type="number"
-                  value={form.partenariat.objectifs[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'partenariat',
-                      'objectifs',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input
-                  type="number"
-                  value={form.partenariat.realises[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'partenariat',
-                      'realises',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={form.partenariat.notesCgp[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'partenariat',
-                      'notesCgp',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input
-                  type="text"
-                  disabled
-                  placeholder="Manager"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <label>Commentaires</label>
-        <textarea
-          value={form.partenariat.commentaires}
-          onChange={(e) =>
-            updateField('partenariat', 'commentaires', e.target.value)
-          }
-        />
-
-        <label>Stratégie d’amélioration</label>
-        <textarea
-          value={form.partenariat.strategie}
-          onChange={(e) =>
-            updateField('partenariat', 'strategie', e.target.value)
-          }
-        />
-      </div>
-
-      {/* RÉSULTATS */}
+      {/* 1. RÉSULTATS */}
       <div className="section-card">
         <div className="section-title strong-title">Résultats</div>
         <ul className="section-list">
-          <li>Performance globale : Atteinte des objectifs</li>
+          <li>Performance globale : atteinte des objectifs</li>
           <li>Produits financiers : assurances vie / Capi</li>
           <li>Private Equity</li>
           <li>Produits immobiliers : directs et indirects</li>
-          <li>Honoraires : production / chiffre d’affaires</li>
-          <li>Arbitrages : pilotée, structurés, Pams</li>
+          <li>Honoraires : production / chiffre d’affaires généré</li>
+          <li>Arbitrages : gestion pilotée, structurés, Pams</li>
           <li>PER : dispositifs d’épargne retraite</li>
           <li>
             Campagnes diverses : participation et efficacité dans les campagnes
@@ -384,6 +231,7 @@ export default function RapportForm() {
                     )
                   }
                 />
+                {/* zone manager en lecture seule */}
                 <input
                   type="text"
                   disabled
@@ -402,21 +250,110 @@ export default function RapportForm() {
           }
         />
 
-        <label>Stratégie d’amélioration</label>
+        <label>Stratégie d’amélioration (manager)</label>
         <textarea
           value={form.resultats.strategie}
-          onChange={(e) =>
-            updateField('resultats', 'strategie', e.target.value)
-          }
+          readOnly
+          placeholder="Renseigné par le manager"
         />
       </div>
 
-      {/* TECHNIQUE */}
+      {/* 2. PARTENARIAT */}
+      <div className="section-card">
+        <div className="section-title strong-title">Partenariat</div>
+        <ul className="section-list">
+          <li>
+            Clubs Experts : gestion des invitations, relances et animation
+          </li>
+          <li>
+            Animation : entretien du réseau, suivi, régularité des visites
+          </li>
+          <li>Prospection : actions pour développer le réseau</li>
+        </ul>
+
+        <div className="sub-section">
+          <div className="sub-section-title">
+            Objectifs & réalisés (conseiller)
+          </div>
+          <div className="notes-table">
+            <div className="notes-header">
+              <span>Ligne</span>
+              <span>Objectif (nb)</span>
+              <span>Réalisé (nb)</span>
+              <span>Note CGP (1 à 10)</span>
+              <span>Manager</span>
+            </div>
+            {[0, 1, 2].map((i) => (
+              <div className="notes-row" key={i}>
+                <span>{i + 1}</span>
+                <input
+                  type="number"
+                  value={form.partenariat.objectifs[i]}
+                  onChange={(e) =>
+                    updateArrayField(
+                      'partenariat',
+                      'objectifs',
+                      i,
+                      e.target.value
+                    )
+                  }
+                />
+                <input
+                  type="number"
+                  value={form.partenariat.realises[i]}
+                  onChange={(e) =>
+                    updateArrayField(
+                      'partenariat',
+                      'realises',
+                      i,
+                      e.target.value
+                    )
+                  }
+                />
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={form.partenariat.notesCgp[i]}
+                  onChange={(e) =>
+                    updateArrayField(
+                      'partenariat',
+                      'notesCgp',
+                      i,
+                      e.target.value
+                    )
+                  }
+                />
+                <input type="text" disabled placeholder="Manager" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <label>Commentaires</label>
+        <textarea
+          value={form.partenariat.commentaires}
+          onChange={(e) =>
+            updateField('partenariat', 'commentaires', e.target.value)
+          }
+        />
+
+        <label>Stratégie d’amélioration (manager)</label>
+        <textarea
+          value={form.partenariat.strategie}
+          readOnly
+          placeholder="Renseigné par le manager"
+        />
+      </div>
+
+      {/* 3. TECHNIQUE */}
       <div className="section-card">
         <div className="section-title strong-title">Technique</div>
         <ul className="section-list">
           <li>Commerciale : techniques de vente et relation client</li>
-          <li>Civile : compétences techniques sur les aspects civils/juridiques</li>
+          <li>
+            Civile : compétences techniques sur les aspects civils / juridiques
+          </li>
           <li>Société : montages et problématiques</li>
           <li>Outils : Big, Hubspot, SIO2, Extranet, Power BI</li>
           <li>Process interne : organisation Relation Middle</li>
@@ -455,16 +392,66 @@ export default function RapportForm() {
           }
         />
 
-        <label>Stratégie d’amélioration</label>
+        <label>Stratégie d’amélioration (manager)</label>
         <textarea
           value={form.technique.strategie}
-          onChange={(e) =>
-            updateField('technique', 'strategie', e.target.value)
-          }
+          readOnly
+          placeholder="Renseigné par le manager"
         />
       </div>
 
-      {/* Bouton global d'enregistrement */}
+      {/* 4. BIEN-ÊTRE */}
+      <div className="section-card">
+        <div className="section-title strong-title">Bien-être</div>
+        <ul className="section-list">
+          <li>Équilibre psychologique / gestion du stress</li>
+          <li>Motivation</li>
+          <li>Niveau d’intégration dans l’équipe et l’entreprise</li>
+          <li>Satisfaction et épanouissement au travail</li>
+        </ul>
+
+        <div className="sub-section">
+          <div className="sub-section-title">Notes CGP (1 à 10)</div>
+          <div className="notes-grid">
+            {form.bienEtre.notesCgp.map((val, i) => (
+              <div key={i} className="note-cell">
+                <span>{i + 1}</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={val}
+                  onChange={(e) =>
+                    updateArrayField(
+                      'bienEtre',
+                      'notesCgp',
+                      i,
+                      e.target.value
+                    )
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <label>Commentaires</label>
+        <textarea
+          value={form.bienEtre.commentaires}
+          onChange={(e) =>
+            updateField('bienEtre', 'commentaires', e.target.value)
+          }
+        />
+
+        <label>Stratégie d’amélioration (manager)</label>
+        <textarea
+          value={form.bienEtre.strategie}
+          readOnly
+          placeholder="Renseigné par le manager"
+        />
+      </div>
+
+      {/* Bouton global */}
       <div className="section-card">
         <button className="btn" onClick={handleSubmit}>
           Enregistrer le rapport complet

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import Login from './pages/Login';
-import Home from './pages/Home';
 import ForgotPassword from './pages/ForgotPassword';
 import Settings from './pages/Settings';
 import Signup from './pages/Signup';

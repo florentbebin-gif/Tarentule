@@ -222,11 +222,11 @@ body {
   margin-bottom: 12px;
 }
 
-/* 1ère colonne = libellé (large) + 4 colonnes + note + manager */
+/* 1ère colonne = libellé (large) + 4 colonnes + note CGP + note manager */
 .rapport-table-header,
 .rapport-table-row {
   display: grid;
-  grid-template-columns: minmax(0, 2.8fr) repeat(4, minmax(0, 1fr)) 90px 110px;
+  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px 70px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
@@ -262,8 +262,9 @@ body {
   border-color: #111827;
 }
 
+/* Colonnes de note étroites */
 .rapport-input-note {
-  max-width: 72px;
+  width: 100%;
 }
 
 .manager-cell {

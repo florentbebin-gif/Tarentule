@@ -171,107 +171,137 @@ export default function RapportForm() {
         />
       </div>
 
-                 {/* 1. RÉSULTATS */}
+      {/* 1. RÉSULTATS */}
       <div className="section-card">
         <div className="section-title strong-title">Résultats</div>
 
         <div className="rapport-section-table">
-          <div className="rapport-section-title-row">
-            Objectifs, réalisés &amp; potentiel (conseiller)
+          {/* PLUS DE TEXTE "Objectifs, réalisés..." ici, demandé supprimé */}
+
+          {/* 1ère ligne d'en-tête : "Note" au-dessus de CGP et N+1 */}
+          <div className="rapport-table-header-top">
+            <span className="col-libelle"></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span className="note-group-header">Note</span>
           </div>
 
-          {/* En-tête du tableau */}
-          <div className="rapport-table-header">
+          {/* 2ème ligne d'en-tête : titres de colonnes */}
+          <div className="rapport-table-header-sub">
             <span className="col-libelle">Libellé</span>
             <span>Objectif</span>
             <span>Réalisé</span>
             <span>Potentiel 3 mois</span>
             <span>Potentiel 12 mois</span>
-            <span>Note</span>
-            <span>Note</span>
+            <span>CGP</span>
+            <span>N+1</span>
           </div>
 
           {/* 8 lignes correspondantes aux 8 items */}
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div className="rapport-table-row" key={i}>
-              <span className="col-libelle">{resultatsLabels[i]}</span>
+          {Array.from({ length: 8 }).map((_, i) => {
+            const isTotalRow = i === 0; // ligne 1 = total, lecture seule pour les montants
+            const label = resultatsLabels[i];
 
-              {/* Objectif : montant € */}
-              <input
-                className="rapport-input"
-                type="text"
-                value={form.resultats.objectifs[i]}
-                onChange={(e) =>
-                  updateArrayField('resultats', 'objectifs', i, e.target.value)
-                }
-                onBlur={() => formatEuroField('objectifs', i)}
-              />
+            return (
+              <div className="rapport-table-row" key={i}>
+                <span className="col-libelle">
+                  {isTotalRow ? <strong>{label}</strong> : label}
+                </span>
 
-              {/* Réalisé : montant € */}
-              <input
-                className="rapport-input"
-                type="text"
-                value={form.resultats.realises[i]}
-                onChange={(e) =>
-                  updateArrayField('resultats', 'realises', i, e.target.value)
-                }
-                onBlur={() => formatEuroField('realises', i)}
-              />
+                {/* Objectif : lecture seule pour tous profils */}
+                <input
+                  className="rapport-input"
+                  type="text"
+                  value={form.resultats.objectifs[i]}
+                  readOnly
+                />
 
-              {/* Potentiel 3 mois : montant € */}
-              <input
-                className="rapport-input"
-                type="text"
-                value={form.resultats.potentiel3m[i]}
-                onChange={(e) =>
-                  updateArrayField(
-                    'resultats',
-                    'potentiel3m',
-                    i,
-                    e.target.value
-                  )
-                }
-                onBlur={() => formatEuroField('potentiel3m', i)}
-              />
+                {/* Réalisé */}
+                <input
+                  className="rapport-input"
+                  type="text"
+                  value={form.resultats.realises[i]}
+                  onChange={(e) =>
+                    !isTotalRow &&
+                    updateArrayField(
+                      'resultats',
+                      'realises',
+                      i,
+                      e.target.value
+                    )
+                  }
+                  onBlur={() => !isTotalRow && formatEuroField('realises', i)}
+                  readOnly={isTotalRow}
+                />
 
-              {/* Potentiel 12 mois : simple texte ou montant sans formatage spécifique */}
-              <input
-                className="rapport-input"
-                type="text"
-                value={form.resultats.potentiel12m[i]}
-                onChange={(e) =>
-                  updateArrayField(
-                    'resultats',
-                    'potentiel12m',
-                    i,
-                    e.target.value
-                  )
-                }
-              />
+                {/* Potentiel 3 mois */}
+                <input
+                  className="rapport-input"
+                  type="text"
+                  value={form.resultats.potentiel3m[i]}
+                  onChange={(e) =>
+                    !isTotalRow &&
+                    updateArrayField(
+                      'resultats',
+                      'potentiel3m',
+                      i,
+                      e.target.value
+                    )
+                  }
+                  onBlur={() =>
+                    !isTotalRow && formatEuroField('potentiel3m', i)
+                  }
+                  readOnly={isTotalRow}
+                />
 
-              {/* Note CGP */}
-              <input
-                className="rapport-input rapport-input-note"
-                type="number"
-                min="1"
-                max="10"
-                value={form.resultats.notesCgp[i]}
-                onChange={(e) =>
-                  updateArrayField('resultats', 'notesCgp', i, e.target.value)
-                }
-              />
+                {/* Potentiel 12 mois */}
+                <input
+                  className="rapport-input"
+                  type="text"
+                  value={form.resultats.potentiel12m[i]}
+                  onChange={(e) =>
+                    !isTotalRow &&
+                    updateArrayField(
+                      'resultats',
+                      'potentiel12m',
+                      i,
+                      e.target.value
+                    )
+                  }
+                  readOnly={isTotalRow}
+                />
 
-              {/* Note Manager : même largeur, lecture seule ici */}
-              <input
-                className="rapport-input rapport-input-note manager-cell"
-                type="number"
-                min="1"
-                max="10"
-                readOnly
-                placeholder="—"
-              />
-            </div>
-          ))}
+                {/* Note CGP : saisissable pour tous (y compris ligne 1) */}
+                <input
+                  className="rapport-input rapport-input-note"
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={form.resultats.notesCgp[i]}
+                  onChange={(e) =>
+                    updateArrayField(
+                      'resultats',
+                      'notesCgp',
+                      i,
+                      e.target.value
+                    )
+                  }
+                />
+
+                {/* Note N+1 : même largeur, lecture seule côté conseiller */}
+                <input
+                  className="rapport-input rapport-input-note manager-cell"
+                  type="number"
+                  min="1"
+                  max="10"
+                  readOnly
+                  placeholder="—"
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Commentaires + stratégie sur toute la largeur */}
@@ -286,13 +316,13 @@ export default function RapportForm() {
 
           <label>Stratégie d’amélioration (manager)</label>
           <textarea
+            className="rapport-strategie-manager"
             value={form.resultats.strategie}
             readOnly
             placeholder="Renseigné par le manager"
           />
         </div>
       </div>
-
 
       {/* 2. PARTENARIAT */}
       <div className="section-card">

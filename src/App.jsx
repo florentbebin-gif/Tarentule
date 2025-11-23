@@ -223,7 +223,7 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
 
         {/* Rapport conseiller */}
-        <Route path="/rapport" element={<RapportForm />} />
+        <Route path="/rapport" element={<RapportForm onSaved={(date) => setLastSave(date)} />}/>
 
         {/* Paramètres */}
         <Route path="/settings" element={<Settings />} />

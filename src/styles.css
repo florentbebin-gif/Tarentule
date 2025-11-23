@@ -427,3 +427,14 @@ body {
   font-size: 13px; /* même taille que Nom / Prénom */
   white-space: nowrap;
 }
+/* Centrage du titre "Note" au-dessus de CGP et N+1 */
+
+.rapport-table-header-top--part .note-group-header {
+  grid-column: 3 / span 2;   /* colonnes CGP + N+1 */
+  text-align: center;
+}
+
+.rapport-table-header-top--simple .note-group-header {
+  grid-column: 2 / span 2;   /* colonnes CGP + N+1 */
+  text-align: center;
+}

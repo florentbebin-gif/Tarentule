@@ -175,6 +175,14 @@ export default function RapportForm({ onSaved }) {
       loadLastReport();
     }
   }, [loadingUser]);
+  
+  const clampNote = (value) => {
+    const n = Number(value);
+    if (Number.isNaN(n)) return '';
+    if (n < 0) return '0';
+    if (n > 10) return '10';
+    return String(n);
+  };
 
 
   const updateArrayField = (section, field, index, value) => {
@@ -341,111 +349,107 @@ export default function RapportForm({ onSaved }) {
                     />
                   )}
 
-                  {/* Réalisé */}
-                  {isCampaignRow ? (
-                    <span></span>
-                  ) : isTotalRow ? (
-                    <input
-                      className="rapport-input total-cell"
-                      type="text"
-                      value={euroFromNumber(totals.realises)}
-                      readOnly
-                    />
-                  ) : (
-                    <input
-                      className="rapport-input"
-                      type="text"
-                      value={form.resultats.realises[i]}
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'realises',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => formatEuroField('realises', i)}
-                    />
-                  )}
+                        {/* Réalisé */}
+      {isCampaignRow ? (
+        <span></span>
+      ) : isTotalRow ? (
+        <input
+          className="rapport-input manager-cell total-cell"
+          type="text"
+          value={euroFromNumber(totals.realises)}
+          readOnly
+        />
+      ) : (
+        <input
+          className="rapport-input"
+          type="text"
+          value={form.resultats.realises[i]}
+          onChange={(e2) =>
+            updateArrayField('resultats', 'realises', i, e2.target.value)
+          }
+          onBlur={() => formatEuroField('realises', i)}
+        />
+      )}
 
-                  {/* Potentiel 1 mois */}
-                  {isCampaignRow ? (
-                    <span></span>
-                  ) : isTotalRow ? (
-                    <input
-                      className="rapport-input rapport-input-potentiel total-cell"
-                      type="text"
-                      value={euroFromNumber(totals.potentiel3m)}
-                      readOnly
-                    />
-                  ) : (
-                    <input
-                      className="rapport-input rapport-input-potentiel"
-                      type="text"
-                      value={form.resultats.potentiel3m[i]}
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'potentiel3m',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => formatEuroField('potentiel3m', i)}
-                    />
-                  )}
+                       {/* Signature 1 mois */}
+      {isCampaignRow ? (
+        <span></span>
+      ) : isTotalRow ? (
+        <input
+          className="rapport-input rapport-input-potentiel manager-cell total-cell"
+          type="text"
+          value={euroFromNumber(totals.potentiel3m)}
+          readOnly
+        />
+      ) : (
+        <input
+          className="rapport-input rapport-input-potentiel"
+          type="text"
+          value={form.resultats.potentiel3m[i]}
+          onChange={(e2) =>
+            updateArrayField('resultats', 'potentiel3m', i, e2.target.value)
+          }
+          onBlur={() => formatEuroField('potentiel3m', i)}
+        />
+      )}
 
-                  {/* Potentiel 6 mois */}
-                  {isCampaignRow ? (
-                    <span></span>
-                  ) : isTotalRow ? (
-                    <input
-                      className="rapport-input rapport-input-potentiel total-cell"
-                      type="text"
-                      value={euroFromNumber(totals.potentiel12m)}
-                      readOnly
-                    />
-                  ) : (
-                    <input
-                      className="rapport-input rapport-input-potentiel"
-                      type="text"
-                      value={form.resultats.potentiel12m[i]}
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'potentiel12m',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => formatEuroField('potentiel12m', i)}
-                    />
-                  )}
 
-                  {/* Notes */}
-                  <input
-                    className="rapport-input rapport-input-note"
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={form.resultats.notesCgp[i]}
-                    onChange={(e2) =>
-                      updateArrayField(
-                        'resultats',
-                        'notesCgp',
-                        i,
-                        e2.target.value
-                      )
-                    }
-                  />
-                  <input
-                    className="rapport-input rapport-input-note manager-cell"
-                    type="number"
-                    min="1"
-                    max="10"
-                    readOnly
-                    placeholder="—"
-                  />
+                  {/* Potentiel */}
+      {isCampaignRow ? (
+        <span></span>
+      ) : isTotalRow ? (
+        <input
+          className="rapport-input rapport-input-potentiel manager-cell total-cell"
+          type="text"
+          value={euroFromNumber(totals.potentiel12m)}
+          readOnly
+        />
+      ) : (
+        <input
+          className="rapport-input rapport-input-potentiel"
+          type="text"
+          value={form.resultats.potentiel12m[i]}
+          onChange={(e2) =>
+            updateArrayField('resultats', 'potentiel12m', i, e2.target.value)
+          }
+          onBlur={() => formatEuroField('potentiel12m', i)}
+        />
+      )}
+
+      {/* Notes */}
+      {isTotalRow ? (
+        <>
+          <span></span>
+          <span></span>
+        </>
+      ) : (
+        <>
+          <input
+            className="rapport-input rapport-input-note"
+            type="number"
+            min="0"
+            max="10"
+            value={form.resultats.notesCgp[i]}
+            onChange={(e2) =>
+              updateArrayField(
+                'resultats',
+                'notesCgp',
+                i,
+                clampNote(e2.target.value)
+              )
+            }
+          />
+          <input
+            className="rapport-input rapport-input-note manager-cell"
+            type="number"
+            min="0"
+            max="10"
+            readOnly
+            placeholder="—"
+          />
+        </>
+      )}
+
                 </div>
               );
             })}
@@ -523,7 +527,7 @@ export default function RapportForm({ onSaved }) {
   max="10"
   value={form.partenariat.notesCgp[i]}
   onChange={(e2) =>
-    updateArrayField('partenariat', 'notesCgp', i, e2.target.value)
+    updateArrayField('partenariat', 'notesCgp', i, clampNote(e2.target.value))
   }
 />
 
@@ -594,7 +598,7 @@ export default function RapportForm({ onSaved }) {
                       'technique',
                       'notesCgp',
                       i,
-                      e2.target.value
+                      clampNote(e2.target.value)
                     )
                   }
                 />
@@ -664,7 +668,7 @@ export default function RapportForm({ onSaved }) {
                       'bienEtre',
                       'notesCgp',
                       i,
-                      e2.target.value
+                      clampNote(e2.target.value)
                     )
                   }
                 />

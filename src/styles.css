@@ -18,15 +18,17 @@ body {
 .topbar {
   background: var(--green);
   color: #fff;
-  padding: 12px 20px;
+  padding: 8px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
+  gap: 16px;
+  }
 .topbar-center {
   text-align: center;
   font-size: 13px;
   line-height: 1.3;
+  flex: 1;
 }
 
 .topbar-line {
@@ -43,7 +45,8 @@ body {
 
 .top-actions {
   display: flex;
-  gap: 12px;
+  gap: 8px;
+  align-items: center;
 }
 
 .chip {

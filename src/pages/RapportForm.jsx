@@ -295,8 +295,13 @@ export default function RapportForm({ onSaved }) {
       {/* Colonne gauche : formulaires */}
       <div className="rapport-main">
         {/* 1. RÉSULTATS */}
-        <div className="section-card">
-          <div className="section-title strong-title">Résultats</div>
+<div className="section-card section-card--with-chart">
+  <div className="section-header">
+    <div className="section-title strong-title">Résultats</div>
+    <button className="btn btn-save" onClick={handleSubmit}>
+      Enregistrer le rapport complet
+    </button>
+  </div>
 
           <div className="rapport-section-table">
             <div className="rapport-table-header-top">
@@ -454,6 +459,18 @@ export default function RapportForm({ onSaved }) {
               );
             })}
           </div>
+
+            {saved && (
+            <div className="alert success" style={{ marginTop: '12px' }}>
+              Votre rapport est enregistré.
+            </div>
+          )}
+
+          {error && (
+            <div className="alert error" style={{ marginTop: '8px' }}>
+              {error}
+            </div>
+          )}
 
           <div className="rapport-comments-block">
             <label>Commentaires</label>
@@ -704,24 +721,6 @@ export default function RapportForm({ onSaved }) {
           </div>
         </div>
 
-        {/* Bouton global */}
-        <div className="section-card">
-          <button className="btn" onClick={handleSubmit}>
-            Enregistrer le rapport complet
-          </button>
-
-          {saved && (
-            <div className="alert success" style={{ marginTop: '12px' }}>
-              Votre rapport est enregistré.
-            </div>
-          )}
-
-          {error && (
-            <div className="alert error" style={{ marginTop: '8px' }}>
-              {error}
-            </div>
-          )}
-        </div>
       </div>
       
       {/* Colonne droite : graphiques */}

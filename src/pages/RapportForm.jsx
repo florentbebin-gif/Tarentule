@@ -167,19 +167,15 @@ export default function RapportForm({ onSaved }) {
   }, [routeUserId]);
 
 
-  // Charge le dernier rapport sauvegardé
+    // Charge le dernier rapport sauvegardé pour l'utilisateur "vu" (viewedUserId)
   useEffect(() => {
     const loadLastReport = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) return;
+      if (!viewedUserId) return;
 
       const { data, error } = await supabase
         .from('reports')
         .select('data, period')
-        .eq('user_id', user.id)
+        .eq('user_id', viewedUserId)
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -200,7 +196,8 @@ export default function RapportForm({ onSaved }) {
     if (!loadingUser) {
       loadLastReport();
     }
-  }, [loadingUser]);
+  }, [loadingUser, viewedUserId]);
+
 
   const clampNote = (value) => {
     const n = Number(value);
@@ -276,23 +273,18 @@ export default function RapportForm({ onSaved }) {
   );
   const bienEtreManagerRadar = [0, 1, 2, 3].map(() => 0);
 
-  const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSaved(false);
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      setError('Vous devez être connecté pour enregistrer un rapport.');
+    if (!viewedUserId) {
+      setError("Impossible d'identifier l'utilisateur pour ce rapport.");
       return;
     }
 
     const { error: insertError } = await supabase.from('reports').insert({
-      user_id: user.id,
+      user_id: viewedUserId,
       period,
       global_score: null,
       comment: '',
@@ -309,6 +301,7 @@ export default function RapportForm({ onSaved }) {
       onSaved(new Date());
     }
   };
+
 
   if (loadingUser) {
     return <p>Chargement…</p>;

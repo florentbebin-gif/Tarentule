@@ -175,28 +175,7 @@ export default function RapportForm() {
 
   return (
     <div className="credit-panel">
-      {/* En-tête rapport */}
-      <div className="section-card">
-        <div className="section-title strong-title">
-          Rapport du conseiller
-        </div>
-
-        {error && <div className="alert error">{error}</div>}
-        {saved && (
-          <div className="alert success">
-            Rapport enregistré avec succès.
-          </div>
-        )}
-
-        <label>Période du rapport (ex : T1 2025)</label>
-        <input
-          type="text"
-          value={period}
-          onChange={(e) => setPeriod(e.target.value)}
-          required
-        />
-      </div>
-
+      
       {/* 1. RÉSULTATS */}
       <div className="section-card">
         <div className="section-title strong-title">Résultats</div>

@@ -9,9 +9,7 @@ import Signup from './pages/Signup';
 import RapportForm from './pages/RapportForm';
 import './styles.css';
 
-// -----------------------
 // Icônes SVG
-// -----------------------
 const IconHome = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
     <path
@@ -69,23 +67,26 @@ export default function App() {
   const [lastSave, setLastSave] = useState(null);
   const navigate = useNavigate();
 
-  // Récupérer la session courante
+  // Récupère la session actuelle
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) =>
-      setSession(s)
-    );
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+    });
+
     return () => {
       sub.subscription.unsubscribe();
     };
   }, []);
 
-  // Charger les infos user + dernière sauvegarde
+  // Charge les infos user + dernière sauvegarde
   useEffect(() => {
     const loadUserInfo = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { data } = await supabase.auth.getUser();
+      const user = data?.user;
 
       if (!user) {
         setUserInfo({ firstName: '', lastName: '', bureau: '' });
@@ -122,17 +123,15 @@ export default function App() {
     navigate('/login');
   };
 
-  // Infos de route
   const isRecoveryMode = window.location.hash.includes('type=recovery');
   const path = window.location.pathname;
   const isSimRoute = path.startsWith('/sim');
   const isSettingsRoute = path.startsWith('/settings');
 
-  // Routes publiques (sans login)
   const isPublicRoute =
     path === '/login' || path === '/signup' || path === '/forgot-password';
 
-  // Redirection si pas connecté
+  // Redirection si non connecté
   useEffect(() => {
     if (!session && !isRecoveryMode && !isPublicRoute) {
       navigate('/login');
@@ -141,7 +140,7 @@ export default function App() {
 
   return (
     <>
-           <div className="topbar">
+      <div className="topbar">
         {/* Gauche : logo / marque */}
         <div className="brandbar">TARENTULE</div>
 
@@ -178,40 +177,6 @@ export default function App() {
         </div>
 
         {/* Droite : boutons */}
-        <div className="top-actions">
-          {session && !isRecoveryMode && (
-            <>
-              {(isSimRoute || isSettingsRoute) && (
-                <button
-                  className="chip icon-btn"
-                  onClick={() => navigate('/')}
-                  title="Retour au rapport"
-                >
-                  <IconHome className="icon" />
-                </button>
-              )}
-
-              <button
-                className="chip icon-btn"
-                onClick={() => navigate('/settings')}
-                title="Paramètres"
-              >
-                <IconSettings className="icon" />
-              </button>
-
-              <button
-                className="chip icon-btn"
-                onClick={handleLogout}
-                title="Se déconnecter"
-              >
-                <IconLogout className="icon" />
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-
-
         <div className="top-actions">
           {session && !isRecoveryMode && (
             <>

@@ -1,10 +1,10 @@
 // src/pages/ManagerReports.jsx
 import React, { useEffect, useMemo, useState } from 'react';
-import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 import './Login.css';
 
-// petit helper pour lire les montants des rapports
+// Utilitaires pour les montants
 const parseEuro = (value) => {
   if (!value) return 0;
   const cleaned = value.toString().replace(/[^\d-]/g, '');
@@ -16,7 +16,7 @@ const parseEuro = (value) => {
 const formatEuro = (n) =>
   (Number.isNaN(n) ? 0 : n).toLocaleString('fr-FR') + ' €';
 
-// calcule les totaux Objectifs / Réalisé / Potentiels à partir du JSON data du rapport
+// Calcule les totaux Objectifs / Réalisé / Potentiels à partir du JSON du rapport
 function computeTotalsFromReport(data) {
   if (!data || !data.resultats) {
     return {
@@ -27,8 +27,12 @@ function computeTotalsFromReport(data) {
     };
   }
 
-  const { objectifs = [], realises = [], potentiel3m = [], potentiel12m = [] } =
-    data.resultats;
+  const {
+    objectifs = [],
+    realises = [],
+    potentiel3m = [],
+    potentiel12m = [],
+  } = data.resultats;
 
   const totals = {
     objectifs: 0,
@@ -37,7 +41,7 @@ function computeTotalsFromReport(data) {
     potentiel12m: 0,
   };
 
-  // on somme les lignes 2 à 8 (1 = total déjà calculé côté conseiller)
+  // On somme les lignes 2 à 8 (index 1 à 7)
   for (let i = 1; i < 8; i += 1) {
     totals.objectifs += parseEuro(objectifs[i] || 0);
     totals.realises += parseEuro(realises[i] || 0);
@@ -53,22 +57,22 @@ export default function ManagerReports() {
   const [error, setError] = useState('');
 
   const [rows, setRows] = useState([]); // lignes conseillers
-  const [agencies, setAgencies] = useState([]); // liste des agences
-  const [selectedAgencies, setSelectedAgencies] = useState([]); // agences filtrées
+  const [agencies, setAgencies] = useState([]); // liste des agences distinctes
+  const [selectedAgencies, setSelectedAgencies] = useState([]); // filtres agences
 
-  const [sortKey, setSortKey] = useState('bureau'); // 'bureau' | 'name' | 'objectifs' | 'realises'
+  const [sortKey, setSortKey] = useState('bureau'); // 'bureau' | 'name' | 'objectifs' | 'realises' | ...
   const [sortDirection, setSortDirection] = useState('asc'); // 'asc' | 'desc'
 
   const navigate = useNavigate();
 
-  // charge les profils + derniers rapports
+  // Charge les données pour le manager
   useEffect(() => {
     const load = async () => {
       try {
         setLoading(true);
         setError('');
 
-        // 1. utilisateur connecté + rôle
+        // 1. Vérifier l'utilisateur connecté
         const {
           data: { user },
           error: userError,
@@ -79,6 +83,7 @@ export default function ManagerReports() {
           return;
         }
 
+        // 2. Récupérer le rôle dans profiles
         const { data: meProfile, error: meProfileError } = await supabase
           .from('profiles')
           .select('role')
@@ -89,17 +94,15 @@ export default function ManagerReports() {
           console.error(meProfileError);
         }
 
-        const myRole = String(
-          meProfile?.role || user.user_metadata?.role || 'user'
-        ).toLowerCase();
+        const myRole = String(meProfile?.role || 'conseiller').toLowerCase();
 
-        // si pas manager / admin -> on renvoie vers le rapport classique
+        // Si ce n'est pas un manager / admin -> on renvoie au rapport classique
         if (myRole !== 'manager' && myRole !== 'admin') {
           navigate('/rapport');
           return;
         }
 
-        // 2. tous les profils (conseillers)
+        // 3. Charger tous les profils
         const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
           .select('id, first_name, last_name, bureau, role');
@@ -111,7 +114,7 @@ export default function ManagerReports() {
           return;
         }
 
-        // 3. tous les rapports, triés du plus récent au plus ancien
+        // 4. Charger tous les rapports (RLS doit autoriser manager/admin à lire)
         const { data: reports, error: reportsError } = await supabase
           .from('reports')
           .select('id, user_id, period, data, created_at')
@@ -124,7 +127,7 @@ export default function ManagerReports() {
           return;
         }
 
-        // 4. ne garder que le dernier rapport par conseiller
+        // 5. Garder le dernier rapport par conseiller
         const latestByUser = {};
         (reports || []).forEach((rep) => {
           if (!latestByUser[rep.user_id]) {
@@ -136,19 +139,30 @@ export default function ManagerReports() {
         const agencySet = new Set();
 
         (profiles || []).forEach((p) => {
-          // on filtre : seulement les conseillers (ou rôle vide)
           const role = (p.role || '').toLowerCase();
+
+          // On n'affiche dans ce tableau que les conseillers (ou équivalent)
+          // Si tu veux inclure d'autres rôles, adapte ici.
           if (role && role !== 'conseiller' && role !== 'user') {
             return;
           }
 
-          const rep = latestByUser[p.id];
-          if (!rep) return; // pas encore de rapport
-
-          const totals = computeTotalsFromReport(rep.data);
-
           const bureau = p.bureau || '—';
           agencySet.add(bureau);
+
+          const rep = latestByUser[p.id] || null;
+          let totals = {
+            objectifs: 0,
+            realises: 0,
+            potentiel3m: 0,
+            potentiel12m: 0,
+          };
+          let period = '';
+
+          if (rep) {
+            totals = computeTotalsFromReport(rep.data);
+            period = rep.period || '';
+          }
 
           rowsData.push({
             userId: p.id,
@@ -159,7 +173,7 @@ export default function ManagerReports() {
             realises: totals.realises,
             potentiel3m: totals.potentiel3m,
             potentiel12m: totals.potentiel12m,
-            period: rep.period || '',
+            period,
           });
         });
 
@@ -169,7 +183,7 @@ export default function ManagerReports() {
 
         setRows(rowsData);
         setAgencies(agenciesList);
-        setSelectedAgencies(agenciesList); // par défaut : toutes
+        setSelectedAgencies(agenciesList); // par défaut toutes sélectionnées
         setLoading(false);
       } catch (e) {
         console.error(e);
@@ -181,7 +195,7 @@ export default function ManagerReports() {
     load();
   }, [navigate]);
 
-  // gestion du filtre agences (checkbox)
+  // Gestion du filtre Agences
   const toggleAgency = (bureau) => {
     setSelectedAgencies((prev) => {
       if (prev.includes(bureau)) {
@@ -191,7 +205,7 @@ export default function ManagerReports() {
     });
   };
 
-  // tri + filtrage
+  // Tri + filtrage
   const sortedRows = useMemo(() => {
     let filtered = rows;
 
@@ -221,8 +235,8 @@ export default function ManagerReports() {
       // colonnes numériques
       const av = a[sortKey] || 0;
       const bv = b[sortKey] || 0;
+
       if (av === bv) {
-        // secondaire : agence puis nom
         if (byBureau !== 0) return byBureau * dir;
         return byName * dir;
       }
@@ -241,9 +255,10 @@ export default function ManagerReports() {
     }
   };
 
-const handleRowClick = (userId) => {
-  navigate(`/rapport/${userId}`);
-};
+  const handleRowClick = (userId) => {
+    // Ouvre le rapport du conseiller ciblé
+    navigate(`/rapport/${userId}`);
+  };
 
   if (loading) {
     return (
@@ -301,11 +316,13 @@ const handleRowClick = (userId) => {
               <tr>
                 <th onClick={() => handleSort('bureau')}>
                   Agence
-                  {sortKey === 'bureau' && (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+                  {sortKey === 'bureau' &&
+                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
                 </th>
                 <th onClick={() => handleSort('name')}>
                   Nom / Prénom
-                  {sortKey === 'name' && (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+                  {sortKey === 'name' &&
+                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
                 </th>
                 <th onClick={() => handleSort('objectifs')}>
                   Objectifs
@@ -334,7 +351,7 @@ const handleRowClick = (userId) => {
               {sortedRows.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ textAlign: 'center', padding: '16px' }}>
-                    Aucun rapport trouvé pour les agences sélectionnées.
+                    Aucun conseiller trouvé pour les agences sélectionnées.
                   </td>
                 </tr>
               )}

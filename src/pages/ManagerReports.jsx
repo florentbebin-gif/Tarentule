@@ -57,7 +57,7 @@ export default function ManagerReports() {
   const [error, setError] = useState('');
 
   const [rows, setRows] = useState([]); // lignes conseillers
-  const [agencies, setAgencies] = useState([]); // liste des agences distinctes
+  const [agencies, setAgencies] = useState([]); // liste agences distinctes
   const [selectedAgencies, setSelectedAgencies] = useState([]); // filtres agences
 
   const [sortKey, setSortKey] = useState('bureau'); // 'bureau' | 'name' | 'objectifs' | 'realises' | ...
@@ -65,7 +65,7 @@ export default function ManagerReports() {
 
   const navigate = useNavigate();
 
-  // Charge les données pour le manager
+  // Charge les données pour la synthèse manager
   useEffect(() => {
     const load = async () => {
       try {
@@ -102,7 +102,7 @@ export default function ManagerReports() {
           return;
         }
 
-        // 3. Charger tous les profils
+        // 3. Charger tous les profils (tous les utilisateurs, on filtrera légèrement après)
         const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
           .select('id, first_name, last_name, bureau, role');
@@ -114,7 +114,7 @@ export default function ManagerReports() {
           return;
         }
 
-        // 4. Charger tous les rapports (RLS doit autoriser manager/admin à lire)
+        // 4. Charger tous les rapports
         const { data: reports, error: reportsError } = await supabase
           .from('reports')
           .select('id, user_id, period, data, created_at')
@@ -127,7 +127,7 @@ export default function ManagerReports() {
           return;
         }
 
-        // 5. Garder le dernier rapport par conseiller
+        // 5. Garder le dernier rapport par utilisateur
         const latestByUser = {};
         (reports || []).forEach((rep) => {
           if (!latestByUser[rep.user_id]) {
@@ -135,47 +135,52 @@ export default function ManagerReports() {
           }
         });
 
-const rowsData = [];
-const agencySet = new Set();
+        const rowsData = [];
+        const agencySet = new Set();
 
-(profiles || []).forEach((p) => {
-  const role = (p.role || '').toLowerCase();
+        (profiles || []).forEach((p) => {
+          const role = (p.role || '').toLowerCase();
 
-  // On exclut seulement les admins, on affiche tout le reste (conseiller, manager, etc.)
-  if (role === 'admin') {
-    return;
-  }
+          // 👉 Pour l'instant, on affiche TOUT le monde sauf les admins purs.
+          // Donc un manager verra :
+          //  - lui-même
+          //  - les conseillers
+          //  - les autres managers
+          // Si tu veux exclure le compte admin du tableau, on peut laisser ce filtre :
+          if (role === 'admin') {
+            return;
+          }
 
-  const bureau = p.bureau || '—';
-  agencySet.add(bureau);
+          const bureau = p.bureau || '—';
+          agencySet.add(bureau);
 
-  const rep = latestByUser[p.id] || null;
-  let totals = {
-    objectifs: 0,
-    realises: 0,
-    potentiel3m: 0,
-    potentiel12m: 0,
-  };
-  let period = '';
+          const rep = latestByUser[p.id] || null;
+          let totals = {
+            objectifs: 0,
+            realises: 0,
+            potentiel3m: 0,
+            potentiel12m: 0,
+          };
+          let period = '';
 
-  if (rep) {
-    totals = computeTotalsFromReport(rep.data);
-    period = rep.period || '';
-  }
+          if (rep) {
+            totals = computeTotalsFromReport(rep.data);
+            period = rep.period || '';
+          }
 
-  rowsData.push({
-    userId: p.id,
-    firstName: p.first_name || '',
-    lastName: p.last_name || '',
-    bureau,
-    objectifs: totals.objectifs,
-    realises: totals.realises,
-    potentiel3m: totals.potentiel3m,
-    potentiel12m: totals.potentiel12m,
-    period,
-  });
-});
-
+          rowsData.push({
+            userId: p.id,
+            firstName: p.first_name || '',
+            lastName: p.last_name || '',
+            bureau,
+            objectifs: totals.objectifs,
+            realises: totals.realises,
+            potentiel3m: totals.potentiel3m,
+            potentiel12m: totals.potentiel12m,
+            period,
+            role: role || 'conseiller',
+          });
+        });
 
         const agenciesList = Array.from(agencySet).sort((a, b) =>
           a.localeCompare(b, 'fr')
@@ -195,7 +200,7 @@ const agencySet = new Set();
     load();
   }, [navigate]);
 
-  // Gestion du filtre Agences
+  // Gestion du filtre agences
   const toggleAgency = (bureau) => {
     setSelectedAgencies((prev) => {
       if (prev.includes(bureau)) {
@@ -351,7 +356,7 @@ const agencySet = new Set();
               {sortedRows.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ textAlign: 'center', padding: '16px' }}>
-                    Aucun conseiller trouvé pour les agences sélectionnées.
+                    Aucun utilisateur trouvé pour les agences sélectionnées.
                   </td>
                 </tr>
               )}
@@ -365,6 +370,7 @@ const agencySet = new Set();
                   <td>{row.bureau}</td>
                   <td>
                     {idx + 1}. {row.lastName.toUpperCase()} {row.firstName}
+                    {row.role === 'manager' && ' (Manager)'}
                   </td>
                   <td>{formatEuro(row.objectifs)}</td>
                   <td>{formatEuro(row.realises)}</td>

@@ -7,6 +7,13 @@ import Settings from './pages/Settings';
 import Signup from './pages/Signup';
 import RapportForm from './pages/RapportForm';
 
+  const [userInfo, setUserInfo] = useState({
+    firstName: '',
+    lastName: '',
+    bureau: '',
+  });
+  const [lastSave, setLastSave] = useState(null);
+
 // -----------------------
 // Icônes SVG "maison"
 // -----------------------
@@ -113,6 +120,42 @@ export default function App() {
     supabase.auth.onAuthStateChange((_event, s) => setSession(s));
   }, []);
 
+    useEffect(() => {
+    const loadUserInfo = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setUserInfo({ firstName: '', lastName: '', bureau: '' });
+        setLastSave(null);
+        return;
+      }
+
+      const meta = user.user_metadata || {};
+      setUserInfo({
+        firstName: meta.first_name || '',
+        lastName: meta.last_name || '',
+        bureau: meta.bureau || '',
+      });
+
+      const { data: reports, error } = await supabase
+        .from('reports')
+        .select('created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (!error && reports && reports.length > 0) {
+        setLastSave(new Date(reports[0].created_at));
+      } else {
+        setLastSave(null);
+      }
+    };
+
+    loadUserInfo();
+  }, [session]);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
@@ -139,7 +182,34 @@ useEffect(() => {
   return (
     <>
       <div className="topbar">
-        <div className="brandbar">Tarentule</div>
+        <div className="brandbar">TARENTULE</div>
+
+      <div className="topbar-center">
+        <div className="topbar-line">
+          <span className="topbar-label">Nom :</span>{' '}
+          {userInfo.lastName || '—'}
+        </div>
+        <div className="topbar-line">
+          <span className="topbar-label">Prénom :</span>{' '}
+          {userInfo.firstName || '—'}
+        </div>
+        <div className="topbar-line">
+          <span className="topbar-label">Bureau :</span>{' '}
+          {userInfo.bureau || '—'}
+        </div>
+        <div className="topbar-line">
+          <span className="topbar-label">Dernière sauvegarde :</span>{' '}
+          {lastSave
+            ? lastSave.toLocaleString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : '—'}
+        </div>
+      </div>
 
         <div className="top-actions">
           {session && !isRecoveryMode && (

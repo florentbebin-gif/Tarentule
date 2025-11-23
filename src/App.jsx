@@ -141,9 +141,17 @@ export default function App() {
 
   return (
     <>
-      <div className="topbar">
+           <div className="topbar">
+        {/* Gauche : logo / marque */}
         <div className="brandbar">TARENTULE</div>
 
+        {/* Entre TARENTULE et le centre : Bureau */}
+        <div className="topbar-bureau">
+          <span className="topbar-label">Bureau :</span>{' '}
+          {userInfo.bureau || '—'}
+        </div>
+
+        {/* Centre : Nom + Prénom */}
         <div className="topbar-center">
           <div className="topbar-line">
             <span className="topbar-label">Nom :</span>{' '}
@@ -153,23 +161,56 @@ export default function App() {
             <span className="topbar-label">Prénom :</span>{' '}
             {userInfo.firstName || '—'}
           </div>
-          <div className="topbar-line">
-            <span className="topbar-label">Bureau :</span>{' '}
-            {userInfo.bureau || '—'}
-          </div>
-          <div className="topbar-line">
-            <span className="topbar-label">Dernière sauvegarde :</span>{' '}
-            {lastSave
-              ? lastSave.toLocaleString('fr-FR', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
-              : '—'}
-          </div>
         </div>
+
+        {/* Entre le centre et les icônes : Dernière sauvegarde */}
+        <div className="topbar-lastsave">
+          <span className="topbar-label">Dernière sauvegarde :</span>{' '}
+          {lastSave
+            ? lastSave.toLocaleString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : '—'}
+        </div>
+
+        {/* Droite : boutons */}
+        <div className="top-actions">
+          {session && !isRecoveryMode && (
+            <>
+              {(isSimRoute || isSettingsRoute) && (
+                <button
+                  className="chip icon-btn"
+                  onClick={() => navigate('/')}
+                  title="Retour au rapport"
+                >
+                  <IconHome className="icon" />
+                </button>
+              )}
+
+              <button
+                className="chip icon-btn"
+                onClick={() => navigate('/settings')}
+                title="Paramètres"
+              >
+                <IconSettings className="icon" />
+              </button>
+
+              <button
+                className="chip icon-btn"
+                onClick={handleLogout}
+                title="Se déconnecter"
+              >
+                <IconLogout className="icon" />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
 
         <div className="top-actions">
           {session && !isRecoveryMode && (

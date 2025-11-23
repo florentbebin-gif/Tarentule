@@ -444,6 +444,7 @@ export default function RapportForm({ onSaved }) {
 
             <div className="rapport-table-header-sub rapport-table-header-sub--part">
               <span className="col-libelle">Libellés</span>
+              <span>Objectifs (nb)</span>
               <span>Réalisé (nb)</span>
               <span>CGP</span>
               <span>N+1</span>
@@ -454,46 +455,49 @@ export default function RapportForm({ onSaved }) {
                 className="rapport-table-row rapport-table-row--part"
                 key={i}
               >
-                <span className="col-libelle">{label}</span>
+<span className="col-libelle">{label}</span>
 
-                <input
-                  className="rapport-input rapport-input-narrow"
-                  type="number"
-                  value={form.partenariat.realises[i]}
-                  onChange={(e2) =>
-                    updateArrayField(
-                      'partenariat',
-                      'realises',
-                      i,
-                      e2.target.value
-                    )
-                  }
-                />
+{/* Objectifs (nb) – rempli par le manager, lecture seule côté conseiller */}
+<input
+  className="rapport-input rapport-input-narrow manager-cell"
+  type="number"
+  value={form.partenariat.objectifs[i] || ''}
+  readOnly
+  placeholder="—"
+/>
 
-                <input
-                  className="rapport-input rapport-input-note rapport-input-narrow"
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={form.partenariat.notesCgp[i]}
-                  onChange={(e2) =>
-                    updateArrayField(
-                      'partenariat',
-                      'notesCgp',
-                      i,
-                      e2.target.value
-                    )
-                  }
-                />
+{/* Réalisé (nb) – saisi par le conseiller */}
+<input
+  className="rapport-input rapport-input-narrow"
+  type="number"
+  value={form.partenariat.realises[i]}
+  onChange={(e2) =>
+    updateArrayField('partenariat', 'realises', i, e2.target.value)
+  }
+/>
 
-                <input
-                  className="rapport-input rapport-input-note rapport-input-narrow manager-cell"
-                  type="number"
-                  min="1"
-                  max="10"
-                  readOnly
-                  placeholder="—"
-                />
+{/* Note CGP */}
+<input
+  className="rapport-input rapport-input-note rapport-input-narrow"
+  type="number"
+  min="1"
+  max="10"
+  value={form.partenariat.notesCgp[i]}
+  onChange={(e2) =>
+    updateArrayField('partenariat', 'notesCgp', i, e2.target.value)
+  }
+/>
+
+{/* Note N+1 – lecture seule */}
+<input
+  className="rapport-input rapport-input-note rapport-input-narrow manager-cell"
+  type="number"
+  min="1"
+  max="10"
+  readOnly
+  placeholder="—"
+/>
+
               </div>
             ))}
           </div>

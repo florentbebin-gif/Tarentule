@@ -539,14 +539,14 @@ body {
 
   /* Ces trois-là doivent descendre plus bas */
   .radar-card--partenariat {
-    margin-top: 120px;   /* ajuste la valeur si nécessaire */
+    margin-top: 200px;   /* ajuste la valeur si nécessaire */
   }
 
   .radar-card--technique {
-    margin-top: 120px;   /* même décalage pour Technique */
+    margin-top: 200px;   /* même décalage pour Technique */
   }
 
   .radar-card--bienetre {
-    margin-top: 120px;   /* et pour Bien-être */
+    margin-top: 200px;   /* et pour Bien-être */
   }
 }

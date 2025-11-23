@@ -636,3 +636,79 @@ body {
   border-radius: 8px;
   font-size: 15px;
 }
+/* ====== PAGE MANAGER ====== */
+
+.manager-filters {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.manager-filters-label {
+  font-weight: 600;
+  margin-right: 4px;
+  padding-top: 4px;
+}
+
+.manager-filters-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.manager-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background-color: #f9fafb;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.manager-filter-chip input {
+  margin: 0;
+}
+
+.manager-filters-empty {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.manager-table-wrap {
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.manager-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.manager-table th,
+.manager-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.manager-table th {
+  cursor: pointer;
+  font-weight: 600;
+  background-color: #f9fafb;
+}
+
+.manager-row {
+  cursor: pointer;
+}
+
+.manager-row:hover {
+  background-color: #f3f4f6;
+}

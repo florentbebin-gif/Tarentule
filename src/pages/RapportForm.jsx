@@ -11,7 +11,7 @@ export default function RapportForm({ onSaved }) {
   const [error, setError] = useState('');
   const [loadingUser, setLoadingUser] = useState(true);
 
-    const initialForm = {
+  const initialForm = {
     bienEtre: {
       notesCgp: ['', '', '', ''],
       commentaires: '',
@@ -41,7 +41,6 @@ export default function RapportForm({ onSaved }) {
   };
 
   const [form, setForm] = useState(initialForm);
-
 
   // Libellés des lignes
   const resultatsLabels = [
@@ -142,7 +141,8 @@ export default function RapportForm({ onSaved }) {
     checkUser();
   }, []);
 
-    useEffect(() => {
+  // Charge le dernier rapport sauvegardé
+  useEffect(() => {
     const loadLastReport = async () => {
       const {
         data: { user },
@@ -175,7 +175,7 @@ export default function RapportForm({ onSaved }) {
       loadLastReport();
     }
   }, [loadingUser]);
-  
+
   const clampNote = (value) => {
     const n = Number(value);
     if (Number.isNaN(n)) return '';
@@ -183,7 +183,6 @@ export default function RapportForm({ onSaved }) {
     if (n > 10) return '10';
     return String(n);
   };
-
 
   const updateArrayField = (section, field, index, value) => {
     setForm((prev) => ({
@@ -207,7 +206,7 @@ export default function RapportForm({ onSaved }) {
     }));
   };
 
-  // Données pour les radars (à partir des notes CGP, N+1 plus tard)
+  // Données pour les radars
   const resultatsRadarLabels = [
     'Financier',
     'PE',
@@ -220,7 +219,7 @@ export default function RapportForm({ onSaved }) {
   const resultatsCgpRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
     Number(form.resultats.notesCgp[i] || 0)
   );
-  const resultatsManagerRadar = [1, 2, 3, 4, 5, 6, 7].map(() => 0); // à brancher plus tard
+  const resultatsManagerRadar = [1, 2, 3, 4, 5, 6, 7].map(() => 0);
 
   const partenariatRadarLabels = ['Clubs Experts', 'Animation', 'Prospection'];
   const partenariatCgpRadar = [0, 1, 2].map((i) =>
@@ -279,7 +278,6 @@ export default function RapportForm({ onSaved }) {
       return;
     }
 
-    // 👉 C'EST ICI qu'on met setSaved + onSaved
     setSaved(true);
     if (onSaved) {
       onSaved(new Date());
@@ -295,24 +293,14 @@ export default function RapportForm({ onSaved }) {
       {/* Colonne gauche : formulaires */}
       <div className="rapport-main">
         {/* 1. RÉSULTATS */}
-<div className="section-card section-card--with-chart">
-  <div className="section-header">
-    <div className="section-title strong-title">Résultats</div>
-    <button className="btn btn-save" onClick={handleSubmit}>
-      Enregistrer le rapport complet
-    </button>
-  </div>
-            {saved && (
-            <div className="alert success" style={{ marginTop: '12px' }}>
-              Votre rapport est enregistré.
-            </div>
-          )}
+        <div className="section-card section-card--with-chart">
+          <div className="section-header">
+            <div className="section-title strong-title">Résultats</div>
+            <button className="btn btn-save" onClick={handleSubmit}>
+              Enregistrer le rapport complet
+            </button>
+          </div>
 
-          {error && (
-            <div className="alert error" style={{ marginTop: '8px' }}>
-              {error}
-            </div>
-          )}
           <div className="rapport-section-table">
             <div className="rapport-table-header-top">
               <span className="col-libelle"></span>
@@ -344,7 +332,7 @@ export default function RapportForm({ onSaved }) {
                     {isTotalRow ? <strong>{label}</strong> : label}
                   </span>
 
-                  {/* Objectif */}
+                  {/* Objectifs */}
                   {isCampaignRow ? (
                     <span></span>
                   ) : isTotalRow ? (
@@ -364,112 +352,124 @@ export default function RapportForm({ onSaved }) {
                     />
                   )}
 
-                        {/* Réalisé */}
-      {isCampaignRow ? (
-        <span></span>
-      ) : isTotalRow ? (
-        <input
-          className="rapport-input manager-cell total-cell"
-          type="text"
-          value={euroFromNumber(totals.realises)}
-          readOnly
-        />
-      ) : (
-        <input
-          className="rapport-input"
-          type="text"
-          value={form.resultats.realises[i]}
-          onChange={(e2) =>
-            updateArrayField('resultats', 'realises', i, e2.target.value)
-          }
-          onBlur={() => formatEuroField('realises', i)}
-        />
-      )}
+                  {/* Réalisé */}
+                  {isCampaignRow ? (
+                    <span></span>
+                  ) : isTotalRow ? (
+                    <input
+                      className="rapport-input manager-cell total-cell"
+                      type="text"
+                      value={euroFromNumber(totals.realises)}
+                      readOnly
+                    />
+                  ) : (
+                    <input
+                      className="rapport-input"
+                      type="text"
+                      value={form.resultats.realises[i]}
+                      onChange={(e2) =>
+                        updateArrayField(
+                          'resultats',
+                          'realises',
+                          i,
+                          e2.target.value
+                        )
+                      }
+                      onBlur={() => formatEuroField('realises', i)}
+                    />
+                  )}
 
-                       {/* Signature 1 mois */}
-      {isCampaignRow ? (
-        <span></span>
-      ) : isTotalRow ? (
-        <input
-          className="rapport-input rapport-input-potentiel manager-cell total-cell"
-          type="text"
-          value={euroFromNumber(totals.potentiel3m)}
-          readOnly
-        />
-      ) : (
-        <input
-          className="rapport-input rapport-input-potentiel"
-          type="text"
-          value={form.resultats.potentiel3m[i]}
-          onChange={(e2) =>
-            updateArrayField('resultats', 'potentiel3m', i, e2.target.value)
-          }
-          onBlur={() => formatEuroField('potentiel3m', i)}
-        />
-      )}
-
+                  {/* Signature 1 mois */}
+                  {isCampaignRow ? (
+                    <span></span>
+                  ) : isTotalRow ? (
+                    <input
+                      className="rapport-input rapport-input-potentiel manager-cell total-cell"
+                      type="text"
+                      value={euroFromNumber(totals.potentiel3m)}
+                      readOnly
+                    />
+                  ) : (
+                    <input
+                      className="rapport-input rapport-input-potentiel"
+                      type="text"
+                      value={form.resultats.potentiel3m[i]}
+                      onChange={(e2) =>
+                        updateArrayField(
+                          'resultats',
+                          'potentiel3m',
+                          i,
+                          e2.target.value
+                        )
+                      }
+                      onBlur={() => formatEuroField('potentiel3m', i)}
+                    />
+                  )}
 
                   {/* Potentiel */}
-      {isCampaignRow ? (
-        <span></span>
-      ) : isTotalRow ? (
-        <input
-          className="rapport-input rapport-input-potentiel manager-cell total-cell"
-          type="text"
-          value={euroFromNumber(totals.potentiel12m)}
-          readOnly
-        />
-      ) : (
-        <input
-          className="rapport-input rapport-input-potentiel"
-          type="text"
-          value={form.resultats.potentiel12m[i]}
-          onChange={(e2) =>
-            updateArrayField('resultats', 'potentiel12m', i, e2.target.value)
-          }
-          onBlur={() => formatEuroField('potentiel12m', i)}
-        />
-      )}
+                  {isCampaignRow ? (
+                    <span></span>
+                  ) : isTotalRow ? (
+                    <input
+                      className="rapport-input rapport-input-potentiel manager-cell total-cell"
+                      type="text"
+                      value={euroFromNumber(totals.potentiel12m)}
+                      readOnly
+                    />
+                  ) : (
+                    <input
+                      className="rapport-input rapport-input-potentiel"
+                      type="text"
+                      value={form.resultats.potentiel12m[i]}
+                      onChange={(e2) =>
+                        updateArrayField(
+                          'resultats',
+                          'potentiel12m',
+                          i,
+                          e2.target.value
+                        )
+                      }
+                      onBlur={() => formatEuroField('potentiel12m', i)}
+                    />
+                  )}
 
-      {/* Notes */}
-      {isTotalRow ? (
-        <>
-          <span></span>
-          <span></span>
-        </>
-      ) : (
-        <>
-          <input
-            className="rapport-input rapport-input-note"
-            type="number"
-            min="0"
-            max="10"
-            value={form.resultats.notesCgp[i]}
-            onChange={(e2) =>
-              updateArrayField(
-                'resultats',
-                'notesCgp',
-                i,
-                clampNote(e2.target.value)
-              )
-            }
-          />
-          <input
-            className="rapport-input rapport-input-note manager-cell"
-            type="number"
-            min="0"
-            max="10"
-            readOnly
-            placeholder="—"
-          />
-        </>
-      )}
-
+                  {/* Notes */}
+                  {isTotalRow ? (
+                    <>
+                      <span></span>
+                      <span></span>
+                    </>
+                  ) : (
+                    <>
+                      <input
+                        className="rapport-input rapport-input-note"
+                        type="number"
+                        min="0"
+                        max="10"
+                        value={form.resultats.notesCgp[i]}
+                        onChange={(e2) =>
+                          updateArrayField(
+                            'resultats',
+                            'notesCgp',
+                            i,
+                            clampNote(e2.target.value)
+                          )
+                        }
+                      />
+                      <input
+                        className="rapport-input rapport-input-note manager-cell"
+                        type="number"
+                        min="0"
+                        max="10"
+                        readOnly
+                        placeholder="—"
+                      />
+                    </>
+                  )}
                 </div>
               );
             })}
           </div>
-
 
           <div className="rapport-comments-block">
             <label>Commentaires</label>
@@ -488,6 +488,18 @@ export default function RapportForm({ onSaved }) {
               placeholder="Renseigné par le manager"
             />
           </div>
+
+          {saved && (
+            <div className="alert success" style={{ marginTop: '12px' }}>
+              Votre rapport est enregistré.
+            </div>
+          )}
+
+          {error && (
+            <div className="alert error" style={{ marginTop: '8px' }}>
+              {error}
+            </div>
+          )}
         </div>
 
         {/* 2. PARTENARIAT */}
@@ -514,49 +526,58 @@ export default function RapportForm({ onSaved }) {
                 className="rapport-table-row rapport-table-row--part"
                 key={i}
               >
-<span className="col-libelle">{label}</span>
+                <span className="col-libelle">{label}</span>
 
-{/* Objectifs (nb) – rempli par le manager, lecture seule côté conseiller */}
-<input
-  className="rapport-input rapport-input-narrow manager-cell"
-  type="number"
-  value={form.partenariat.objectifs[i] || ''}
-  readOnly
-  placeholder="—"
-/>
+                {/* Objectifs (nb) – manager */}
+                <input
+                  className="rapport-input rapport-input-narrow manager-cell"
+                  type="number"
+                  value={form.partenariat.objectifs[i] || ''}
+                  readOnly
+                  placeholder="—"
+                />
 
-{/* Réalisé (nb) – saisi par le conseiller */}
-<input
-  className="rapport-input rapport-input-narrow"
-  type="number"
-  value={form.partenariat.realises[i]}
-  onChange={(e2) =>
-    updateArrayField('partenariat', 'realises', i, e2.target.value)
-  }
-/>
+                {/* Réalisé (nb) – conseiller */}
+                <input
+                  className="rapport-input rapport-input-narrow"
+                  type="number"
+                  value={form.partenariat.realises[i]}
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'partenariat',
+                      'realises',
+                      i,
+                      e2.target.value
+                    )
+                  }
+                />
 
-{/* Note CGP */}
-<input
-  className="rapport-input rapport-input-note rapport-input-narrow"
-  type="number"
-  min="1"
-  max="10"
-  value={form.partenariat.notesCgp[i]}
-  onChange={(e2) =>
-    updateArrayField('partenariat', 'notesCgp', i, clampNote(e2.target.value))
-  }
-/>
+                {/* Note CGP */}
+                <input
+                  className="rapport-input rapport-input-note rapport-input-narrow"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.partenariat.notesCgp[i]}
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'partenariat',
+                      'notesCgp',
+                      i,
+                      clampNote(e2.target.value)
+                    )
+                  }
+                />
 
-{/* Note N+1 – lecture seule */}
-<input
-  className="rapport-input rapport-input-note rapport-input-narrow manager-cell"
-  type="number"
-  min="1"
-  max="10"
-  readOnly
-  placeholder="—"
-/>
-
+                {/* Note N+1 – lecture seule */}
+                <input
+                  className="rapport-input rapport-input-note rapport-input-narrow manager-cell"
+                  type="number"
+                  min="0"
+                  max="10"
+                  readOnly
+                  placeholder="—"
+                />
               </div>
             ))}
           </div>
@@ -606,7 +627,7 @@ export default function RapportForm({ onSaved }) {
                 <input
                   className="rapport-input rapport-input-note"
                   type="number"
-                  min="1"
+                  min="0"
                   max="10"
                   value={form.technique.notesCgp[i]}
                   onChange={(e2) =>
@@ -622,7 +643,7 @@ export default function RapportForm({ onSaved }) {
                 <input
                   className="rapport-input rapport-input-note manager-cell"
                   type="number"
-                  min="1"
+                  min="0"
                   max="10"
                   readOnly
                   placeholder="—"
@@ -676,7 +697,7 @@ export default function RapportForm({ onSaved }) {
                 <input
                   className="rapport-input rapport-input-note"
                   type="number"
-                  min="1"
+                  min="0"
                   max="10"
                   value={form.bienEtre.notesCgp[i]}
                   onChange={(e2) =>
@@ -692,7 +713,7 @@ export default function RapportForm({ onSaved }) {
                 <input
                   className="rapport-input rapport-input-note manager-cell"
                   type="number"
-                  min="1"
+                  min="0"
                   max="10"
                   readOnly
                   placeholder="—"
@@ -719,15 +740,11 @@ export default function RapportForm({ onSaved }) {
             />
           </div>
         </div>
-
       </div>
-      
+
       {/* Colonne droite : graphiques */}
       <div className="rapport-charts">
-        
-      {/* Colonne droite : graphiques */}
-      <div className="rapport-charts">
-        {/* Graph : Performance globale */}
+        {/* Performance globale */}
         <div className="section-card radar-card radar-card--perf">
           <div className="radar-title">Performance globale</div>
           <PerformanceChart
@@ -735,7 +752,7 @@ export default function RapportForm({ onSaved }) {
             realise={totals.realises}
           />
         </div>
-        
+
         {/* Notes Résultats */}
         <div className="section-card radar-card radar-card--resultats">
           <div className="radar-title">Notes Résultats</div>

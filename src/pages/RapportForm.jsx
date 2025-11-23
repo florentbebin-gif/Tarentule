@@ -37,6 +37,16 @@ export default function RapportForm() {
       strategie: '', // manager
     },
   });
+  const resultatsLabels = [
+    '1 - Performance globale : atteinte des objectifs',
+    '2 - Produits financiers : assurances vie / Capi',
+    '3 - Private Equity',
+    '4 - Produits immobiliers : directs et indirects',
+    '5 - Honoraires : production / chiffre d’affaires généré',
+    '6 - Arbitrages : gestion pilotée, structurés, Pams',
+    '7 - PER : dispositifs d’épargne retraite',
+    '8 - Campagnes diverses : participation et efficacité dans les campagnes',
+  ];
 
   // Vérifie que l'utilisateur est connecté
   useEffect(() => {
@@ -136,31 +146,18 @@ export default function RapportForm() {
         />
       </div>
 
-      {/* 1. RÉSULTATS */}
+            {/* 1. RÉSULTATS */}
       <div className="section-card">
         <div className="section-title strong-title">Résultats</div>
-
-        <ul className="section-list">
-          <li>Performance globale : atteinte des objectifs</li>
-          <li>Produits financiers : assurances vie / Capi</li>
-          <li>Private Equity</li>
-          <li>Produits immobiliers : directs et indirects</li>
-          <li>Honoraires : production / chiffre d’affaires généré</li>
-          <li>Arbitrages : gestion pilotée, structurés, Pams</li>
-          <li>PER : dispositifs d’épargne retraite</li>
-          <li>
-            Campagnes diverses : participation et efficacité dans les campagnes
-          </li>
-        </ul>
 
         <div className="rapport-section-table">
           <div className="rapport-section-title-row">
             Objectifs, réalisés &amp; potentiel (conseiller)
           </div>
 
-          {/* Ligne d’en-tête */}
+          {/* En-tête du tableau */}
           <div className="rapport-table-header">
-            <span className="col-ligne">Ligne</span>
+            <span className="col-libelle">Libellé</span>
             <span>Objectif</span>
             <span>Réalisé</span>
             <span>Potentiel 3 mois</span>
@@ -169,10 +166,10 @@ export default function RapportForm() {
             <span>Manager</span>
           </div>
 
-          {/* 8 lignes comme dans ton Excel */}
+          {/* 8 lignes correspondantes aux 8 items */}
           {Array.from({ length: 8 }).map((_, i) => (
             <div className="rapport-table-row" key={i}>
-              <span className="col-ligne">{i + 1}</span>
+              <span className="col-libelle">{resultatsLabels[i]}</span>
 
               <input
                 className="rapport-input"
@@ -233,25 +230,22 @@ export default function RapportForm() {
           ))}
         </div>
 
+        {/* Commentaires + stratégie sur toute la largeur */}
         <div className="rapport-comments-block">
-          <div className="rapport-comments-column">
-            <label>Commentaires</label>
-            <textarea
-              value={form.resultats.commentaires}
-              onChange={(e) =>
-                updateField('resultats', 'commentaires', e.target.value)
-              }
-            />
-          </div>
+          <label>Commentaires</label>
+          <textarea
+            value={form.resultats.commentaires}
+            onChange={(e) =>
+              updateField('resultats', 'commentaires', e.target.value)
+            }
+          />
 
-          <div className="rapport-comments-column">
-            <label>Stratégie d’amélioration (manager)</label>
-            <textarea
-              value={form.resultats.strategie}
-              readOnly
-              placeholder="Renseigné par le manager"
-            />
-          </div>
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            value={form.resultats.strategie}
+            readOnly
+            placeholder="Renseigné par le manager"
+          />
         </div>
       </div>
 

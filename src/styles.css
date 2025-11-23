@@ -421,3 +421,9 @@ body {
 .rapport-table-row--simple + .rapport-table-row--simple {
   margin-top: 4px;
 }
+
+/* Topbar – taille de la dernière sauvegarde */
+.topbar-lastsave {
+  font-size: 13px; /* même taille que Nom / Prénom */
+  white-space: nowrap;
+}

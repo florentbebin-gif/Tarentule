@@ -550,3 +550,20 @@ body {
     margin-top: 440px;   /* et pour Bien-être */
   }
 }
+.save-message {
+  margin-top: 6px;
+  background-color: #d9f2e3; /* vert pale thème */
+  border: 1px solid #a7d9c0;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  width: fit-content;
+  color: #1f3c32;
+  margin-left: auto;
+}
+
+.save-message.error {
+  background-color: #f7d4d4;
+  border: 1px solid #e6aaaa;
+  color: #7a1c1c;
+}

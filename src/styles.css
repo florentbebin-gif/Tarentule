@@ -338,3 +338,82 @@ body {
   font-size: 12px;
   font-style: italic;
 }
+/* PARTENARIAT : Libellé / Réalisé / CGP / N+1 */
+
+.rapport-section-table--part {
+  margin-top: 16px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background-color: #fbfbfb;
+}
+
+.rapport-table-header-top--part,
+.rapport-table-header-sub--part,
+.rapport-table-row--part {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1.2fr) 70px 70px;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 14px;
+}
+
+.rapport-table-header-top--part {
+  margin-bottom: 2px;
+}
+
+.rapport-table-header-sub--part {
+  font-weight: 600;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 4px;
+}
+
+.rapport-table-header-sub--part span:not(.col-libelle),
+.rapport-table-header-top--part span {
+  text-align: center;
+}
+
+.rapport-table-row--part + .rapport-table-row--part {
+  margin-top: 4px;
+}
+
+/* BIEN-ÊTRE / TECHNIQUE : Libellé / CGP / N+1 */
+
+.rapport-section-table--simple {
+  margin-top: 16px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background-color: #fbfbfb;
+}
+
+.rapport-table-header-top--simple,
+.rapport-table-header-sub--simple,
+.rapport-table-row--simple {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) 70px 70px;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 14px;
+}
+
+.rapport-table-header-top--simple {
+  margin-bottom: 2px;
+}
+
+.rapport-table-header-sub--simple {
+  font-weight: 600;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 4px;
+}
+
+.rapport-table-header-sub--simple span:not(.col-libelle),
+.rapport-table-header-top--simple span {
+  text-align: center;
+}
+
+.rapport-table-row--simple + .rapport-table-row--simple {
+  margin-top: 4px;
+}

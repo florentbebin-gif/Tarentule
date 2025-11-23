@@ -4,6 +4,50 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import './Login.css';
 
+const BUREAUX = [
+  'Aix en Provence',
+  'Angers',
+  'Annecy',
+  'Bordeaux',
+  'Bourges',
+  'Brest',
+  'Caen',
+  'Cambrai',
+  'Caraïbes',
+  'Cholet',
+  'Clermont',
+  'Client Direct',
+  'Dijon',
+  'Gap',
+  'Grenoble',
+  'International',
+  'La rochelle',
+  'Le Mans',
+  'Licorne',
+  'Lille',
+  'Lyon',
+  'Marseille',
+  'Montargis',
+  'Montpellier',
+  'Mulhouse',
+  'Nantes',
+  'Nice',
+  'Paris',
+  'Perpignan',
+  'Rennes',
+  'Rouen',
+  'Réunion',
+  'Saint Brieuc',
+  'Sport',
+  'St Remy de Provence',
+  'Strasbourg',
+  'Toulon',
+  'Toulouse',
+  'Tours',
+  'Valence',
+  'Vannes',
+];
+
 export default function Signup() {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
@@ -13,6 +57,7 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
+  const [bureau, setBureau] = useState('');
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -24,7 +69,15 @@ export default function Signup() {
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          bureau,
+        },
+      },
     });
+
 
     if (signUpError) {
       setError(signUpError.message || 'Erreur lors de la création du compte.');
@@ -74,7 +127,21 @@ export default function Signup() {
               onChange={(e) => setLastName(e.target.value)}
               required
             />
-
+            
+          <label>Bureau</label>
+          <select
+            value={bureau}
+            onChange={(e) => setBureau(e.target.value)}
+            required
+          >
+            <option value="">Sélectionner un bureau</option>
+            {BUREAUX.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+            
+          </select>
             <label>Email</label>
             <input
               type="email"

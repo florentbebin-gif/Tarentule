@@ -37,7 +37,7 @@ export default function RapportForm() {
       strategie: '', // manager
     },
   });
-  // Libellés des lignes Résultats
+  // Libellés des lignes
   const resultatsLabels = [
     '1 - Performance globale : atteinte des objectifs',
     '2 - Produits financiers : assurances vie / Capi',
@@ -48,6 +48,27 @@ export default function RapportForm() {
     '7 - PER : dispositifs d’épargne retraite',
     '8 - Campagnes diverses : participation et efficacité',
   ];
+    const partenariatLabels = [
+    '1 - Clubs Experts : gestion des invitations, relances et animation',
+    '2 - Animation : entretien du réseau, suivi, régularité des visites',
+    '3 - Prospection : actions pour développer le réseau',
+  ];
+
+  const bienEtreLabels = [
+    '1 - Équilibre psychologique / gestion du stress',
+    '2 - Motivation',
+    '3 - Niveau d’intégration dans l’équipe et l’entreprise',
+    '4 - Satisfaction et épanouissement au travail',
+  ];
+
+  const techniqueLabels = [
+    '1 - Commerciale : techniques de vente et relation client',
+    '2 - Civile : compétences techniques sur les aspects civils / juridiques',
+    '3 - Société : montages et problématiques',
+    '4 - Outils : Big, Hubspot, SIO2, Extranet, Power BI',
+    '5 - Process interne : organisation Relation Middle',
+  ];
+
 
   // Conversion "1 000 €" -> 1000
   const parseEuro = (value) => {
@@ -369,197 +390,231 @@ export default function RapportForm() {
       </div>
 
 
-      {/* 2. PARTENARIAT */}
+            {/* 2. PARTENARIAT */}
       <div className="section-card">
         <div className="section-title strong-title">Partenariat</div>
-        <ul className="section-list">
-          <li>
-            Clubs Experts : gestion des invitations, relances et animation
-          </li>
-          <li>
-            Animation : entretien du réseau, suivi, régularité des visites
-          </li>
-          <li>Prospection : actions pour développer le réseau</li>
-        </ul>
 
-        <div className="sub-section">
-          <div className="sub-section-title">
-            Objectifs & réalisés (conseiller)
+        <div className="rapport-section-table rapport-section-table--part">
+          <div className="rapport-table-header-top rapport-table-header-top--part">
+            <span className="col-libelle"></span>
+            <span></span>
+            <span className="note-group-header">Note</span>
           </div>
-          <div className="notes-table">
-            <div className="notes-header">
-              <span>Ligne</span>
-              <span>Objectif (nb)</span>
-              <span>Réalisé (nb)</span>
-              <span>Note CGP (1 à 10)</span>
-              <span>Manager</span>
+
+          <div className="rapport-table-header-sub rapport-table-header-sub--part">
+            <span className="col-libelle">Libellé</span>
+            <span>Réalisé (nb)</span>
+            <span>CGP</span>
+            <span>N+1</span>
+          </div>
+
+          {partenariatLabels.map((label, i) => (
+            <div
+              className="rapport-table-row rapport-table-row--part"
+              key={i}
+            >
+              <span className="col-libelle">{label}</span>
+
+              <input
+                className="rapport-input"
+                type="number"
+                value={form.partenariat.realises[i]}
+                onChange={(e) =>
+                  updateArrayField(
+                    'partenariat',
+                    'realises',
+                    i,
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                className="rapport-input rapport-input-note"
+                type="number"
+                min="1"
+                max="10"
+                value={form.partenariat.notesCgp[i]}
+                onChange={(e) =>
+                  updateArrayField(
+                    'partenariat',
+                    'notesCgp',
+                    i,
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                className="rapport-input rapport-input-note manager-cell"
+                type="number"
+                min="1"
+                max="10"
+                readOnly
+                placeholder="—"
+              />
             </div>
-            {[0, 1, 2].map((i) => (
-              <div className="notes-row" key={i}>
-                <span>{i + 1}</span>
-                <input
-                  type="number"
-                  value={form.partenariat.objectifs[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'partenariat',
-                      'objectifs',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input
-                  type="number"
-                  value={form.partenariat.realises[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'partenariat',
-                      'realises',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={form.partenariat.notesCgp[i]}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'partenariat',
-                      'notesCgp',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-                <input type="text" disabled placeholder="Manager" />
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
 
-        <label>Commentaires</label>
-        <textarea
-          value={form.partenariat.commentaires}
-          onChange={(e) =>
-            updateField('partenariat', 'commentaires', e.target.value)
-          }
-        />
+        <div className="rapport-comments-block">
+          <label>Commentaires</label>
+          <textarea
+            value={form.partenariat.commentaires}
+            onChange={(e) =>
+              updateField('partenariat', 'commentaires', e.target.value)
+            }
+          />
 
-        <label>Stratégie d’amélioration (manager)</label>
-        <textarea
-          value={form.partenariat.strategie}
-          readOnly
-          placeholder="Renseigné par le manager"
-        />
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.partenariat.strategie}
+            readOnly
+            placeholder="Renseigné par le manager"
+          />
+        </div>
       </div>
 
-      {/* 3. TECHNIQUE */}
+       {/* 3. TECHNIQUE */}
       <div className="section-card">
         <div className="section-title strong-title">Technique</div>
-        <ul className="section-list">
-          <li>Commerciale : techniques de vente et relation client</li>
-          <li>
-            Civile : compétences techniques sur les aspects civils / juridiques
-          </li>
-          <li>Société : montages et problématiques</li>
-          <li>Outils : Big, Hubspot, SIO2, Extranet, Power BI</li>
-          <li>Process interne : organisation Relation Middle</li>
-        </ul>
 
-        <div className="sub-section">
-          <div className="sub-section-title">Notes CGP (1 à 10)</div>
-          <div className="notes-grid">
-            {form.technique.notesCgp.map((val, i) => (
-              <div key={i} className="note-cell">
-                <span>{i + 1}</span>
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={val}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'technique',
-                      'notesCgp',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-            ))}
+        <div className="rapport-section-table rapport-section-table--simple">
+          <div className="rapport-table-header-top rapport-table-header-top--simple">
+            <span className="col-libelle"></span>
+            <span className="note-group-header">Note</span>
           </div>
+
+          <div className="rapport-table-header-sub rapport-table-header-sub--simple">
+            <span className="col-libelle">Libellé</span>
+            <span>CGP</span>
+            <span>N+1</span>
+          </div>
+
+          {techniqueLabels.map((label, i) => (
+            <div
+              className="rapport-table-row rapport-table-row--simple"
+              key={i}
+            >
+              <span className="col-libelle">{label}</span>
+
+              <input
+                className="rapport-input rapport-input-note"
+                type="number"
+                min="1"
+                max="10"
+                value={form.technique.notesCgp[i]}
+                onChange={(e) =>
+                  updateArrayField(
+                    'technique',
+                    'notesCgp',
+                    i,
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                className="rapport-input rapport-input-note manager-cell"
+                type="number"
+                min="1"
+                max="10"
+                readOnly
+                placeholder="—"
+              />
+            </div>
+          ))}
         </div>
 
-        <label>Commentaires</label>
-        <textarea
-          value={form.technique.commentaires}
-          onChange={(e) =>
-            updateField('technique', 'commentaires', e.target.value)
-          }
-        />
+        <div className="rapport-comments-block">
+          <label>Commentaires</label>
+          <textarea
+            value={form.technique.commentaires}
+            onChange={(e) =>
+              updateField('technique', 'commentaires', e.target.value)
+            }
+          />
 
-        <label>Stratégie d’amélioration (manager)</label>
-        <textarea
-          value={form.technique.strategie}
-          readOnly
-          placeholder="Renseigné par le manager"
-        />
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.technique.strategie}
+            readOnly
+            placeholder="Renseigné par le manager"
+          />
+        </div>
       </div>
 
-      {/* 4. BIEN-ÊTRE */}
+
+       {/* 4. BIEN-ÊTRE */}
       <div className="section-card">
         <div className="section-title strong-title">Bien-être</div>
-        <ul className="section-list">
-          <li>Équilibre psychologique / gestion du stress</li>
-          <li>Motivation</li>
-          <li>Niveau d’intégration dans l’équipe et l’entreprise</li>
-          <li>Satisfaction et épanouissement au travail</li>
-        </ul>
 
-        <div className="sub-section">
-          <div className="sub-section-title">Notes CGP (1 à 10)</div>
-          <div className="notes-grid">
-            {form.bienEtre.notesCgp.map((val, i) => (
-              <div key={i} className="note-cell">
-                <span>{i + 1}</span>
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={val}
-                  onChange={(e) =>
-                    updateArrayField(
-                      'bienEtre',
-                      'notesCgp',
-                      i,
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-            ))}
+        <div className="rapport-section-table rapport-section-table--simple">
+          <div className="rapport-table-header-top rapport-table-header-top--simple">
+            <span className="col-libelle"></span>
+            <span className="note-group-header">Note</span>
           </div>
+
+          <div className="rapport-table-header-sub rapport-table-header-sub--simple">
+            <span className="col-libelle">Libellé</span>
+            <span>CGP</span>
+            <span>N+1</span>
+          </div>
+
+          {bienEtreLabels.map((label, i) => (
+            <div
+              className="rapport-table-row rapport-table-row--simple"
+              key={i}
+            >
+              <span className="col-libelle">{label}</span>
+
+              <input
+                className="rapport-input rapport-input-note"
+                type="number"
+                min="1"
+                max="10"
+                value={form.bienEtre.notesCgp[i]}
+                onChange={(e) =>
+                  updateArrayField(
+                    'bienEtre',
+                    'notesCgp',
+                    i,
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                className="rapport-input rapport-input-note manager-cell"
+                type="number"
+                min="1"
+                max="10"
+                readOnly
+                placeholder="—"
+              />
+            </div>
+          ))}
         </div>
 
-        <label>Commentaires</label>
-        <textarea
-          value={form.bienEtre.commentaires}
-          onChange={(e) =>
-            updateField('bienEtre', 'commentaires', e.target.value)
-          }
-        />
+        <div className="rapport-comments-block">
+          <label>Commentaires</label>
+          <textarea
+            value={form.bienEtre.commentaires}
+            onChange={(e) =>
+              updateField('bienEtre', 'commentaires', e.target.value)
+            }
+          />
 
-        <label>Stratégie d’amélioration (manager)</label>
-        <textarea
-          value={form.bienEtre.strategie}
-          readOnly
-          placeholder="Renseigné par le manager"
-        />
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.bienEtre.strategie}
+            readOnly
+            placeholder="Renseigné par le manager"
+          />
+        </div>
       </div>
 
       {/* Bouton global */}

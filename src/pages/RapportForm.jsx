@@ -415,47 +415,47 @@ export default function RapportForm() {
             >
               <span className="col-libelle">{label}</span>
 
-              <input
-                className="rapport-input"
-                type="number"
-                value={form.partenariat.realises[i]}
-                onChange={(e) =>
-                  updateArrayField(
-                    'partenariat',
-                    'realises',
-                    i,
-                    e.target.value
-                  )
-                }
-              />
+        <input
+          className="rapport-input rapport-input-narrow"
+          type="number"
+          value={form.partenariat.realises[i]}
+          onChange={(e) =>
+            updateArrayField(
+              'partenariat',
+              'realises',
+              i,
+              e.target.value
+            )
+          }
+        />
 
-              <input
-                className="rapport-input rapport-input-note"
-                type="number"
-                min="1"
-                max="10"
-                value={form.partenariat.notesCgp[i]}
-                onChange={(e) =>
-                  updateArrayField(
-                    'partenariat',
-                    'notesCgp',
-                    i,
-                    e.target.value
-                  )
-                }
-              />
+        <input
+          className="rapport-input rapport-input-note rapport-input-narrow"
+          type="number"
+          min="1"
+          max="10"
+          value={form.partenariat.notesCgp[i]}
+          onChange={(e) =>
+            updateArrayField(
+              'partenariat',
+              'notesCgp',
+              i,
+              e.target.value
+            )
+          }
+        />
 
-              <input
-                className="rapport-input rapport-input-note manager-cell"
-                type="number"
-                min="1"
-                max="10"
-                readOnly
-                placeholder="—"
-              />
-            </div>
-          ))}
-        </div>
+        <input
+          className="rapport-input rapport-input-note rapport-input-narrow manager-cell"
+          type="number"
+          min="1"
+          max="10"
+          readOnly
+          placeholder="—"
+        />
+      </div>
+    ))}
+  </div>
 
         <div className="rapport-comments-block">
           <label>Commentaires</label>

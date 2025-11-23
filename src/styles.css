@@ -543,10 +543,10 @@ body {
   }
 
   .radar-card--technique {
-    margin-top: 360px;   /* même décalage pour Technique */
+    margin-top: 361px;   /* même décalage pour Technique */
   }
 
   .radar-card--bienetre {
-    margin-top: 430px;   /* et pour Bien-être */
+    margin-top: 433px;   /* et pour Bien-être */
   }
 }

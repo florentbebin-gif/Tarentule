@@ -482,3 +482,16 @@ body {
   fill: #374151;
   pointer-events: none;
 }
+
+.section-card--with-chart .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.btn-save {
+  padding: 6px 14px;
+  font-size: 13px;
+}

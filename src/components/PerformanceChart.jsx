@@ -12,6 +12,8 @@ export default function PerformanceChart({ objectif, realise }) {
 
   const fmt = (n) =>
     (Number.isNaN(n) ? 0 : n).toLocaleString('fr-FR') + ' €';
+  const percent =
+    objectif > 0 ? Math.round((realise / objectif) * 100) : 0;
 
   return (
     <svg width={width} height={height}>
@@ -44,7 +46,7 @@ export default function PerformanceChart({ objectif, realise }) {
         fill="#2B3E37"        // vert foncé du thème
       />
       <text x={60 + realiseWidth + 4} y="45" fontSize="10" fill="#4b5563">
-        {fmt(realise)}
+        {percent} %
       </text>
     </svg>
   );

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import './Login.css';
 import RadarChart from '../components/RadarChart';
+import PerformanceChart from '../components/PerformanceChart';
 
 export default function RapportForm({ onSaved }) {
   const [period, setPeriod] = useState('');
@@ -10,7 +11,7 @@ export default function RapportForm({ onSaved }) {
   const [error, setError] = useState('');
   const [loadingUser, setLoadingUser] = useState(true);
 
-  const [form, setForm] = useState({
+    const initialForm = {
     bienEtre: {
       notesCgp: ['', '', '', ''],
       commentaires: '',
@@ -37,7 +38,10 @@ export default function RapportForm({ onSaved }) {
       commentaires: '',
       strategie: '',
     },
-  });
+  };
+
+  const [form, setForm] = useState(initialForm);
+
 
   // Libellés des lignes
   const resultatsLabels = [
@@ -137,6 +141,41 @@ export default function RapportForm({ onSaved }) {
 
     checkUser();
   }, []);
+
+    useEffect(() => {
+    const loadLastReport = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('reports')
+        .select('data, period')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (!error && data) {
+        if (data.data) {
+          setForm((prev) => ({
+            ...prev,
+            ...data.data,
+          }));
+        }
+        if (data.period) {
+          setPeriod(data.period);
+        }
+      }
+    };
+
+    if (!loadingUser) {
+      loadLastReport();
+    }
+  }, [loadingUser]);
+
 
   const updateArrayField = (section, field, index, value) => {
     setForm((prev) => ({
@@ -680,9 +719,19 @@ export default function RapportForm({ onSaved }) {
           )}
         </div>
       </div>
-
-      {/* Colonne droite : radars */}
+      
+      {/* Colonne droite : graphiques */}
       <div className="rapport-charts">
+        
+          {/* Graph : Performance globale */}
+  <div className="section-card radar-card">
+    <div className="radar-title">Performance globale</div>
+    <PerformanceChart
+      objectif={totals.objectifs}
+      realise={totals.realises}
+    />
+  </div>
+        {/* Radars */}
         <div className="section-card radar-card">
           <div className="radar-title">Notes Résultats</div>
           <RadarChart

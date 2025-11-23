@@ -217,8 +217,8 @@ export default function RapportForm() {
             <span className="col-libelle">Libellé</span>
             <span>Objectif</span>
             <span>Réalisé</span>
-            <span>Potentiel 1 mois</span>
-            <span>Potentiel 6 mois</span>
+            <span className="col-potentiel-header">Potentiel 1 mois</span>
+            <span className="col-potentiel-header">Potentiel 6 mois</span>
             <span>CGP</span>
             <span>N+1</span>
           </div>
@@ -283,19 +283,19 @@ export default function RapportForm() {
                   />
                 )}
 
-                {/* POTENTIEL 1 MOIS */}
+                                {/* POTENTIEL 1 MOIS */}
                 {isCampaignRow ? (
                   <span></span>
                 ) : isTotalRow ? (
                   <input
-                    className="rapport-input total-cell"
+                    className="rapport-input rapport-input-potentiel total-cell"
                     type="text"
                     value={euroFromNumber(totals.potentiel3m)}
                     readOnly
                   />
                 ) : (
                   <input
-                    className="rapport-input"
+                    className="rapport-input rapport-input-potentiel"
                     type="text"
                     value={form.resultats.potentiel3m[i]}
                     onChange={(e) =>
@@ -315,14 +315,14 @@ export default function RapportForm() {
                   <span></span>
                 ) : isTotalRow ? (
                   <input
-                    className="rapport-input total-cell"
+                    className="rapport-input rapport-input-potentiel total-cell"
                     type="text"
                     value={euroFromNumber(totals.potentiel12m)}
                     readOnly
                   />
                 ) : (
                   <input
-                    className="rapport-input"
+                    className="rapport-input rapport-input-potentiel"
                     type="text"
                     value={form.resultats.potentiel12m[i]}
                     onChange={(e) =>
@@ -333,8 +333,10 @@ export default function RapportForm() {
                         e.target.value
                       )
                     }
+                    onBlur={() => formatEuroField('potentiel12m', i)}
                   />
                 )}
+
 
                 {/* NOTE CGP : saisissable partout */}
                 <input

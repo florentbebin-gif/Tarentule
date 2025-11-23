@@ -314,3 +314,12 @@ body {
   background-color: #f3f4f6;
   color: #6b7280;
 }
+/* Potentiels : plus petit et en italique */
+.col-potentiel-header {
+  font-style: italic;
+}
+
+.rapport-input-potentiel {
+  font-size: 12px;
+  font-style: italic;
+}

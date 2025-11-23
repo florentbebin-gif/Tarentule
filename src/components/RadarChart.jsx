@@ -4,9 +4,9 @@ import React from 'react';
 const MAX_NOTE = 10;
 
 export default function RadarChart({ labels, cgpValues = [], managerValues = [] }) {
-  const size = 150;
+  const size = 140;
   const center = size / 2;
-  const radius = size / 2 - 26;
+  const radius = size / 2 - 32;
   const angleStep = (Math.PI * 2) / labels.length;
 
   const toPoint = (value, index, rOverride) => {
@@ -98,7 +98,10 @@ export default function RadarChart({ labels, cgpValues = [], managerValues = [] 
 
       {/* Libellés autour */}
       {labels.map((label, i) => {
-        const [x, y] = toPoint(MAX_NOTE + 0.3, i);
+        const angle = -Math.PI / 2 + angleStep * i;
+        const labelRadius = radius + 12; // texte en dehors de la zone notée
+        const x = center + labelRadius * Math.cos(angle);
+        const y = center + labelRadius * Math.sin(angle);
         return (
           <text
             key={label}

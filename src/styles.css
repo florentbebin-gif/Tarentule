@@ -354,7 +354,7 @@ body {
 .rapport-table-header-sub--part,
 .rapport-table-row--part {
   display: grid;
-  grid-template-columns: minmax(0, 3.5fr) minmax(0, 0.8fr) 60px 60px;
+  grid-template-columns: minmax(0, 3.5fr) minmax(0, 0.9fr) minmax(0, 0.9fr) 60px 60px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
@@ -371,7 +371,7 @@ body {
   margin-bottom: 4px;
 }
 
-.rapport-table-header-sub--part span:nth-child(n + 3),
+.rapport-table-header-sub--part span:nth-child(n + 4),
 .rapport-table-header-top--part span {
   text-align: center;
 }
@@ -432,7 +432,7 @@ body {
 /* Centrage du titre "Note" au-dessus de CGP et N+1 */
 
 .rapport-table-header-top--part .note-group-header {
-  grid-column: 3 / span 2;   /* colonnes CGP + N+1 */
+  grid-column: 4 / span 2;   /* colonnes CGP + N+1 */
   text-align: center;
 }
 

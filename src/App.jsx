@@ -69,7 +69,8 @@ export default function App() {
   });
   const [lastSave, setLastSave] = useState(null);
   const navigate = useNavigate();
-
+  const [userRole, setUserRole] = useState('user');
+  
   // Récupère la session actuelle
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -121,6 +122,33 @@ export default function App() {
     loadUserInfo();
   }, [session]);
 
+    // Charge le rôle de l'utilisateur (admin / manager / user)
+  useEffect(() => {
+    const loadRole = async () => {
+      const { data } = await supabase.auth.getUser();
+      const user = data?.user;
+      if (!user) {
+        setUserRole('user');
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      const role = String(
+        profile?.role || user.user_metadata?.role || 'user'
+      ).toLowerCase();
+
+      setUserRole(role);
+    };
+
+    loadRole();
+  }, [session]);
+
+  
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
@@ -130,6 +158,9 @@ export default function App() {
   const path = window.location.pathname;
   const isSimRoute = path.startsWith('/sim');
   const isSettingsRoute = path.startsWith('/settings');
+  const isManagerLike = userRole === 'manager' || userRole === 'admin';
+  const isManagerDetailRoute = path.startsWith('/rapport/') && isManagerLike;
+
 
   const isPublicRoute =
     path === '/login' || path === '/signup' || path === '/forgot-password';
@@ -193,6 +224,16 @@ export default function App() {
                 </button>
               )}
 
+              {isManagerDetailRoute && (
+                <button
+                  className="chip icon-btn"
+                  onClick={() => navigate('/manager')}
+                  title="Retour synthèse manager"
+                >
+                  <IconHome className="icon" />
+                </button>
+              )}
+
               <button
                 className="chip icon-btn"
                 onClick={() => navigate('/settings')}
@@ -211,6 +252,7 @@ export default function App() {
             </>
           )}
         </div>
+
       </div>
 
       <Routes>
@@ -258,11 +300,21 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/manager" element={<ManagerReports />} />
 
-        {/* Rapport conseiller */}
-        <Route path="/rapport" element={<RapportForm onSaved={(date) => setLastSave(date)} />}/>
+        {/* Rapport conseiller (pour soi) */}
+        <Route
+          path="/rapport"
+          element={<RapportForm onSaved={(date) => setLastSave(date)} />}
+        />
+
+        {/* Rapport d'un conseiller ciblé (pour manager/admin) */}
+        <Route
+          path="/rapport/:userId"
+          element={<RapportForm onSaved={(date) => setLastSave(date)} />}
+        />
 
         {/* Paramètres */}
         <Route path="/settings" element={<Settings />} />
+
       </Routes>
     </>
   );

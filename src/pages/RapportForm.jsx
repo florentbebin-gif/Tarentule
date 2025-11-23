@@ -262,8 +262,8 @@ export default function RapportForm({ onSaved }) {
             </div>
 
             <div className="rapport-table-header-sub">
-              <span className="col-libelle">Libellé</span>
-              <span>Objectif</span>
+              <span className="col-libelle">Libellés</span>
+              <span>Objectifs</span>
               <span>Réalisé</span>
               <span className="col-potentiel-header">Signature 1 mois</span>
               <span className="col-potentiel-header">Potentiel</span>
@@ -443,7 +443,7 @@ export default function RapportForm({ onSaved }) {
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--part">
-              <span className="col-libelle">Libellé</span>
+              <span className="col-libelle">Libellés</span>
               <span>Réalisé (nb)</span>
               <span>CGP</span>
               <span>N+1</span>
@@ -528,7 +528,7 @@ export default function RapportForm({ onSaved }) {
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
-              <span className="col-libelle">Libellé</span>
+              <span className="col-libelle">Libellés</span>
               <span>CGP</span>
               <span>N+1</span>
             </div>
@@ -598,7 +598,7 @@ export default function RapportForm({ onSaved }) {
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
-              <span className="col-libelle">Libellé</span>
+              <span className="col-libelle">Libellés</span>
               <span>CGP</span>
               <span>N+1</span>
             </div>

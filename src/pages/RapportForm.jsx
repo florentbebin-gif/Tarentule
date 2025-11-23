@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import './Login.css';
 
-export default function RapportForm() {
+export default function RapportForm({ onSaved }) {
   const [period, setPeriod] = useState('');
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -188,6 +188,9 @@ export default function RapportForm() {
     }
 
     setSaved(true);
+    if (onSaved) {
+      onSaved(new Date());
+    }
   };
 
   if (loadingUser) {
@@ -622,7 +625,20 @@ export default function RapportForm() {
         <button className="btn" onClick={handleSubmit}>
           Enregistrer le rapport complet
         </button>
+
+        {saved && (
+          <div className="alert success" style={{ marginTop: '12px' }}>
+            Votre rapport est enregistré.
+          </div>
+        )}
+
+        {error && (
+          <div className="alert error" style={{ marginTop: '8px' }}>
+            {error}
+          </div>
+        )}
       </div>
+
     </div>
   );
 }

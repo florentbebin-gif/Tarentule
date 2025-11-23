@@ -300,7 +300,13 @@ export default function RapportForm({ onSaved }) {
               Enregistrer le rapport complet
             </button>
           </div>
-
+        {saved && (
+        <div className="save-message">Votre rapport est enregistré.</div>
+        )}
+        {error && (
+          <div className="save-message error">Erreur : {error}</div>
+        )}
+          
           <div className="rapport-section-table">
             <div className="rapport-table-header-top">
               <span className="col-libelle"></span>

@@ -9,6 +9,8 @@ import Settings from './pages/Settings';
 import Signup from './pages/Signup';
 import RapportForm from './pages/RapportForm';
 import './styles.css';
+import ManagerReports from './pages/ManagerReports';
+
 
 // Icônes SVG
 const IconHome = ({ className }) => (
@@ -216,12 +218,45 @@ export default function App() {
         <Route path="/" element={<Navigate to="/rapport" replace />} />
 
         {/* Auth */}
-        <Route
-          path="/login"
-          element={<Login onLogin={() => navigate('/rapport')} />}
-        />
+        
+<Route
+  path="/login"
+  element={
+    <Login
+      onLogin={async () => {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          navigate('/login');
+          return;
+        }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        const role = String(
+          profile?.role || user.user_metadata?.role || 'user'
+        ).toLowerCase();
+
+        if (role === 'admin' || role === 'manager') {
+          navigate('/manager');
+        } else {
+          navigate('/rapport');
+        }
+      }}
+    />
+  }
+/>
+
+        
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/manager" element={<ManagerReports />} />
 
         {/* Rapport conseiller */}
         <Route path="/rapport" element={<RapportForm onSaved={(date) => setLastSave(date)} />}/>

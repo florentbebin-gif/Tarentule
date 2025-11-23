@@ -258,7 +258,7 @@ export default function RapportForm({ onSaved }) {
               <span></span>
               <span></span>
               <span></span>
-              <span className="note-group-header">Note</span>
+              <span className="note-group-header">Notes</span>
             </div>
 
             <div className="rapport-table-header-sub">
@@ -439,7 +439,7 @@ export default function RapportForm({ onSaved }) {
             <div className="rapport-table-header-top rapport-table-header-top--part">
               <span className="col-libelle"></span>
               <span></span>
-              <span className="note-group-header">Note</span>
+              <span className="note-group-header">Notes</span>
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--part">
@@ -524,7 +524,7 @@ export default function RapportForm({ onSaved }) {
           <div className="rapport-section-table rapport-section-table--simple">
             <div className="rapport-table-header-top rapport-table-header-top--simple">
               <span className="col-libelle"></span>
-              <span className="note-group-header">Note</span>
+              <span className="note-group-header">Notes</span>
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
@@ -594,7 +594,7 @@ export default function RapportForm({ onSaved }) {
           <div className="rapport-section-table rapport-section-table--simple">
             <div className="rapport-table-header-top rapport-table-header-top--simple">
               <span className="col-libelle"></span>
-              <span className="note-group-header">Note</span>
+              <span className="note-group-header">Notes</span>
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">

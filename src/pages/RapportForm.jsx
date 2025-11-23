@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import './Login.css';
+import RadarChart from '../components/RadarChart';
 
 export default function RapportForm({ onSaved }) {
   const [period, setPeriod] = useState('');
@@ -91,6 +92,63 @@ export default function RapportForm({ onSaved }) {
       const current = prev.resultats[field][index];
       const number = parseEuro(current);
       const formatted = euroFromNumber(number);
+
+        // Données pour les radars
+
+  // Résultats : on ignore la ligne 1 (total) et on renomme les libellés
+  const resultatsRadarLabels = [
+    'Financier',
+    'PE',
+    'Immobilier',
+    'Honoraire',
+    'Arbitrages',
+    'PER',
+    'Divers',
+  ];
+  const resultatsCgpRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
+    Number(form.resultats?.notesCgp?.[i] || 0)
+  );
+  const resultatsManagerRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
+    Number((form.resultats?.notesManager || [])[i] || 0)
+  );
+
+  // Partenariat
+  const partenariatRadarLabels = ['Clubs Experts', 'Animation', 'Prospection'];
+  const partenariatCgpRadar = [0, 1, 2].map((i) =>
+    Number(form.partenariat?.notesCgp?.[i] || 0)
+  );
+  const partenariatManagerRadar = [0, 1, 2].map((i) =>
+    Number((form.partenariat?.notesManager || [])[i] || 0)
+  );
+
+  // Technique
+  const techniqueRadarLabels = [
+    'Commercial',
+    'Civil',
+    'Société',
+    'Outils',
+    'Process',
+  ];
+  const techniqueCgpRadar = [0, 1, 2, 3, 4].map((i) =>
+    Number(form.technique?.notesCgp?.[i] || 0)
+  );
+  const techniqueManagerRadar = [0, 1, 2, 3, 4].map((i) =>
+    Number((form.technique?.notesManager || [])[i] || 0)
+  );
+
+  // Bien-être
+  const bienEtreRadarLabels = [
+    'Stress',
+    'Motivation',
+    'Intégration',
+    'Satisfaction',
+  ];
+  const bienEtreCgpRadar = [0, 1, 2, 3].map((i) =>
+    Number(form.bienEtre?.notesCgp?.[i] || 0)
+  );
+  const bienEtreManagerRadar = [0, 1, 2, 3].map((i) =>
+    Number((form.bienEtre?.notesManager || [])[i] || 0)
+  );
 
       return {
         ...prev,
@@ -198,7 +256,8 @@ export default function RapportForm({ onSaved }) {
   }
 
   return (
-    <div className="credit-panel">
+    <div className="credit-panel rapport-layout">
+      <div className="rapport-main">
       
       {/* 1. RÉSULTATS */}
       <div className="section-card">
@@ -620,24 +679,63 @@ export default function RapportForm({ onSaved }) {
         </div>
       </div>
 
-      {/* Bouton global */}
-      <div className="section-card">
-        <button className="btn" onClick={handleSubmit}>
-          Enregistrer le rapport complet
-        </button>
+  // Données pour les radars
 
-        {saved && (
-          <div className="alert success" style={{ marginTop: '12px' }}>
-            Votre rapport est enregistré.
-          </div>
-        )}
+  // Résultats : on ignore la ligne 1 (total) et on renomme les libellés
+  const resultatsRadarLabels = [
+    'Financier',
+    'PE',
+    'Immobilier',
+    'Honoraire',
+    'Arbitrages',
+    'PER',
+    'Divers',
+  ];
+  const resultatsCgpRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
+    Number(form.resultats?.notesCgp?.[i] || 0)
+  );
+  const resultatsManagerRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
+    Number((form.resultats?.notesManager || [])[i] || 0)
+  );
 
-        {error && (
-          <div className="alert error" style={{ marginTop: '8px' }}>
-            {error}
-          </div>
-        )}
-      </div>
+  // Partenariat
+  const partenariatRadarLabels = ['Clubs Experts', 'Animation', 'Prospection'];
+  const partenariatCgpRadar = [0, 1, 2].map((i) =>
+    Number(form.partenariat?.notesCgp?.[i] || 0)
+  );
+  const partenariatManagerRadar = [0, 1, 2].map((i) =>
+    Number((form.partenariat?.notesManager || [])[i] || 0)
+  );
+
+  // Technique
+  const techniqueRadarLabels = [
+    'Commercial',
+    'Civil',
+    'Société',
+    'Outils',
+    'Process',
+  ];
+  const techniqueCgpRadar = [0, 1, 2, 3, 4].map((i) =>
+    Number(form.technique?.notesCgp?.[i] || 0)
+  );
+  const techniqueManagerRadar = [0, 1, 2, 3, 4].map((i) =>
+    Number((form.technique?.notesManager || [])[i] || 0)
+  );
+
+  // Bien-être
+  const bienEtreRadarLabels = [
+    'Stress',
+    'Motivation',
+    'Intégration',
+    'Satisfaction',
+  ];
+  const bienEtreCgpRadar = [0, 1, 2, 3].map((i) =>
+    Number(form.bienEtre?.notesCgp?.[i] || 0)
+  );
+  const bienEtreManagerRadar = [0, 1, 2, 3].map((i) =>
+    Number((form.bienEtre?.notesManager || [])[i] || 0)
+  );
+
 
     </div>
   );

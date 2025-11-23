@@ -567,3 +567,29 @@ body {
   border: 1px solid #e6aaaa;
   color: #7a1c1c;
 }
+.settings-grid {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.settings-value {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}

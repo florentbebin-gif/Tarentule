@@ -217,13 +217,24 @@ body {
   background-color: #fbfbfb;
 }
 
-.rapport-section-title-row {
-  font-weight: 600;
-  margin-bottom: 12px;
+/* 1ère ligne d'en-tête : "Note" au-dessus des 2 colonnes de note */
+.rapport-table-header-top {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px 70px;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 14px;
+  margin-bottom: 4px;
 }
 
-/* 1ère colonne = libellé (large) + 4 colonnes + note CGP + note manager */
-.rapport-table-header,
+.note-group-header {
+  grid-column: 6 / span 2;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* 2ème ligne d'en-tête + lignes de données */
+.rapport-table-header-sub,
 .rapport-table-row {
   display: grid;
   grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px 70px;
@@ -232,7 +243,7 @@ body {
   font-size: 14px;
 }
 
-.rapport-table-header {
+.rapport-table-header-sub {
   font-weight: 600;
   padding-bottom: 4px;
   border-bottom: 1px solid #e5e7eb;
@@ -262,7 +273,7 @@ body {
   border-color: #111827;
 }
 
-/* Colonnes de note étroites */
+/* Colonnes de note étroites (CGP et N+1) */
 .rapport-input-note {
   width: 100%;
 }
@@ -285,3 +296,10 @@ body {
   min-height: 80px;
   resize: vertical;
 }
+
+/* Stratégie manager : fond gris */
+.rapport-strategie-manager {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+

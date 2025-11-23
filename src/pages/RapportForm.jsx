@@ -204,7 +204,7 @@ export default function RapportForm({ onSaved }) {
     'Financier',
     'PE',
     'Immobilier',
-    'Honoraire',
+    'Honoraires',
     'Arbitrages',
     'PER',
     'Divers',

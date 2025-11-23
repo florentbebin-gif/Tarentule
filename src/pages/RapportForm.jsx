@@ -4,12 +4,16 @@ import { supabase } from '../supabaseClient';
 import './Login.css';
 import RadarChart from '../components/RadarChart';
 import PerformanceChart from '../components/PerformanceChart';
+import { useParams } from 'react-router-dom';
 
 export default function RapportForm({ onSaved }) {
   const [period, setPeriod] = useState('');
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [loadingUser, setLoadingUser] = useState(true);
+  const { userId: routeUserId } = useParams(); // id du conseiller si /rapport/:userId
+  const [currentUserRole, setCurrentUserRole] = useState('user');
+  const [viewedUserId, setViewedUserId] = useState(null); // id du rapport affiché
 
   const initialForm = {
     bienEtre: {
@@ -126,20 +130,42 @@ export default function RapportForm({ onSaved }) {
 
   // Vérifie que l'utilisateur est connecté
   useEffect(() => {
-    const checkUser = async () => {
+    const initUser = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) {
         window.location.href = '/login';
-      } else {
-        setLoadingUser(false);
+        return;
       }
+
+      // on récupère le rôle dans profiles
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      const role = String(
+        profile?.role || user.user_metadata?.role || 'user'
+      ).toLowerCase();
+
+      setCurrentUserRole(role);
+
+      // si manager / admin ET un userId est présent dans l'URL → on affiche ce user
+      if ((role === 'manager' || role === 'admin') && routeUserId) {
+        setViewedUserId(routeUserId);
+      } else {
+        setViewedUserId(user.id);
+      }
+
+      setLoadingUser(false);
     };
 
-    checkUser();
-  }, []);
+    initUser();
+  }, [routeUserId]);
+
 
   // Charge le dernier rapport sauvegardé
   useEffect(() => {

@@ -680,7 +680,7 @@ export default function RapportForm({ onSaved }) {
       {/* Colonne droite : radars */}
       <div className="rapport-charts">
         <div className="section-card radar-card">
-          <div className="radar-title">Résultats</div>
+          <div className="radar-title">Notes Résultats</div>
           <RadarChart
             labels={resultatsRadarLabels}
             cgpValues={resultatsCgpRadar}
@@ -689,7 +689,7 @@ export default function RapportForm({ onSaved }) {
         </div>
 
         <div className="section-card radar-card">
-          <div className="radar-title">Partenariat</div>
+          <div className="radar-title">Notes Partenariat</div>
           <RadarChart
             labels={partenariatRadarLabels}
             cgpValues={partenariatCgpRadar}
@@ -698,7 +698,7 @@ export default function RapportForm({ onSaved }) {
         </div>
 
         <div className="section-card radar-card">
-          <div className="radar-title">Technique</div>
+          <div className="radar-title">Notes Technique</div>
           <RadarChart
             labels={techniqueRadarLabels}
             cgpValues={techniqueCgpRadar}
@@ -707,7 +707,7 @@ export default function RapportForm({ onSaved }) {
         </div>
 
         <div className="section-card radar-card">
-          <div className="radar-title">Bien-être</div>
+          <div className="radar-title">Notes Bien-être</div>
           <RadarChart
             labels={bienEtreRadarLabels}
             cgpValues={bienEtreCgpRadar}

@@ -4,7 +4,7 @@ import React from 'react';
 const MAX_NOTE = 10;
 
 export default function RadarChart({ labels, cgpValues = [], managerValues = [] }) {
-  const size = 200;
+  const size = 150;
   const center = size / 2;
   const radius = size / 2 - 20;
   const angleStep = (Math.PI * 2) / labels.length;

@@ -6,7 +6,7 @@ const MAX_NOTE = 10;
 export default function RadarChart({ labels, cgpValues = [], managerValues = [] }) {
   const size = 150;
   const center = size / 2;
-  const radius = size / 2 - 20;
+  const radius = size / 2 - 26;
   const angleStep = (Math.PI * 2) / labels.length;
 
   const toPoint = (value, index, rOverride) => {
@@ -98,7 +98,7 @@ export default function RadarChart({ labels, cgpValues = [], managerValues = [] 
 
       {/* Libellés autour */}
       {labels.map((label, i) => {
-        const [x, y] = toPoint(MAX_NOTE + 1.3, i);
+        const [x, y] = toPoint(MAX_NOTE + 0.3, i);
         return (
           <text
             key={label}

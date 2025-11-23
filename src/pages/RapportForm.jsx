@@ -302,7 +302,17 @@ export default function RapportForm({ onSaved }) {
       Enregistrer le rapport complet
     </button>
   </div>
+            {saved && (
+            <div className="alert success" style={{ marginTop: '12px' }}>
+              Votre rapport est enregistré.
+            </div>
+          )}
 
+          {error && (
+            <div className="alert error" style={{ marginTop: '8px' }}>
+              {error}
+            </div>
+          )}
           <div className="rapport-section-table">
             <div className="rapport-table-header-top">
               <span className="col-libelle"></span>
@@ -460,17 +470,6 @@ export default function RapportForm({ onSaved }) {
             })}
           </div>
 
-            {saved && (
-            <div className="alert success" style={{ marginTop: '12px' }}>
-              Votre rapport est enregistré.
-            </div>
-          )}
-
-          {error && (
-            <div className="alert error" style={{ marginTop: '8px' }}>
-              {error}
-            </div>
-          )}
 
           <div className="rapport-comments-block">
             <label>Commentaires</label>

@@ -725,16 +725,19 @@ export default function RapportForm({ onSaved }) {
       {/* Colonne droite : graphiques */}
       <div className="rapport-charts">
         
-          {/* Graph : Performance globale */}
-  <div className="section-card radar-card">
-    <div className="radar-title">Performance globale</div>
-    <PerformanceChart
-      objectif={totals.objectifs}
-      realise={totals.realises}
-    />
-  </div>
-        {/* Radars */}
-        <div className="section-card radar-card">
+      {/* Colonne droite : graphiques */}
+      <div className="rapport-charts">
+        {/* Graph : Performance globale */}
+        <div className="section-card radar-card radar-card--perf">
+          <div className="radar-title">Performance globale</div>
+          <PerformanceChart
+            objectif={totals.objectifs}
+            realise={totals.realises}
+          />
+        </div>
+        
+        {/* Notes Résultats */}
+        <div className="section-card radar-card radar-card--resultats">
           <div className="radar-title">Notes Résultats</div>
           <RadarChart
             labels={resultatsRadarLabels}
@@ -743,7 +746,8 @@ export default function RapportForm({ onSaved }) {
           />
         </div>
 
-        <div className="section-card radar-card">
+        {/* Notes Partenariats */}
+        <div className="section-card radar-card radar-card--partenariat">
           <div className="radar-title">Notes Partenariats</div>
           <RadarChart
             labels={partenariatRadarLabels}
@@ -752,7 +756,8 @@ export default function RapportForm({ onSaved }) {
           />
         </div>
 
-        <div className="section-card radar-card">
+        {/* Notes Techniques */}
+        <div className="section-card radar-card radar-card--technique">
           <div className="radar-title">Notes Techniques</div>
           <RadarChart
             labels={techniqueRadarLabels}
@@ -761,7 +766,8 @@ export default function RapportForm({ onSaved }) {
           />
         </div>
 
-        <div className="section-card radar-card">
+        {/* Notes Bien-être */}
+        <div className="section-card radar-card radar-card--bienetre">
           <div className="radar-title">Notes Bien-être</div>
           <RadarChart
             labels={bienEtreRadarLabels}

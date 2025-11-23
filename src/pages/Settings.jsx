@@ -83,8 +83,8 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="tiles-wrap">
-        <div className="section-card">
+      <div className="settings-page">
+        <div className="settings-card">
           <div className="section-title strong-title">Paramètres</div>
           <p>Chargement…</p>
         </div>

@@ -113,7 +113,7 @@ export default function RapportForm() {
   }
 
   return (
-    <div className="rapport-wrap">
+    <div className="credit-panel">
       {/* En-tête rapport */}
       <div className="section-card">
         <div className="section-title strong-title">

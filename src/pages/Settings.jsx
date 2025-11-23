@@ -92,27 +92,28 @@ export default function Settings() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="tiles-wrap">
-        <div className="section-card">
-          <div className="section-title strong-title">Paramètres</div>
-          <p style={{ color: '#b91c1c' }}>{error}</p>
-        </div>
+if (error) {
+  return (
+    <div className="settings-page">
+      <div className="settings-card">
+        <div className="section-title strong-title">Paramètres</div>
+        <p style={{ color: '#b91c1c' }}>{error}</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  if (!user) {
-    return (
-      <div className="tiles-wrap">
-        <div className="section-card">
-          <div className="section-title strong-title">Paramètres</div>
-          <p>Aucun utilisateur connecté.</p>
-        </div>
+if (!user) {
+  return (
+    <div className="settings-page">
+      <div className="settings-card">
+        <div className="section-title strong-title">Paramètres</div>
+        <p>Aucun utilisateur connecté.</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   const nom = profile?.last_name || user.user_metadata?.last_name || '—';
   const prenom = profile?.first_name || user.user_metadata?.first_name || '—';
@@ -120,47 +121,52 @@ export default function Settings() {
   const email = user.email || '—';
   const statut = computeRoleLabel();
 
-  return (
-    <div className="tiles-wrap">
-      <div className="section-card">
-        <div className="section-title strong-title">Paramètres</div>
+ return (
+  <div className="settings-page">
+    <div className="settings-card">
+      <div className="section-title strong-title">Paramètres</div>
 
-        <p style={{ marginTop: 4, marginBottom: 16, color: '#555' }}>
-          Informations de votre compte Tarentule.
-        </p>
+      <p style={{ marginTop: 4, marginBottom: 16, color: '#555' }}>
+        Informations de votre compte Tarentule.
+      </p>
 
-        <div className="settings-grid">
-          <div className="settings-field">
-            <div className="settings-label">Nom</div>
-            <div className="settings-value">{nom}</div>
-          </div>
-
-          <div className="settings-field">
-            <div className="settings-label">Prénom</div>
-            <div className="settings-value">{prenom}</div>
-          </div>
-
-          <div className="settings-field">
-            <div className="settings-label">Email</div>
-            <div className="settings-value">{email}</div>
-          </div>
-
-          <div className="settings-field">
-            <div className="settings-label">Agence</div>
-            <div className="settings-value">{agence}</div>
-          </div>
-
-          <div className="settings-field">
-            <div className="settings-label">Statut</div>
-            <div className="settings-value">{statut}</div>
-          </div>
+      <div className="settings-grid">
+        {/* Nom */}
+        <div className="settings-field">
+          <div className="settings-label">Nom</div>
+          <div className="settings-value">{nom}</div>
         </div>
 
-        <p style={{ marginTop: 20, fontSize: 13, color: '#777' }}>
-          Pour modifier ces informations (changement d’agence, de statut, etc.),
-          merci de contacter un Administrateur.
-        </p>
+        {/* Prénom */}
+        <div className="settings-field">
+          <div className="settings-label">Prénom</div>
+          <div className="settings-value">{prenom}</div>
+        </div>
+
+        {/* Email */}
+        <div className="settings-field">
+          <div className="settings-label">Email</div>
+          <div className="settings-value">{email}</div>
+        </div>
+
+        {/* Agence */}
+        <div className="settings-field">
+          <div className="settings-label">Agence</div>
+          <div className="settings-value">{agence}</div>
+        </div>
+
+        {/* Statut */}
+        <div className="settings-field">
+          <div className="settings-label">Statut</div>
+          <div className="settings-value">{statut}</div>
+        </div>
       </div>
+
+      <p style={{ marginTop: 20, fontSize: 13, color: '#777' }}>
+        Pour modifier ces informations (changement d’agence, de statut, etc.),
+        merci de contacter un Administrateur.
+      </p>
     </div>
-  );
+  </div>
+);
 }

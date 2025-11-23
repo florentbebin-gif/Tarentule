@@ -320,7 +320,7 @@ export default function RapportForm({ onSaved }) {
             <div className="rapport-table-header-sub">
               <span className="col-libelle">Libellés</span>
               <span>Objectifs</span>
-              <span>Réalisé</span>
+              <span>Réalisés</span>
               <span className="col-potentiel-header">Signature 1 mois</span>
               <span className="col-potentiel-header">Potentiel</span>
               <span>CGP</span>
@@ -522,7 +522,7 @@ export default function RapportForm({ onSaved }) {
             <div className="rapport-table-header-sub rapport-table-header-sub--part">
               <span className="col-libelle">Libellés</span>
               <span>Objectifs (nb)</span>
-              <span>Réalisé (nb)</span>
+              <span>Réalisés (nb)</span>
               <span>CGP</span>
               <span>N+1</span>
             </div>

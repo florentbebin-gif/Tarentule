@@ -217,14 +217,14 @@ body {
   background-color: #fbfbfb;
 }
 
-/* 1ère ligne d'en-tête : "Note" au-dessus des 2 colonnes de note */
+/* 1ère ligne d'en-tête : "Note" (au-dessus de CGP + N+1) */
 .rapport-table-header-top {
   display: grid;
   grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px 70px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .note-group-header {
@@ -248,6 +248,12 @@ body {
   padding-bottom: 4px;
   border-bottom: 1px solid #e5e7eb;
   margin-bottom: 4px;
+}
+
+/* Titres centrés, sauf "Libellé" */
+.rapport-table-header-sub span:not(.col-libelle),
+.rapport-table-header-top span {
+  text-align: center;
 }
 
 .rapport-table-row + .rapport-table-row {
@@ -278,9 +284,15 @@ body {
   width: 100%;
 }
 
+/* Cellules manager (objectif + N+1 + stratégie) grisées */
 .manager-cell {
   background-color: #f3f4f6;
   color: #6b7280;
+}
+
+/* Ligne de total (ligne 1) en gras */
+.total-cell {
+  font-weight: 600;
 }
 
 /* Commentaires + stratégie sur toute la largeur, l'un sous l'autre */
@@ -302,4 +314,3 @@ body {
   background-color: #f3f4f6;
   color: #6b7280;
 }
-

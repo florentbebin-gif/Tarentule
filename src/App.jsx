@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
@@ -6,68 +7,15 @@ import ForgotPassword from './pages/ForgotPassword';
 import Settings from './pages/Settings';
 import Signup from './pages/Signup';
 import RapportForm from './pages/RapportForm';
-
-  const [userInfo, setUserInfo] = useState({
-    firstName: '',
-    lastName: '',
-    bureau: '',
-  });
-  const [lastSave, setLastSave] = useState(null);
+import './styles.css';
 
 // -----------------------
-// Icônes SVG "maison"
+// Icônes SVG
 // -----------------------
 const IconHome = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
     <path
       d="M4 11.5 12 4l8 7.5v7.5a1 1 0 0 1-1 1h-4.5a1 1 0 0 1-1-1v-4h-3v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const IconSave = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-    <path
-      d="M5 4h10l4 4v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M9 4v4h6V4M9 20v-5h6v5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const IconFolder = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-    <path
-      d="M3.5 6.5a1.5 1.5 0 0 1 1.5-1.5h4.2l1.6 2h8.7a1.5 1.5 0 0 1 1.5 1.5v8.5a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5z"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const IconTrash = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-    <path
-      d="M4 7h16M10 11v6M14 11v6M9 7V4h6v3M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.7"
@@ -113,14 +61,27 @@ const IconSettings = ({ className }) => (
 
 export default function App() {
   const [session, setSession] = useState(null);
+  const [userInfo, setUserInfo] = useState({
+    firstName: '',
+    lastName: '',
+    bureau: '',
+  });
+  const [lastSave, setLastSave] = useState(null);
   const navigate = useNavigate();
 
+  // Récupérer la session courante
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    supabase.auth.onAuthStateChange((_event, s) => setSession(s));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) =>
+      setSession(s)
+    );
+    return () => {
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
-    useEffect(() => {
+  // Charger les infos user + dernière sauvegarde
+  useEffect(() => {
     const loadUserInfo = async () => {
       const {
         data: { user },
@@ -161,71 +122,68 @@ export default function App() {
     navigate('/login');
   };
 
-const isRecoveryMode = window.location.hash.includes('type=recovery');
-const path = window.location.pathname;
-const isSimRoute = path.startsWith('/sim');
-const isSettingsRoute = path.startsWith('/settings');
+  // Infos de route
+  const isRecoveryMode = window.location.hash.includes('type=recovery');
+  const path = window.location.pathname;
+  const isSimRoute = path.startsWith('/sim');
+  const isSettingsRoute = path.startsWith('/settings');
 
-// Routes accessibles sans être connecté
-const isPublicRoute =
-  path === '/login' ||
-  path === '/signup' ||
-  path === '/forgot-password';
+  // Routes publiques (sans login)
+  const isPublicRoute =
+    path === '/login' || path === '/signup' || path === '/forgot-password';
 
-// Redirection si pas connecté
-useEffect(() => {
-  if (!session && !isRecoveryMode && !isPublicRoute) {
-    navigate('/login');
-  }
-}, [session, isRecoveryMode, isPublicRoute, navigate]);
+  // Redirection si pas connecté
+  useEffect(() => {
+    if (!session && !isRecoveryMode && !isPublicRoute) {
+      navigate('/login');
+    }
+  }, [session, isRecoveryMode, isPublicRoute, navigate]);
 
   return (
     <>
       <div className="topbar">
         <div className="brandbar">TARENTULE</div>
 
-      <div className="topbar-center">
-        <div className="topbar-line">
-          <span className="topbar-label">Nom :</span>{' '}
-          {userInfo.lastName || '—'}
+        <div className="topbar-center">
+          <div className="topbar-line">
+            <span className="topbar-label">Nom :</span>{' '}
+            {userInfo.lastName || '—'}
+          </div>
+          <div className="topbar-line">
+            <span className="topbar-label">Prénom :</span>{' '}
+            {userInfo.firstName || '—'}
+          </div>
+          <div className="topbar-line">
+            <span className="topbar-label">Bureau :</span>{' '}
+            {userInfo.bureau || '—'}
+          </div>
+          <div className="topbar-line">
+            <span className="topbar-label">Dernière sauvegarde :</span>{' '}
+            {lastSave
+              ? lastSave.toLocaleString('fr-FR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : '—'}
+          </div>
         </div>
-        <div className="topbar-line">
-          <span className="topbar-label">Prénom :</span>{' '}
-          {userInfo.firstName || '—'}
-        </div>
-        <div className="topbar-line">
-          <span className="topbar-label">Bureau :</span>{' '}
-          {userInfo.bureau || '—'}
-        </div>
-        <div className="topbar-line">
-          <span className="topbar-label">Dernière sauvegarde :</span>{' '}
-          {lastSave
-            ? lastSave.toLocaleString('fr-FR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })
-            : '—'}
-        </div>
-      </div>
 
         <div className="top-actions">
           {session && !isRecoveryMode && (
             <>
-              {/* HOME */}
               {(isSimRoute || isSettingsRoute) && (
                 <button
                   className="chip icon-btn"
                   onClick={() => navigate('/')}
-                  title="Retour à l'accueil"
+                  title="Retour au rapport"
                 >
                   <IconHome className="icon" />
                 </button>
               )}
 
-              {/* PARAMÈTRES — juste avant Déconnexion */}
               <button
                 className="chip icon-btn"
                 onClick={() => navigate('/settings')}
@@ -234,7 +192,6 @@ useEffect(() => {
                 <IconSettings className="icon" />
               </button>
 
-              {/* DÉCONNEXION */}
               <button
                 className="chip icon-btn"
                 onClick={handleLogout}
@@ -248,7 +205,7 @@ useEffect(() => {
       </div>
 
       <Routes>
-        {/* Page racine : on redirige vers /rapport */}
+        {/* Racine → rapport */}
         <Route path="/" element={<Navigate to="/rapport" replace />} />
 
         {/* Auth */}
@@ -262,11 +219,9 @@ useEffect(() => {
         {/* Rapport conseiller */}
         <Route path="/rapport" element={<RapportForm />} />
 
-        {/* Paramètres + sous-pages */}
+        {/* Paramètres */}
         <Route path="/settings" element={<Settings />} />
-
       </Routes>
-
     </>
   );
 }

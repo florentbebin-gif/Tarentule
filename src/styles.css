@@ -222,10 +222,11 @@ body {
   margin-bottom: 12px;
 }
 
+/* 1ère colonne = libellé (large) + 4 colonnes + note + manager */
 .rapport-table-header,
 .rapport-table-row {
   display: grid;
-  grid-template-columns: 60px repeat(5, minmax(0, 1fr)) 120px;
+  grid-template-columns: minmax(0, 2.8fr) repeat(4, minmax(0, 1fr)) 90px 110px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
@@ -242,10 +243,11 @@ body {
   margin-top: 4px;
 }
 
-.col-ligne {
-  text-align: center;
+.col-libelle {
+  font-size: 13px;
 }
 
+/* Inputs */
 .rapport-input {
   width: 100%;
   box-sizing: border-box;
@@ -269,14 +271,16 @@ body {
   color: #6b7280;
 }
 
+/* Commentaires + stratégie sur toute la largeur, l'un sous l'autre */
 .rapport-comments-block {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
   margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.rapport-comments-column textarea {
+.rapport-comments-block textarea {
+  width: 100%;
   min-height: 80px;
   resize: vertical;
 }

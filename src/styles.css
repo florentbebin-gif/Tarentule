@@ -23,7 +23,19 @@ body {
   justify-content: space-between;
   align-items: center;
 }
+.topbar-center {
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.3;
+}
 
+.topbar-line {
+  white-space: nowrap;
+}
+
+.topbar-label {
+  font-weight: 600;
+}
 .brandbar {
   font-weight: 700;
   font-size: 18px;

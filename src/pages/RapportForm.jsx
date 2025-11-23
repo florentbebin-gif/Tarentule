@@ -45,8 +45,33 @@ export default function RapportForm() {
     '5 - Honoraires : production / chiffre d’affaires généré',
     '6 - Arbitrages : gestion pilotée, structurés, Pams',
     '7 - PER : dispositifs d’épargne retraite',
-    '8 - Campagnes diverses : participation et efficacité dans les campagnes',
+    '8 - Campagnes diverses : participation et efficacité',
   ];
+  // Formattage des montants en "1 000 €"
+  const formatEuro = (raw) => {
+    if (!raw) return '';
+    const cleaned = raw.toString().replace(/[^\d]/g, '');
+    if (!cleaned) return '';
+    const number = Number(cleaned);
+    if (Number.isNaN(number)) return '';
+    return number.toLocaleString('fr-FR') + ' €';
+  };
+
+  const formatEuroField = (field, index) => {
+    setForm((prev) => {
+      const current = prev.resultats[field][index] || '';
+      const formatted = formatEuro(current);
+      return {
+        ...prev,
+        resultats: {
+          ...prev.resultats,
+          [field]: prev.resultats[field].map((v, i) =>
+            i === index ? formatted : v
+          ),
+        },
+      };
+    });
+  };
 
   // Vérifie que l'utilisateur est connecté
   useEffect(() => {
@@ -146,7 +171,7 @@ export default function RapportForm() {
         />
       </div>
 
-            {/* 1. RÉSULTATS */}
+                 {/* 1. RÉSULTATS */}
       <div className="section-card">
         <div className="section-title strong-title">Résultats</div>
 
@@ -162,8 +187,8 @@ export default function RapportForm() {
             <span>Réalisé</span>
             <span>Potentiel 3 mois</span>
             <span>Potentiel 12 mois</span>
-            <span>Note CGP</span>
-            <span>Manager</span>
+            <span>Note</span>
+            <span>Note</span>
           </div>
 
           {/* 8 lignes correspondantes aux 8 items */}
@@ -171,6 +196,7 @@ export default function RapportForm() {
             <div className="rapport-table-row" key={i}>
               <span className="col-libelle">{resultatsLabels[i]}</span>
 
+              {/* Objectif : montant € */}
               <input
                 className="rapport-input"
                 type="text"
@@ -178,7 +204,10 @@ export default function RapportForm() {
                 onChange={(e) =>
                   updateArrayField('resultats', 'objectifs', i, e.target.value)
                 }
+                onBlur={() => formatEuroField('objectifs', i)}
               />
+
+              {/* Réalisé : montant € */}
               <input
                 className="rapport-input"
                 type="text"
@@ -186,15 +215,26 @@ export default function RapportForm() {
                 onChange={(e) =>
                   updateArrayField('resultats', 'realises', i, e.target.value)
                 }
+                onBlur={() => formatEuroField('realises', i)}
               />
+
+              {/* Potentiel 3 mois : montant € */}
               <input
                 className="rapport-input"
                 type="text"
                 value={form.resultats.potentiel3m[i]}
                 onChange={(e) =>
-                  updateArrayField('resultats', 'potentiel3m', i, e.target.value)
+                  updateArrayField(
+                    'resultats',
+                    'potentiel3m',
+                    i,
+                    e.target.value
+                  )
                 }
+                onBlur={() => formatEuroField('potentiel3m', i)}
               />
+
+              {/* Potentiel 12 mois : simple texte ou montant sans formatage spécifique */}
               <input
                 className="rapport-input"
                 type="text"
@@ -208,6 +248,8 @@ export default function RapportForm() {
                   )
                 }
               />
+
+              {/* Note CGP */}
               <input
                 className="rapport-input rapport-input-note"
                 type="number"
@@ -219,12 +261,14 @@ export default function RapportForm() {
                 }
               />
 
-              {/* zone manager en lecture seule */}
+              {/* Note Manager : même largeur, lecture seule ici */}
               <input
-                className="rapport-input manager-cell"
-                type="text"
-                disabled
-                placeholder="Manager"
+                className="rapport-input rapport-input-note manager-cell"
+                type="number"
+                min="1"
+                max="10"
+                readOnly
+                placeholder="—"
               />
             </div>
           ))}

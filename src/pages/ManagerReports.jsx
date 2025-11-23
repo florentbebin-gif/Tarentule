@@ -135,47 +135,47 @@ export default function ManagerReports() {
           }
         });
 
-        const rowsData = [];
-        const agencySet = new Set();
+const rowsData = [];
+const agencySet = new Set();
 
-        (profiles || []).forEach((p) => {
-          const role = (p.role || '').toLowerCase();
+(profiles || []).forEach((p) => {
+  const role = (p.role || '').toLowerCase();
 
-          // On n'affiche dans ce tableau que les conseillers (ou équivalent)
-          // Si tu veux inclure d'autres rôles, adapte ici.
-          if (role && role !== 'conseiller' && role !== 'user') {
-            return;
-          }
+  // On exclut seulement les admins, on affiche tout le reste (conseiller, manager, etc.)
+  if (role === 'admin') {
+    return;
+  }
 
-          const bureau = p.bureau || '—';
-          agencySet.add(bureau);
+  const bureau = p.bureau || '—';
+  agencySet.add(bureau);
 
-          const rep = latestByUser[p.id] || null;
-          let totals = {
-            objectifs: 0,
-            realises: 0,
-            potentiel3m: 0,
-            potentiel12m: 0,
-          };
-          let period = '';
+  const rep = latestByUser[p.id] || null;
+  let totals = {
+    objectifs: 0,
+    realises: 0,
+    potentiel3m: 0,
+    potentiel12m: 0,
+  };
+  let period = '';
 
-          if (rep) {
-            totals = computeTotalsFromReport(rep.data);
-            period = rep.period || '';
-          }
+  if (rep) {
+    totals = computeTotalsFromReport(rep.data);
+    period = rep.period || '';
+  }
 
-          rowsData.push({
-            userId: p.id,
-            firstName: p.first_name || '',
-            lastName: p.last_name || '',
-            bureau,
-            objectifs: totals.objectifs,
-            realises: totals.realises,
-            potentiel3m: totals.potentiel3m,
-            potentiel12m: totals.potentiel12m,
-            period,
-          });
-        });
+  rowsData.push({
+    userId: p.id,
+    firstName: p.first_name || '',
+    lastName: p.last_name || '',
+    bureau,
+    objectifs: totals.objectifs,
+    realises: totals.realises,
+    potentiel3m: totals.potentiel3m,
+    potentiel12m: totals.potentiel12m,
+    period,
+  });
+});
+
 
         const agenciesList = Array.from(agencySet).sort((a, b) =>
           a.localeCompare(b, 'fr')

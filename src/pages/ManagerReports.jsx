@@ -241,10 +241,9 @@ export default function ManagerReports() {
     }
   };
 
-  const handleRowClick = (userId) => {
-    // plus tard : on fera /rapport/:userId pour modifier le rapport du conseiller
-    navigate('/rapport'); // première étape : renvoie vers la page rapport
-  };
+const handleRowClick = (userId) => {
+  navigate(`/rapport/${userId}`);
+};
 
   if (loading) {
     return (

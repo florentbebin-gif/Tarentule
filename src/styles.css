@@ -333,10 +333,11 @@ body {
 /* Potentiels : plus petit et en italique */
 .col-potentiel-header {
   font-style: italic;
+  font-size: 11px; 
 }
 
 .rapport-input-potentiel {
-  font-size: 12px;
+  font-size: 11px;
   font-style: italic;
 }
 /* PARTENARIAT : Libellé / Réalisé / CGP / N+1 */

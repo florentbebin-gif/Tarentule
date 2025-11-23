@@ -593,3 +593,46 @@ body {
   border: 1px solid #e5e7eb;
   font-size: 14px;
 }
+/* ==========================
+   STYLE PAGE SETTINGS
+   ========================== */
+
+.settings-page {
+  max-width: 850px;           /* largeur identique à Rapport */
+  margin: 30px auto;          /* centré */
+  padding: 0 20px;
+}
+
+.settings-card {
+  background: #fff;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
+}
+
+.settings-grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 28px;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.settings-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.settings-value {
+  background: #f7f7f7;
+  border: 1px solid #e3e3e3;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+}

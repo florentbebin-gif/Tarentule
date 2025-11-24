@@ -242,29 +242,27 @@ export default function App() {
 
           <div className="top-actions">
 
-            {/* HOME */}
-            {session && (
-              <button
-                className="chip icon-btn"
-                title="Accueil"
-                onClick={() =>
-                  navigate(isManager ? '/manager' : '/rapport')
-                }
-              >
-                <IconHome className="icon" />
-              </button>
-            )}
+              {/* HOME : uniquement pour manager/admin */}
+              {session && isManager && (
+                <button
+                  className="chip icon-btn"
+                  title="Accueil manager"
+                  onClick={() => navigate('/manager')}
+                >
+                  <IconHome className="icon" />
+                </button>
+              )}
 
-            {/* FOLDER → Aller vers mon rapport si je suis ailleurs */}
-            {!isOwnRapport && (
-              <button
-                className="chip icon-btn"
-                title="Mon rapport"
-                onClick={() => navigate('/rapport')}
-              >
-                <IconFolder className="icon" />
-              </button>
-            )}
+              {/* FOLDER → mon rapport */}
+              {!isOwnRapport && session && (
+                <button
+                  className="chip icon-btn"
+                  title="Mon rapport"
+                  onClick={() => navigate('/rapport')}
+                >
+                  <IconFolder className="icon" />
+                </button>
+              )}
 
             {/* TRASH → uniquement si on est sur SON rapport */}
             {isOwnRapport && (

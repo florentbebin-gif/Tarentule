@@ -220,19 +220,22 @@ export default function RapportForm({ onSaved, resetKey }) {
     }
   }, [loadingUser, viewedUserId]);
 
-  // RESET complet du rapport lorsque resetKey change (icône Trash)
-  useEffect(() => {
-    if (resetKey === undefined) return;
 
-    const ok = window.confirm(
-      'Voulez-vous vraiment vider votre rapport ?'
-    );
-    if (!ok) return;
+// RESET complet du rapport lorsque resetKey change (icône Trash)
+// On ignore la valeur initiale (0)
+useEffect(() => {
+  // Si resetKey est 0 ou undefined → on ne fait rien
+  if (resetKey === undefined || resetKey === 0) return;
 
-    setForm(initialForm);
-    setPeriod('');
-    setError('');
-  }, [resetKey]);
+  const ok = window.confirm(
+    'Voulez-vous vraiment vider votre rapport ?'
+  );
+  if (!ok) return;
+
+  setForm(initialForm);
+  setPeriod('');
+  setError('');
+}, [resetKey]);
 
   const clampNote = (value) => {
     const n = Number(value);

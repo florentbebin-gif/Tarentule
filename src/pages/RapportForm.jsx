@@ -13,6 +13,7 @@ export default function RapportForm({ onSaved, resetKey }) {
   const { userId: routeUserId } = useParams(); // id du conseiller si /rapport/:userId
   const [currentUserRole, setCurrentUserRole] = useState('user');
   const [viewedUserId, setViewedUserId] = useState(null); // id du rapport affiché
+  const [advisorName, setAdvisorName] = useState({ firstName: '', lastName: '' });
 
   const initialForm = {
     bienEtre: {
@@ -59,9 +60,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     });
 
     if (insertError) {
-      setError(
-        insertError.message || "Erreur lors de l'enregistrement automatique."
-      );
+      setError(insertError.message || "Erreur lors de l'enregistrement.");
       return;
     }
 
@@ -152,7 +151,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     totals.potentiel12m += parseEuro(form.resultats.potentiel12m[i]);
   }
 
-  // Vérifie que l'utilisateur est connecté + rôle
+  // Vérifie que l'utilisateur est connecté
   useEffect(() => {
     const initUser = async () => {
       const {
@@ -164,6 +163,7 @@ export default function RapportForm({ onSaved, resetKey }) {
         return;
       }
 
+      // on récupère le rôle dans profiles
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
@@ -220,22 +220,40 @@ export default function RapportForm({ onSaved, resetKey }) {
     }
   }, [loadingUser, viewedUserId]);
 
+  // Charge le profil du conseiller affiché (pour afficher son nom)
+  useEffect(() => {
+    const loadAdvisorProfile = async () => {
+      if (!viewedUserId) return;
 
-// RESET complet du rapport lorsque resetKey change (icône Trash)
-// On ignore la valeur initiale (0)
-useEffect(() => {
-  // Si resetKey est 0 ou undefined → on ne fait rien
-  if (resetKey === undefined || resetKey === 0) return;
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('first_name, last_name')
+        .eq('id', viewedUserId)
+        .maybeSingle();
 
-  const ok = window.confirm(
-    'Voulez-vous vraiment vider votre rapport ?'
-  );
-  if (!ok) return;
+      if (!error && data) {
+        setAdvisorName({
+          firstName: data.first_name || '',
+          lastName: data.last_name || '',
+        });
+      }
+    };
 
-  setForm(initialForm);
-  setPeriod('');
-  setError('');
-}, [resetKey]);
+    loadAdvisorProfile();
+  }, [viewedUserId]);
+
+  // RESET complet du rapport lorsque resetKey change (icône Trash)
+  // On ignore la valeur initiale (0)
+  useEffect(() => {
+    if (resetKey === undefined || resetKey === 0) return;
+
+    const ok = window.confirm('Voulez-vous vraiment vider votre rapport ?');
+    if (!ok) return;
+
+    setForm(initialForm);
+    setPeriod('');
+    setError('');
+  }, [resetKey]);
 
   const clampNote = (value) => {
     const n = Number(value);
@@ -322,12 +340,11 @@ useEffect(() => {
         {/* 1. RÉSULTATS */}
         <div className="section-card section-card--with-chart">
           <div className="section-header">
+            <div className="conseiller-label">
+              Conseiller : {advisorName.lastName || '—'} {advisorName.firstName}
+            </div>
             <div className="section-title strong-title">Résultats</div>
           </div>
-
-          {error && (
-            <div className="save-message error">Erreur : {error}</div>
-          )}
 
           <div className="rapport-section-table">
             <div className="rapport-table-header-top">
@@ -527,6 +544,12 @@ useEffect(() => {
               placeholder="Renseigné par le manager"
             />
           </div>
+
+          {error && (
+            <div className="alert error" style={{ marginTop: '8px' }}>
+              {error}
+            </div>
+          )}
         </div>
 
         {/* 2. PARTENARIAT */}

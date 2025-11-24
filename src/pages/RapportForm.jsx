@@ -333,7 +333,7 @@ export default function RapportForm({ onSaved }) {
               <span></span>
               <span></span>
               <span></span>
-              <span className="note-group-header">Notes</span>
+              <span className="note-group-header">Positions</span>
             </div>
 
             <div className="rapport-table-header-sub">
@@ -535,7 +535,7 @@ export default function RapportForm({ onSaved }) {
             <div className="rapport-table-header-top rapport-table-header-top--part">
               <span className="col-libelle"></span>
               <span></span>
-              <span className="note-group-header">Notes</span>
+              <span className="note-group-header">Positions</span>
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--part">
@@ -633,7 +633,7 @@ export default function RapportForm({ onSaved }) {
           <div className="rapport-section-table rapport-section-table--simple">
             <div className="rapport-table-header-top rapport-table-header-top--simple">
               <span className="col-libelle"></span>
-              <span className="note-group-header">Notes</span>
+              <span className="note-group-header">Positions</span>
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
@@ -703,7 +703,7 @@ export default function RapportForm({ onSaved }) {
           <div className="rapport-section-table rapport-section-table--simple">
             <div className="rapport-table-header-top rapport-table-header-top--simple">
               <span className="col-libelle"></span>
-              <span className="note-group-header">Notes</span>
+              <span className="note-group-header">Positions</span>
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
@@ -780,7 +780,7 @@ export default function RapportForm({ onSaved }) {
 
         {/* Notes Résultats */}
         <div className="section-card radar-card radar-card--resultats">
-          <div className="radar-title">Notes Résultats</div>
+          <div className="radar-title">Position Résultats</div>
           <RadarChart
             labels={resultatsRadarLabels}
             cgpValues={resultatsCgpRadar}
@@ -790,7 +790,7 @@ export default function RapportForm({ onSaved }) {
 
         {/* Notes Partenariats */}
         <div className="section-card radar-card radar-card--partenariat">
-          <div className="radar-title">Notes Partenariats</div>
+          <div className="radar-title">Position Partenariats</div>
           <RadarChart
             labels={partenariatRadarLabels}
             cgpValues={partenariatCgpRadar}
@@ -800,7 +800,7 @@ export default function RapportForm({ onSaved }) {
 
         {/* Notes Techniques */}
         <div className="section-card radar-card radar-card--technique">
-          <div className="radar-title">Notes Techniques</div>
+          <div className="radar-title">Position Techniques</div>
           <RadarChart
             labels={techniqueRadarLabels}
             cgpValues={techniqueCgpRadar}
@@ -810,7 +810,7 @@ export default function RapportForm({ onSaved }) {
 
         {/* Notes Bien-être */}
         <div className="section-card radar-card radar-card--bienetre">
-          <div className="radar-title">Notes Bien-être</div>
+          <div className="radar-title">Position Bien-être</div>
           <RadarChart
             labels={bienEtreRadarLabels}
             cgpValues={bienEtreCgpRadar}

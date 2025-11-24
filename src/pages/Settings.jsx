@@ -9,6 +9,28 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const [adminMessage, setAdminMessage] = useState('');
+const [sendStatus, setSendStatus] = useState('');
+const emailUser = email; // déjà défini plus haut
+
+const sendToAdmin = async () => {
+  setSendStatus('Envoi en cours…');
+
+  const { error } = await supabase.functions.invoke('send-admin-email', {
+    body: {
+      message: adminMessage,
+      userEmail: emailUser,
+    },
+  });
+
+  if (error) {
+    setSendStatus("Erreur lors de l'envoi.");
+  } else {
+    setSendStatus("Message envoyé à l’administrateur !");
+    setAdminMessage('');
+  }
+};
+
   useEffect(() => {
     let mounted = true;
 

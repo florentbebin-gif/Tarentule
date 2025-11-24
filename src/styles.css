@@ -539,7 +539,7 @@ body {
 
   /* Ces trois-là doivent descendre plus bas */
   .radar-card--partenariat {
-    margin-top: 505px;   /* ajuste la valeur si nécessaire */
+    margin-top: 515px;   /* ajuste la valeur si nécessaire */
   }
 
   .radar-card--technique {

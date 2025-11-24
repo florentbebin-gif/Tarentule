@@ -340,10 +340,10 @@ export default function RapportForm({ onSaved, resetKey }) {
         {/* 1. RÉSULTATS */}
         <div className="section-card section-card--with-chart">
           <div className="section-header">
+            <div className="section-title strong-title">Résultats</div>
             <div className="conseiller-label">
               Conseiller : {advisorName.lastName || '—'} {advisorName.firstName}
             </div>
-            <div className="section-title strong-title">Résultats</div>
           </div>
 
           <div className="rapport-section-table">

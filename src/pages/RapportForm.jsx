@@ -341,7 +341,7 @@ export default function RapportForm({ onSaved }) {
               <span>Objectifs</span>
               <span>Réalisés</span>
               <span className="col-potentiel-header">Signature 1 mois</span>
-              <span className="col-potentiel-header">Potentiel</span>
+              <span className="col-potentiel-header">Potentiel 31/12</span>
               <span>CGP</span>
               <span>N+1</span>
             </div>

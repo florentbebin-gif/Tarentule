@@ -51,9 +51,10 @@ function computeTotalsFromReport(data) {
 
   return totals;
 }
+
 // Moyenne sécurisée (évite division par zéro)
 const average = (arr) => {
-  const nums = arr.map((v) => Number(v) || 0).filter((n) => !isNaN(n));
+  const nums = arr.map((v) => Number(v) || 0).filter((n) => !Number.isNaN(n));
   if (nums.length === 0) return 0;
   return nums.reduce((a, b) => a + b, 0) / nums.length;
 };
@@ -62,7 +63,7 @@ const average = (arr) => {
 const formatShortDate = (iso) => {
   if (!iso) return '—';
   const d = new Date(iso);
-  if (isNaN(d)) return '—';
+  if (Number.isNaN(d.getTime())) return '—';
   return d.toLocaleDateString('fr-FR');
 };
 
@@ -75,7 +76,6 @@ const isOlderThan15Days = (iso) => {
   return diff > 15 * 24 * 60 * 60 * 1000;
 };
 
-
 export default function ManagerReports() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -84,8 +84,8 @@ export default function ManagerReports() {
   const [agencies, setAgencies] = useState([]); // liste agences distinctes
   const [selectedAgencies, setSelectedAgencies] = useState([]); // filtres agences
 
-  const [sortKey, setSortKey] = useState('bureau'); // 'bureau' | 'name' | 'objectifs' | 'realises' | ...
-  const [sortDirection, setSortDirection] = useState('asc'); // 'asc' | 'desc'
+  const [sortKey, setSortKey] = useState('bureau');
+  const [sortDirection, setSortDirection] = useState('asc');
 
   const navigate = useNavigate();
 
@@ -126,7 +126,7 @@ export default function ManagerReports() {
           return;
         }
 
-        // 3. Charger tous les profils (tous les utilisateurs, on filtrera légèrement après)
+        // 3. Charger tous les profils
         const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
           .select('id, first_name, last_name, bureau, role');
@@ -138,7 +138,7 @@ export default function ManagerReports() {
           return;
         }
 
-        // 4. Charger tous les rapports
+        // 4. Charger tous les rapports (dernier en premier)
         const { data: reports, error: reportsError } = await supabase
           .from('reports')
           .select('id, user_id, period, data, created_at')
@@ -165,12 +165,7 @@ export default function ManagerReports() {
         (profiles || []).forEach((p) => {
           const role = (p.role || '').toLowerCase();
 
-          // 👉 Pour l'instant, on affiche TOUT le monde sauf les admins purs.
-          // Donc un manager verra :
-          //  - lui-même
-          //  - les conseillers
-          //  - les autres managers
-          // Si tu veux exclure le compte admin du tableau, on peut laisser ce filtre :
+          // On n'inclut pas les admins dans le tableau
           if (role === 'admin') {
             return;
           }
@@ -185,40 +180,53 @@ export default function ManagerReports() {
             potentiel3m: 0,
             potentiel12m: 0,
           };
-          let period = '';
+          let lastSave = null;
+          let noteRes = 0;
+          let notePart = 0;
+          let noteTech = 0;
+          let noteBien = 0;
+          let percentRealise = 0;
 
           if (rep) {
             totals = computeTotalsFromReport(rep.data);
-            period = rep.period || '';
+            lastSave = rep.created_at || null;
+
+            const data = rep.data || {};
+
+            const notesResultats = data?.resultats?.notesCgp || [];
+            const notesPart = data?.partenariat?.notesCgp || [];
+            const notesTechArr = data?.technique?.notesCgp || [];
+            const notesBienArr = data?.bienEtre?.notesCgp || [];
+
+            // Moyennes en %
+            noteRes = average(notesResultats.slice(1, 8)) * 10;
+            notePart = average(notesPart) * 10;
+            noteTech = average(notesTechArr) * 10;
+            noteBien = average(notesBienArr) * 10;
+
+            // % réalisé vs objectifs (sur les totaux)
+            if (totals.objectifs > 0) {
+              percentRealise = (totals.realises / totals.objectifs) * 100;
+            }
           }
 
-const data = rep?.data;
-
-const notesResultats = data?.resultats?.notesCgp || [];
-const notesPart = data?.partenariat?.notesCgp || [];
-const notesTech = data?.technique?.notesCgp || [];
-const notesBien = data?.bienEtre?.notesCgp || [];
-
-rowsData.push({
-  userId: p.id,
-  firstName: p.first_name || '',
-  lastName: p.last_name || '',
-  bureau,
-  objectifs: totals.objectifs,
-  realises: totals.realises,
-  potentiel3m: totals.potentiel3m,
-  potentiel12m: totals.potentiel12m,
-
-  lastSave: rep?.created_at || null,
-
-  noteRes: average(notesResultats.slice(1, 8)) * 10,  // % sur 7 notes
-  notePart: average(notesPart) * 10,
-  noteTech: average(notesTech) * 10,
-  noteBien: average(notesBien) * 10,
-
-  role: role || 'conseiller',
-});
-
+          rowsData.push({
+            userId: p.id,
+            firstName: p.first_name || '',
+            lastName: p.last_name || '',
+            bureau,
+            objectifs: totals.objectifs,
+            realises: totals.realises,
+            potentiel3m: totals.potentiel3m,
+            potentiel12m: totals.potentiel12m,
+            percentRealise,
+            lastSave,
+            noteRes,
+            notePart,
+            noteTech,
+            noteBien,
+            role: role || 'conseiller',
+          });
         });
 
         const agenciesList = Array.from(agencySet).sort((a, b) =>
@@ -326,6 +334,22 @@ rowsData.push({
     );
   }
 
+  // Totaux / moyennes pour la ligne TOTAL / MOYENNE
+  const totalObjectifs = sortedRows.reduce((a, r) => a + (r.objectifs || 0), 0);
+  const totalRealises = sortedRows.reduce((a, r) => a + (r.realises || 0), 0);
+  const totalPot3 = sortedRows.reduce((a, r) => a + (r.potentiel3m || 0), 0);
+  const totalPot12 = sortedRows.reduce((a, r) => a + (r.potentiel12m || 0), 0);
+
+  let totalPercent = 0;
+  if (totalObjectifs > 0) {
+    totalPercent = (totalRealises / totalObjectifs) * 100;
+  }
+
+  const avgRes = average(sortedRows.map((r) => r.noteRes || 0));
+  const avgPart = average(sortedRows.map((r) => r.notePart || 0));
+  const avgTech = average(sortedRows.map((r) => r.noteTech || 0));
+  const avgBien = average(sortedRows.map((r) => r.noteBien || 0));
+
   return (
     <div className="credit-panel">
       <div className="section-card">
@@ -356,89 +380,185 @@ rowsData.push({
         {/* Tableau de synthèse */}
         <div className="manager-table-wrap">
           <table className="manager-table">
-           <thead>
-  <tr>
-    <th rowSpan="2" onClick={() => handleSort('bureau')}>Agence</th>
-    <th rowSpan="2" onClick={() => handleSort('name')}>Nom / Prénom</th>
-    <th rowSpan="2" onClick={() => handleSort('objectifs')}>Objectifs</th>
-    <th rowSpan="2" onClick={() => handleSort('realises')}>Réalisé</th>
-    <th rowSpan="2" onClick={() => handleSort('potentiel3m')}>Signature 1 mois</th>
-    <th rowSpan="2" onClick={() => handleSort('potentiel12m')}>Potentiel 31/12</th>
-    <th rowSpan="2">Dernière sauvegarde</th>
-
-    <th colSpan="4" style={{ background: '#e5f4ef', textAlign: 'center' }}>
-      Note CGP
-    </th>
-  </tr>
-
-  <tr>
-    <th>Résultats</th>
-    <th>Part.</th>
-    <th>Tech.</th>
-    <th>Bien-être</th>
-  </tr>
-</thead>
-
+            <thead>
+              <tr>
+                <th
+                  rowSpan="2"
+                  onClick={() => handleSort('bureau')}
+                  style={{ backgroundColor: '#D9D9D9' }}
+                >
+                  Agence
+                  {sortKey === 'bureau' &&
+                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+                </th>
+                <th
+                  rowSpan="2"
+                  onClick={() => handleSort('name')}
+                  style={{ backgroundColor: '#D9D9D9' }}
+                >
+                  Nom / Prénom
+                  {sortKey === 'name' &&
+                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+                </th>
+                <th
+                  rowSpan="2"
+                  onClick={() => handleSort('objectifs')}
+                  style={{ backgroundColor: '#D9D9D9' }}
+                >
+                  Objectifs
+                  {sortKey === 'objectifs' &&
+                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+                </th>
+                <th
+                  rowSpan="2"
+                  onClick={() => handleSort('realises')}
+                  style={{ backgroundColor: '#D9D9D9' }}
+                >
+                  Réalisé
+                  {sortKey === 'realises' &&
+                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+                </th>
+                <th
+                  rowSpan="2"
+                  onClick={() => handleSort('percentRealise')}
+                  style={{ backgroundColor: '#D9D9D9' }}
+                >
+                  %
+                  {sortKey === 'percentRealise' &&
+                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+                </th>
+                <th
+                  rowSpan="2"
+                  onClick={() => handleSort('potentiel3m')}
+                  style={{ backgroundColor: '#D9D9D9' }}
+                >
+                  Signature 1 mois
+                  {sortKey === 'potentiel3m' &&
+                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+                </th>
+                <th
+                  rowSpan="2"
+                  onClick={() => handleSort('potentiel12m')}
+                  style={{ backgroundColor: '#D9D9D9' }}
+                >
+                  Potentiel 31/12
+                  {sortKey === 'potentiel12m' &&
+                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+                </th>
+                <th
+                  rowSpan="2"
+                  style={{ backgroundColor: '#D9D9D9' }}
+                >
+                  Dernière actu.
+                </th>
+                <th
+                  colSpan="4"
+                  style={{
+                    backgroundColor: '#D9D9D9',
+                    textAlign: 'center',
+                  }}
+                >
+                  Notes
+                </th>
+              </tr>
+              <tr>
+                <th style={{ backgroundColor: '#F5F3F0' }}>Résultats</th>
+                <th style={{ backgroundColor: '#F5F3F0' }}>Part.</th>
+                <th style={{ backgroundColor: '#F5F3F0' }}>Tech.</th>
+                <th style={{ backgroundColor: '#F5F3F0' }}>Bien-être</th>
+              </tr>
+            </thead>
             <tbody>
               {sortedRows.length === 0 && (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', padding: '16px' }}>
+                  <td
+                    colSpan={12}
+                    style={{ textAlign: 'center', padding: '16px' }}
+                  >
                     Aucun utilisateur trouvé pour les agences sélectionnées.
                   </td>
                 </tr>
               )}
 
               {sortedRows.map((row, idx) => (
-                <tr key={row.userId} className="manager-row" onClick={() => handleRowClick(row.userId)}>
-  <td>{row.bureau}</td>
-
-  <td>
-    {idx + 1}. {row.lastName.toUpperCase()} {row.firstName}
-  </td>
-
-  <td>{formatEuro(row.objectifs)}</td>
-  <td>{formatEuro(row.realises)}</td>
-  <td>{formatEuro(row.potentiel3m)}</td>
-  <td>{formatEuro(row.potentiel12m)}</td>
-
-  {/* Dernière sauvegarde */}
-  <td style={{ color: isOlderThan15Days(row.lastSave) ? '#b91c1c' : undefined }}>
-    {formatShortDate(row.lastSave)}
-  </td>
-
-  {/* Notes CGP */}
-  <td style={{ color: row.noteRes < 50 ? '#b91c1c' : undefined }}>
-    {Math.round(row.noteRes)}%
-  </td>
-  <td style={{ color: row.notePart < 50 ? '#b91c1c' : undefined }}>
-    {Math.round(row.notePart)}%
-  </td>
-  <td style={{ color: row.noteTech < 50 ? '#b91c1c' : undefined }}>
-    {Math.round(row.noteTech)}%
-  </td>
-  <td style={{ color: row.noteBien < 50 ? '#b91c1c' : undefined }}>
-    {Math.round(row.noteBien)}%
-  </td>
-</tr>
+                <tr
+                  key={row.userId}
+                  className="manager-row"
+                  onClick={() => handleRowClick(row.userId)}
+                >
+                  <td>{row.bureau}</td>
+                  <td>
+                    {idx + 1}. {row.lastName.toUpperCase()} {row.firstName}
+                  </td>
+                  <td>{formatEuro(row.objectifs)}</td>
+                  <td>{formatEuro(row.realises)}</td>
+                  <td>
+                    {row.percentRealise
+                      ? `${Math.round(row.percentRealise)}%`
+                      : '—'}
+                  </td>
+                  <td>{formatEuro(row.potentiel3m)}</td>
+                  <td>{formatEuro(row.potentiel12m)}</td>
+                  <td
+                    style={{
+                      color: isOlderThan15Days(row.lastSave)
+                        ? '#b91c1c'
+                        : undefined,
+                    }}
+                  >
+                    {formatShortDate(row.lastSave)}
+                  </td>
+                  <td
+                    style={{
+                      color: row.noteRes < 50 ? '#b91c1c' : undefined,
+                    }}
+                  >
+                    {row.noteRes ? `${Math.round(row.noteRes)}%` : '—'}
+                  </td>
+                  <td
+                    style={{
+                      color: row.notePart < 50 ? '#b91c1c' : undefined,
+                    }}
+                  >
+                    {row.notePart ? `${Math.round(row.notePart)}%` : '—'}
+                  </td>
+                  <td
+                    style={{
+                      color: row.noteTech < 50 ? '#b91c1c' : undefined,
+                    }}
+                  >
+                    {row.noteTech ? `${Math.round(row.noteTech)}%` : '—'}
+                  </td>
+                  <td
+                    style={{
+                      color: row.noteBien < 50 ? '#b91c1c' : undefined,
+                    }}
+                  >
+                    {row.noteBien ? `${Math.round(row.noteBien)}%` : '—'}
+                  </td>
+                </tr>
               ))}
+
               {sortedRows.length > 0 && (
-  <tr className="manager-total-row">
-    <td colSpan="2">TOTAL / MOYENNE</td>
-
-    <td>{formatEuro(sortedRows.reduce((a, r) => a + r.objectifs, 0))}</td>
-    <td>{formatEuro(sortedRows.reduce((a, r) => a + r.realises, 0))}</td>
-    <td>{formatEuro(sortedRows.reduce((a, r) => a + r.potentiel3m, 0))}</td>
-    <td>{formatEuro(sortedRows.reduce((a, r) => a + r.potentiel12m, 0))}</td>
-
-    <td>—</td>
-
-    <td>{Math.round(average(sortedRows.map(r => r.noteRes)))}%</td>
-    <td>{Math.round(average(sortedRows.map(r => r.notePart)))}%</td>
-    <td>{Math.round(average(sortedRows.map(r => r.noteTech)))}%</td>
-    <td>{Math.round(average(sortedRows.map(r => r.noteBien)))}%</td>
-  </tr>
-)}
-
+                <tr
+                  className="manager-total-row"
+                  style={{ backgroundColor: '#D9D9D9', fontWeight: '600' }}
+                >
+                  <td colSpan={2}>TOTAL / MOYENNE</td>
+                  <td>{formatEuro(totalObjectifs)}</td>
+                  <td>{formatEuro(totalRealises)}</td>
+                  <td>
+                    {totalPercent ? `${Math.round(totalPercent)}%` : '—'}
+                  </td>
+                  <td>{formatEuro(totalPot3)}</td>
+                  <td>{formatEuro(totalPot12)}</td>
+                  <td>—</td>
+                  <td>{avgRes ? `${Math.round(avgRes)}%` : '—'}</td>
+                  <td>{avgPart ? `${Math.round(avgPart)}%` : '—'}</td>
+                  <td>{avgTech ? `${Math.round(avgTech)}%` : '—'}</td>
+                  <td>{avgBien ? `${Math.round(avgBien)}%` : '—'}</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

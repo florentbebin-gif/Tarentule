@@ -385,14 +385,14 @@ export default function RapportForm({ onSaved, resetKey }) {
                       className="rapport-input manager-cell total-cell"
                       type="text"
                       value={euroFromNumber(totals.objectifs)}
-                      readOnly
+                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                     />
                   ) : (
                     <input
                       className="rapport-input manager-cell"
                       type="text"
                       value={form.resultats.objectifs[i]}
-                      readOnly
+                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                       placeholder="—"
                     />
                   )}
@@ -405,7 +405,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                       className="rapport-input manager-cell total-cell"
                       type="text"
                       value={euroFromNumber(totals.realises)}
-                      readOnly
+                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                     />
                   ) : (
                     <input
@@ -435,7 +435,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                       className="rapport-input rapport-input-potentiel manager-cell total-cell"
                       type="text"
                       value={euroFromNumber(totals.potentiel3m)}
-                      readOnly
+                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                     />
                   ) : (
                     <input
@@ -465,7 +465,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                       className="rapport-input rapport-input-potentiel manager-cell total-cell"
                       type="text"
                       value={euroFromNumber(totals.potentiel12m)}
-                      readOnly
+                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                     />
                   ) : (
                     <input
@@ -516,7 +516,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                         type="number"
                         min="0"
                         max="10"
-                        readOnly
+                        readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                         placeholder="—"
                       />
                     </>
@@ -540,7 +540,7 @@ export default function RapportForm({ onSaved, resetKey }) {
             <textarea
               className="rapport-strategie-manager"
               value={form.resultats.strategie}
-              readOnly
+              readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
               placeholder="Renseigné par le manager"
             />
           </div>
@@ -583,7 +583,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                   className="rapport-input rapport-input-narrow manager-cell"
                   type="number"
                   value={form.partenariat.objectifs[i] || ''}
-                  readOnly
+                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                   placeholder="—"
                 />
 
@@ -627,7 +627,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                   type="number"
                   min="0"
                   max="10"
-                  readOnly
+                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                   placeholder="—"
                 />
               </div>
@@ -648,7 +648,7 @@ export default function RapportForm({ onSaved, resetKey }) {
             <textarea
               className="rapport-strategie-manager"
               value={form.partenariat.strategie}
-              readOnly
+              readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
               placeholder="Renseigné par le manager"
             />
           </div>
@@ -699,7 +699,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                   type="number"
                   min="0"
                   max="10"
-                  readOnly
+                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                   placeholder="—"
                 />
               </div>
@@ -720,7 +720,7 @@ export default function RapportForm({ onSaved, resetKey }) {
             <textarea
               className="rapport-strategie-manager"
               value={form.technique.strategie}
-              readOnly
+              readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
               placeholder="Renseigné par le manager"
             />
           </div>
@@ -771,7 +771,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                   type="number"
                   min="0"
                   max="10"
-                  readOnly
+                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                   placeholder="—"
                 />
               </div>
@@ -792,7 +792,7 @@ export default function RapportForm({ onSaved, resetKey }) {
             <textarea
               className="rapport-strategie-manager"
               value={form.bienEtre.strategie}
-              readOnly
+              readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
               placeholder="Renseigné par le manager"
             />
           </div>

@@ -26,6 +26,29 @@ function computeTotalsFromReport(data) {
       potentiel12m: 0,
     };
   }
+// Moyenne sécurisée (évite division par zéro)
+const average = (arr) => {
+  const nums = arr.map((v) => Number(v) || 0).filter((n) => !isNaN(n));
+  if (nums.length === 0) return 0;
+  return nums.reduce((a, b) => a + b, 0) / nums.length;
+};
+
+// Retourne une date formatée JJ/MM/AA
+const formatShortDate = (iso) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return '—';
+  return d.toLocaleDateString('fr-FR');
+};
+
+// Vérifie si la date est > 15 jours
+const isOlderThan15Days = (iso) => {
+  if (!iso) return false;
+  const now = new Date();
+  const d = new Date(iso);
+  const diff = now - d;
+  return diff > 15 * 24 * 60 * 60 * 1000;
+};
 
   const {
     objectifs = [],
@@ -168,18 +191,33 @@ export default function ManagerReports() {
             period = rep.period || '';
           }
 
-          rowsData.push({
-            userId: p.id,
-            firstName: p.first_name || '',
-            lastName: p.last_name || '',
-            bureau,
-            objectifs: totals.objectifs,
-            realises: totals.realises,
-            potentiel3m: totals.potentiel3m,
-            potentiel12m: totals.potentiel12m,
-            period,
-            role: role || 'conseiller',
-          });
+const data = rep?.data;
+
+const notesResultats = data?.resultats?.notesCgp || [];
+const notesPart = data?.partenariat?.notesCgp || [];
+const notesTech = data?.technique?.notesCgp || [];
+const notesBien = data?.bienEtre?.notesCgp || [];
+
+rowsData.push({
+  userId: p.id,
+  firstName: p.first_name || '',
+  lastName: p.last_name || '',
+  bureau,
+  objectifs: totals.objectifs,
+  realises: totals.realises,
+  potentiel3m: totals.potentiel3m,
+  potentiel12m: totals.potentiel12m,
+
+  lastSave: rep?.created_at || null,
+
+  noteRes: average(notesResultats.slice(1, 8)) * 10,  // % sur 7 notes
+  notePart: average(notesPart) * 10,
+  noteTech: average(notesTech) * 10,
+  noteBien: average(notesBien) * 10,
+
+  role: role || 'conseiller',
+});
+
         });
 
         const agenciesList = Array.from(agencySet).sort((a, b) =>
@@ -317,41 +355,29 @@ export default function ManagerReports() {
         {/* Tableau de synthèse */}
         <div className="manager-table-wrap">
           <table className="manager-table">
-            <thead>
-              <tr>
-                <th onClick={() => handleSort('bureau')}>
-                  Agence
-                  {sortKey === 'bureau' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th onClick={() => handleSort('name')}>
-                  Nom / Prénom
-                  {sortKey === 'name' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th onClick={() => handleSort('objectifs')}>
-                  Objectifs
-                  {sortKey === 'objectifs' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th onClick={() => handleSort('realises')}>
-                  Réalisé
-                  {sortKey === 'realises' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th onClick={() => handleSort('potentiel3m')}>
-                  Signature 1 mois
-                  {sortKey === 'potentiel3m' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th onClick={() => handleSort('potentiel12m')}>
-                  Potentiel 31/12
-                  {sortKey === 'potentiel12m' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th>Période</th>
-              </tr>
-            </thead>
+           <thead>
+  <tr>
+    <th rowSpan="2" onClick={() => handleSort('bureau')}>Agence</th>
+    <th rowSpan="2" onClick={() => handleSort('name')}>Nom / Prénom</th>
+    <th rowSpan="2" onClick={() => handleSort('objectifs')}>Objectifs</th>
+    <th rowSpan="2" onClick={() => handleSort('realises')}>Réalisé</th>
+    <th rowSpan="2" onClick={() => handleSort('potentiel3m')}>Signature 1 mois</th>
+    <th rowSpan="2" onClick={() => handleSort('potentiel12m')}>Potentiel 31/12</th>
+    <th rowSpan="2">Dernière sauvegarde</th>
+
+    <th colSpan="4" style={{ background: '#e5f4ef', textAlign: 'center' }}>
+      Note CGP
+    </th>
+  </tr>
+
+  <tr>
+    <th>Résultats</th>
+    <th>Part.</th>
+    <th>Tech.</th>
+    <th>Bien-être</th>
+  </tr>
+</thead>
+
             <tbody>
               {sortedRows.length === 0 && (
                 <tr>
@@ -362,23 +388,56 @@ export default function ManagerReports() {
               )}
 
               {sortedRows.map((row, idx) => (
-                <tr
-                  key={row.userId}
-                  className="manager-row"
-                  onClick={() => handleRowClick(row.userId)}
-                >
-                  <td>{row.bureau}</td>
-                  <td>
-                    {idx + 1}. {row.lastName.toUpperCase()} {row.firstName}
-                    {row.role === 'manager' && ' (Manager)'}
-                  </td>
-                  <td>{formatEuro(row.objectifs)}</td>
-                  <td>{formatEuro(row.realises)}</td>
-                  <td>{formatEuro(row.potentiel3m)}</td>
-                  <td>{formatEuro(row.potentiel12m)}</td>
-                  <td>{row.period || '—'}</td>
-                </tr>
+                <tr key={row.userId} className="manager-row" onClick={() => handleRowClick(row.userId)}>
+  <td>{row.bureau}</td>
+
+  <td>
+    {idx + 1}. {row.lastName.toUpperCase()} {row.firstName}
+  </td>
+
+  <td>{formatEuro(row.objectifs)}</td>
+  <td>{formatEuro(row.realises)}</td>
+  <td>{formatEuro(row.potentiel3m)}</td>
+  <td>{formatEuro(row.potentiel12m)}</td>
+
+  {/* Dernière sauvegarde */}
+  <td style={{ color: isOlderThan15Days(row.lastSave) ? '#b91c1c' : undefined }}>
+    {formatShortDate(row.lastSave)}
+  </td>
+
+  {/* Notes CGP */}
+  <td style={{ color: row.noteRes < 50 ? '#b91c1c' : undefined }}>
+    {Math.round(row.noteRes)}%
+  </td>
+  <td style={{ color: row.notePart < 50 ? '#b91c1c' : undefined }}>
+    {Math.round(row.notePart)}%
+  </td>
+  <td style={{ color: row.noteTech < 50 ? '#b91c1c' : undefined }}>
+    {Math.round(row.noteTech)}%
+  </td>
+  <td style={{ color: row.noteBien < 50 ? '#b91c1c' : undefined }}>
+    {Math.round(row.noteBien)}%
+  </td>
+</tr>
               ))}
+              {sortedRows.length > 0 && (
+  <tr className="manager-total-row">
+    <td colSpan="2">TOTAL / MOYENNE</td>
+
+    <td>{formatEuro(sortedRows.reduce((a, r) => a + r.objectifs, 0))}</td>
+    <td>{formatEuro(sortedRows.reduce((a, r) => a + r.realises, 0))}</td>
+    <td>{formatEuro(sortedRows.reduce((a, r) => a + r.potentiel3m, 0))}</td>
+    <td>{formatEuro(sortedRows.reduce((a, r) => a + r.potentiel12m, 0))}</td>
+
+    <td>—</td>
+
+    <td>{Math.round(average(sortedRows.map(r => r.noteRes)))}%</td>
+    <td>{Math.round(average(sortedRows.map(r => r.notePart)))}%</td>
+    <td>{Math.round(average(sortedRows.map(r => r.noteTech)))}%</td>
+    <td>{Math.round(average(sortedRows.map(r => r.noteBien)))}%</td>
+  </tr>
+)}
+
             </tbody>
           </table>
         </div>

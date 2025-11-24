@@ -8,7 +8,6 @@ import { useParams } from 'react-router-dom';
 
 export default function RapportForm({ onSaved, resetKey }) {
   const [period, setPeriod] = useState('');
-  const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [loadingUser, setLoadingUser] = useState(true);
   const { userId: routeUserId } = useParams(); // id du conseiller si /rapport/:userId
@@ -46,19 +45,31 @@ export default function RapportForm({ onSaved, resetKey }) {
 
   const [form, setForm] = useState(initialForm);
 
-const handleAutoSave = async () => {
-  if (!viewedUserId) return;
+  // AUTOSAVE à la sortie de champ
+  const handleAutoSave = async () => {
+    if (!viewedUserId) return;
 
-  await supabase.from('reports').insert({
-    user_id: viewedUserId,
-    period,
-    data: form,
-  });
+    setError('');
+    const { error: insertError } = await supabase.from('reports').insert({
+      user_id: viewedUserId,
+      period,
+      global_score: null,
+      comment: '',
+      data: form,
+    });
 
-  if (onSaved) onSaved(new Date());
-};
+    if (insertError) {
+      setError(
+        insertError.message || "Erreur lors de l'enregistrement automatique."
+      );
+      return;
+    }
 
-  
+    if (onSaved) {
+      onSaved(new Date());
+    }
+  };
+
   // Libellés des lignes
   const resultatsLabels = [
     '1 - Performance globale : atteinte des objectifs',
@@ -88,7 +99,7 @@ const handleAutoSave = async () => {
     '1 - Commerciale : techniques de vente et relation client',
     '2 - Civile : compétences techniques sur les aspects civils / juridiques',
     '3 - Société : détention, structuration et problématiques',
-    '4 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, Capacité d'épargne, SER1',
+    '4 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, Capacité d\'épargne, SER1',
     '5 - Process interne : organisation Relation Middle',
   ];
 
@@ -141,7 +152,7 @@ const handleAutoSave = async () => {
     totals.potentiel12m += parseEuro(form.resultats.potentiel12m[i]);
   }
 
-  // Vérifie que l'utilisateur est connecté
+  // Vérifie que l'utilisateur est connecté + rôle
   useEffect(() => {
     const initUser = async () => {
       const {
@@ -153,7 +164,6 @@ const handleAutoSave = async () => {
         return;
       }
 
-      // on récupère le rôle dans profiles
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
@@ -179,8 +189,7 @@ const handleAutoSave = async () => {
     initUser();
   }, [routeUserId]);
 
-
-    // Charge le dernier rapport sauvegardé pour l'utilisateur "vu" (viewedUserId)
+  // Charge le dernier rapport sauvegardé pour l'utilisateur "vu" (viewedUserId)
   useEffect(() => {
     const loadLastReport = async () => {
       if (!viewedUserId) return;
@@ -211,14 +220,19 @@ const handleAutoSave = async () => {
     }
   }, [loadingUser, viewedUserId]);
 
-    // RESET complet du rapport lorsque resetKey change (icône Trash)
+  // RESET complet du rapport lorsque resetKey change (icône Trash)
   useEffect(() => {
     if (resetKey === undefined) return;
+
+    const ok = window.confirm(
+      'Voulez-vous vraiment vider votre rapport ?'
+    );
+    if (!ok) return;
+
     setForm(initialForm);
     setPeriod('');
-    setSaved(false);
+    setError('');
   }, [resetKey]);
-
 
   const clampNote = (value) => {
     const n = Number(value);
@@ -255,7 +269,7 @@ const handleAutoSave = async () => {
     'Financier',
     'PE',
     'Immobilier',
-    'Honoraires',
+    'Honoraire',
     'Arbitrages',
     'PER',
     'Divers',
@@ -294,36 +308,6 @@ const handleAutoSave = async () => {
   );
   const bienEtreManagerRadar = [0, 1, 2, 3].map(() => 0);
 
-    const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSaved(false);
-
-    if (!viewedUserId) {
-      setError("Impossible d'identifier l'utilisateur pour ce rapport.");
-      return;
-    }
-
-    const { error: insertError } = await supabase.from('reports').insert({
-      user_id: viewedUserId,
-      period,
-      global_score: null,
-      comment: '',
-      data: form,
-    });
-
-    if (insertError) {
-      setError(insertError.message || "Erreur lors de l'enregistrement.");
-      return;
-    }
-
-    setSaved(true);
-    if (onSaved) {
-      onSaved(new Date());
-    }
-  };
-
-
   if (loadingUser) {
     return <p>Chargement…</p>;
   }
@@ -336,17 +320,12 @@ const handleAutoSave = async () => {
         <div className="section-card section-card--with-chart">
           <div className="section-header">
             <div className="section-title strong-title">Résultats</div>
-            <button className="btn btn-save" onClick={handleSubmit}>
-              Enregistrer le rapport complet
-            </button>
           </div>
-        {saved && (
-        <div className="save-message">Votre rapport est enregistré.</div>
-        )}
-        {error && (
-          <div className="save-message error">Erreur : {error}</div>
-        )}
-          
+
+          {error && (
+            <div className="save-message error">Erreur : {error}</div>
+          )}
+
           <div className="rapport-section-table">
             <div className="rapport-table-header-top">
               <span className="col-libelle"></span>
@@ -409,10 +388,23 @@ const handleAutoSave = async () => {
                       readOnly
                     />
                   ) : (
-                  onBlur={(e) => {
-                  formatEuroField('realises', i);
-                  handleAutoSave();
-                  }}
+                    <input
+                      className="rapport-input"
+                      type="text"
+                      value={form.resultats.realises[i]}
+                      onChange={(e2) =>
+                        updateArrayField(
+                          'resultats',
+                          'realises',
+                          i,
+                          e2.target.value
+                        )
+                      }
+                      onBlur={() => {
+                        formatEuroField('realises', i);
+                        handleAutoSave();
+                      }}
+                    />
                   )}
 
                   {/* Signature 1 mois */}
@@ -426,10 +418,23 @@ const handleAutoSave = async () => {
                       readOnly
                     />
                   ) : (
-                    onBlur={(e) => {
-                    formatEuroField('potentiel3m', i);
-                    handleAutoSave();
-                    }}
+                    <input
+                      className="rapport-input rapport-input-potentiel"
+                      type="text"
+                      value={form.resultats.potentiel3m[i]}
+                      onChange={(e2) =>
+                        updateArrayField(
+                          'resultats',
+                          'potentiel3m',
+                          i,
+                          e2.target.value
+                        )
+                      }
+                      onBlur={() => {
+                        formatEuroField('potentiel3m', i);
+                        handleAutoSave();
+                      }}
+                    />
                   )}
 
                   {/* Potentiel */}
@@ -443,10 +448,23 @@ const handleAutoSave = async () => {
                       readOnly
                     />
                   ) : (
-                    onBlur={(e) => {
-                    formatEuroField('potentiel12m', i);
-                    handleAutoSave();
-                    }}
+                    <input
+                      className="rapport-input rapport-input-potentiel"
+                      type="text"
+                      value={form.resultats.potentiel12m[i]}
+                      onChange={(e2) =>
+                        updateArrayField(
+                          'resultats',
+                          'potentiel12m',
+                          i,
+                          e2.target.value
+                        )
+                      }
+                      onBlur={() => {
+                        formatEuroField('potentiel12m', i);
+                        handleAutoSave();
+                      }}
+                    />
                   )}
 
                   {/* Notes */}
@@ -506,18 +524,6 @@ const handleAutoSave = async () => {
               placeholder="Renseigné par le manager"
             />
           </div>
-
-          {saved && (
-            <div className="alert success" style={{ marginTop: '12px' }}>
-              Votre rapport est enregistré.
-            </div>
-          )}
-
-          {error && (
-            <div className="alert error" style={{ marginTop: '8px' }}>
-              {error}
-            </div>
-          )}
         </div>
 
         {/* 2. PARTENARIAT */}
@@ -546,7 +552,7 @@ const handleAutoSave = async () => {
               >
                 <span className="col-libelle">{label}</span>
 
-                {/* Objectifs (nb) – manager */}
+                {/* Objectifs (nb) – manager (lecture seule pour CGP) */}
                 <input
                   className="rapport-input rapport-input-narrow manager-cell"
                   type="number"
@@ -609,6 +615,7 @@ const handleAutoSave = async () => {
               onChange={(e2) =>
                 updateField('partenariat', 'commentaires', e2.target.value)
               }
+              onBlur={handleAutoSave}
             />
 
             <label>Stratégie d’amélioration (manager)</label>

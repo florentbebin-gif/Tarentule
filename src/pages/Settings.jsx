@@ -4,33 +4,18 @@ import { supabase } from '../supabaseClient';
 import './Login.css';
 
 export default function Settings() {
-  const [user, setUser] = useState(null);       // données auth (email, id…)
-  const [profile, setProfile] = useState(null); // données du profil (nom, agence, rôle…)
+  const [user, setUser] = useState(null);       // Auth
+  const [profile, setProfile] = useState(null); // Table profiles
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Zone contact admin
   const [adminMessage, setAdminMessage] = useState('');
-const [sendStatus, setSendStatus] = useState('');
-const emailUser = email; // déjà défini plus haut
+  const [sendStatus, setSendStatus] = useState('');
 
-const sendToAdmin = async () => {
-  setSendStatus('Envoi en cours…');
-
-  const { error } = await supabase.functions.invoke('send-admin-email', {
-    body: {
-      message: adminMessage,
-      userEmail: emailUser,
-    },
-  });
-
-  if (error) {
-    setSendStatus("Erreur lors de l'envoi.");
-  } else {
-    setSendStatus("Message envoyé à l’administrateur !");
-    setAdminMessage('');
-  }
-};
-
+  // -------------------------------
+  // Charger user + profil
+  // -------------------------------
   useEffect(() => {
     let mounted = true;
 
@@ -38,10 +23,9 @@ const sendToAdmin = async () => {
       try {
         setLoading(true);
 
-        // 1) Récupérer l'utilisateur connecté
+        // 1) Utilisateur Auth
         const { data, error: userError } = await supabase.auth.getUser();
         if (userError) {
-          console.error(userError);
           if (mounted) {
             setError("Erreur lors du chargement de l'utilisateur.");
             setLoading(false);
@@ -61,39 +45,34 @@ const sendToAdmin = async () => {
         if (!mounted) return;
         setUser(u);
 
-        // 2) Récupérer le profil dans la table "profiles"
-        const { data: profileData, error: profileError } = await supabase
+        // 2) Profil
+        const { data: p, error: pErr } = await supabase
           .from('profiles')
           .select('first_name, last_name, bureau, role')
           .eq('id', u.id)
           .maybeSingle();
 
-        if (profileError) {
-          console.error(profileError);
-          if (mounted) {
-            setError("Erreur lors du chargement du profil.");
-          }
+        if (pErr) {
+          if (mounted) setError("Erreur lors du chargement du profil.");
         } else if (mounted) {
-          setProfile(profileData || null);
+          setProfile(p || null);
         }
       } catch (e) {
-        console.error(e);
-        if (mounted) {
-          setError("Erreur inattendue lors du chargement des paramètres.");
-        }
+        if (mounted) setError("Erreur inattendue lors du chargement.");
       } finally {
         if (mounted) setLoading(false);
       }
     }
 
     load();
-
     return () => {
       mounted = false;
     };
   }, []);
 
-  // Formatage du rôle pour l'affichage
+  // -------------------------------
+  // Helpers
+  // -------------------------------
   const computeRoleLabel = () => {
     const raw = profile?.role || user?.user_metadata?.role || 'user';
     const r = String(raw).toLowerCase();
@@ -114,28 +93,27 @@ const sendToAdmin = async () => {
     );
   }
 
-if (error) {
-  return (
-    <div className="settings-page">
-      <div className="settings-card">
-        <div className="section-title strong-title">Paramètres</div>
-        <p style={{ color: '#b91c1c' }}>{error}</p>
+  if (error) {
+    return (
+      <div className="settings-page">
+        <div className="settings-card">
+          <div className="section-title strong-title">Paramètres</div>
+          <p style={{ color: '#b91c1c' }}>{error}</p>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-if (!user) {
-  return (
-    <div className="settings-page">
-      <div className="settings-card">
-        <div className="section-title strong-title">Paramètres</div>
-        <p>Aucun utilisateur connecté.</p>
+  if (!user) {
+    return (
+      <div className="settings-page">
+        <div className="settings-card">
+          <div className="section-title strong-title">Paramètres</div>
+          <p>Aucun utilisateur connecté.</p>
+        </div>
       </div>
-    </div>
-  );
-}
-
+    );
+  }
 
   const nom = profile?.last_name || user.user_metadata?.last_name || '—';
   const prenom = profile?.first_name || user.user_metadata?.first_name || '—';
@@ -143,75 +121,98 @@ if (!user) {
   const email = user.email || '—';
   const statut = computeRoleLabel();
 
- return (
-  <div className="settings-page">
-    <div className="settings-card">
-      <div className="section-title strong-title">Paramètres</div>
+  // -------------------------------
+  // Envoi message admin
+  // -------------------------------
+  const sendToAdmin = async () => {
+    setSendStatus("Envoi en cours…");
 
-      <p style={{ marginTop: 4, marginBottom: 16, color: '#555' }}>
-        Informations de votre compte Tarentule.
-      </p>
+    const { error } = await supabase.functions.invoke("send-admin-email", {
+      body: {
+        message: adminMessage,
+        userEmail: email,
+      },
+    });
 
-      <div className="settings-grid">
-        {/* Nom */}
-        <div className="settings-field">
-          <div className="settings-label">Nom</div>
-          <div className="settings-value">{nom}</div>
+    if (error) {
+      console.error(error);
+      setSendStatus("Erreur lors de l'envoi.");
+    } else {
+      setSendStatus("Message envoyé à l’administrateur !");
+      setAdminMessage('');
+    }
+  };
+
+  // -------------------------------
+  // RENDER
+  // -------------------------------
+  return (
+    <div className="settings-page">
+      <div className="settings-card">
+        <div className="section-title strong-title">Paramètres</div>
+
+        <p style={{ marginTop: 4, marginBottom: 16, color: '#555' }}>
+          Informations de votre compte Tarentule.
+        </p>
+
+        <div className="settings-grid">
+          <div className="settings-field">
+            <div className="settings-label">Nom</div>
+            <div className="settings-value">{nom}</div>
+          </div>
+
+          <div className="settings-field">
+            <div className="settings-label">Prénom</div>
+            <div className="settings-value">{prenom}</div>
+          </div>
+
+          <div className="settings-field">
+            <div className="settings-label">Email</div>
+            <div className="settings-value">{email}</div>
+          </div>
+
+          <div className="settings-field">
+            <div className="settings-label">Agence</div>
+            <div className="settings-value">{agence}</div>
+          </div>
+
+          <div className="settings-field">
+            <div className="settings-label">Statut</div>
+            <div className="settings-value">{statut}</div>
+          </div>
         </div>
 
-        {/* Prénom */}
-        <div className="settings-field">
-          <div className="settings-label">Prénom</div>
-          <div className="settings-value">{prenom}</div>
-        </div>
+        <p style={{ marginTop: 20, fontSize: 13, color: '#777' }}>
+          Pour modifier des informations personnelles (agence, statut, etc.), 
+          vous pouvez contacter un Administrateur via la zone ci-dessous.
+        </p>
 
-        {/* Email */}
-        <div className="settings-field">
-          <div className="settings-label">Email</div>
-          <div className="settings-value">{email}</div>
-        </div>
+        {/* ----------- CONTACT ADMIN ----------- */}
+        <div className="settings-admin-box">
+          <label className="settings-label">Contacter l’administrateur</label>
 
-        {/* Agence */}
-        <div className="settings-field">
-          <div className="settings-label">Agence</div>
-          <div className="settings-value">{agence}</div>
-        </div>
+          <textarea
+            className="settings-textarea"
+            placeholder="Votre message…"
+            value={adminMessage}
+            onChange={(e) => setAdminMessage(e.target.value)}
+          />
 
-        {/* Statut */}
-        <div className="settings-field">
-          <div className="settings-label">Statut</div>
-          <div className="settings-value">{statut}</div>
+          <button
+            className="login-btn"
+            onClick={sendToAdmin}
+            disabled={!adminMessage.trim()}
+          >
+            Envoyer le message
+          </button>
+
+          {sendStatus && (
+            <p style={{ marginTop: 8, color: '#2B3E37' }}>
+              {sendStatus}
+            </p>
+          )}
         </div>
       </div>
-
-      <p style={{ marginTop: 20, fontSize: 13, color: '#777' }}>
-        Pour modifier ces informations (changement d’agence, de statut, etc.),
-        merci de contacter un Administrateur.
-      </p>
     </div>
-  </div>
-);
-  <div className="settings-admin-box">
-  <label className="settings-label">Contacter l'administrateur</label>
-
-  <textarea
-    className="settings-textarea"
-    placeholder="Votre message…"
-    value={adminMessage}
-    onChange={(e) => setAdminMessage(e.target.value)}
-  />
-
-  <button
-    className="login-btn"
-    onClick={sendToAdmin}
-    disabled={!adminMessage.trim()}
-  >
-    Envoyer le message
-  </button>
-
-  {sendStatus && (
-    <p style={{ marginTop: 8, color: '#2B3E37' }}>{sendStatus}</p>
-  )}
-</div>
-
+  );
 }

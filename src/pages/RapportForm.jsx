@@ -409,20 +409,10 @@ const handleAutoSave = async () => {
                       readOnly
                     />
                   ) : (
-                    <input
-                      className="rapport-input"
-                      type="text"
-                      value={form.resultats.realises[i]}
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'realises',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => formatEuroField('realises', i)}
-                    />
+                  onBlur={(e) => {
+                  formatEuroField('realises', i);
+                  handleAutoSave();
+                  }}
                   )}
 
                   {/* Signature 1 mois */}
@@ -436,20 +426,10 @@ const handleAutoSave = async () => {
                       readOnly
                     />
                   ) : (
-                    <input
-                      className="rapport-input rapport-input-potentiel"
-                      type="text"
-                      value={form.resultats.potentiel3m[i]}
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'potentiel3m',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => formatEuroField('potentiel3m', i)}
-                    />
+                    onBlur={(e) => {
+                    formatEuroField('potentiel3m', i);
+                    handleAutoSave();
+                    }}
                   )}
 
                   {/* Potentiel */}
@@ -463,20 +443,10 @@ const handleAutoSave = async () => {
                       readOnly
                     />
                   ) : (
-                    <input
-                      className="rapport-input rapport-input-potentiel"
-                      type="text"
-                      value={form.resultats.potentiel12m[i]}
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'potentiel12m',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => formatEuroField('potentiel12m', i)}
-                    />
+                    onBlur={(e) => {
+                    formatEuroField('potentiel12m', i);
+                    handleAutoSave();
+                    }}
                   )}
 
                   {/* Notes */}
@@ -501,6 +471,7 @@ const handleAutoSave = async () => {
                             clampNote(e2.target.value)
                           )
                         }
+                        onBlur={handleAutoSave}
                       />
                       <input
                         className="rapport-input rapport-input-note manager-cell"
@@ -524,6 +495,7 @@ const handleAutoSave = async () => {
               onChange={(e2) =>
                 updateField('resultats', 'commentaires', e2.target.value)
               }
+              onBlur={handleAutoSave}
             />
 
             <label>Stratégie d’amélioration (manager)</label>
@@ -596,6 +568,7 @@ const handleAutoSave = async () => {
                       e2.target.value
                     )
                   }
+                  onBlur={handleAutoSave}
                 />
 
                 {/* Note CGP */}
@@ -613,6 +586,7 @@ const handleAutoSave = async () => {
                       clampNote(e2.target.value)
                     )
                   }
+                  onBlur={handleAutoSave}
                 />
 
                 {/* Note N+1 – lecture seule */}
@@ -684,6 +658,7 @@ const handleAutoSave = async () => {
                       clampNote(e2.target.value)
                     )
                   }
+                  onBlur={handleAutoSave}
                 />
 
                 <input
@@ -705,6 +680,7 @@ const handleAutoSave = async () => {
               onChange={(e2) =>
                 updateField('technique', 'commentaires', e2.target.value)
               }
+              onBlur={handleAutoSave}
             />
 
             <label>Stratégie d’amélioration (manager)</label>
@@ -754,6 +730,7 @@ const handleAutoSave = async () => {
                       clampNote(e2.target.value)
                     )
                   }
+                  onBlur={handleAutoSave}
                 />
 
                 <input
@@ -775,6 +752,7 @@ const handleAutoSave = async () => {
               onChange={(e2) =>
                 updateField('bienEtre', 'commentaires', e2.target.value)
               }
+              onBlur={handleAutoSave}
             />
 
             <label>Stratégie d’amélioration (manager)</label>

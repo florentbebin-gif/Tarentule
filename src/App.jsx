@@ -95,6 +95,8 @@ export default function App() {
   const [lastSave, setLastSave] = useState(null);
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState('user');
+  const [userRole, setUserRole] = useState('conseiller');
+  const [resetRapportKey, setResetRapportKey] = useState(0);
   
   // Récupère la session actuelle
   useEffect(() => {
@@ -153,7 +155,7 @@ export default function App() {
       const { data } = await supabase.auth.getUser();
       const user = data?.user;
       if (!user) {
-        setUserRole('user');
+        setUserRole('conseiller');
         return;
       }
 
@@ -163,10 +165,7 @@ export default function App() {
         .eq('id', user.id)
         .maybeSingle();
 
-      const role = String(
-        profile?.role || user.user_metadata?.role || 'user'
-      ).toLowerCase();
-
+      const role = String(profile?.role || 'conseiller').toLowerCase();
       setUserRole(role);
     };
 
@@ -185,7 +184,20 @@ export default function App() {
   const isSettingsRoute = path.startsWith('/settings');
   const isManagerLike = userRole === 'manager' || userRole === 'admin';
   const isManagerDetailRoute = path.startsWith('/rapport/') && isManagerLike;
+  const isOwnRapportRoute = path === '/rapport';
+  const isManagerRoute = path.startsWith('/manager');
+   const isForgotPasswordRoute = path.startsWith('/forgot-password');
+  const isSignupRoute = path.startsWith('/signup');
 
+  const handleClearRapport = () => {
+    // On incrémente juste une clé qui sera observée par RapportForm
+    setResetRapportKey((k) => k + 1);
+    // Optionnel : on peut aussi remettre la "dernière sauvegarde" à vide
+    // setLastSave(null);
+  };
+  
+  const isManagerLike =
+    userRole === 'manager' || userRole === 'admin';
 
   const isPublicRoute =
     path === '/login' || path === '/signup' || path === '/forgot-password';

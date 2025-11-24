@@ -46,6 +46,19 @@ export default function RapportForm({ onSaved, resetKey }) {
 
   const [form, setForm] = useState(initialForm);
 
+const handleAutoSave = async () => {
+  if (!viewedUserId) return;
+
+  await supabase.from('reports').insert({
+    user_id: viewedUserId,
+    period,
+    data: form,
+  });
+
+  if (onSaved) onSaved(new Date());
+};
+
+  
   // Libellés des lignes
   const resultatsLabels = [
     '1 - Performance globale : atteinte des objectifs',

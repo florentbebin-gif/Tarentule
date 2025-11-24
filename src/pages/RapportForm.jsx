@@ -6,7 +6,7 @@ import RadarChart from '../components/RadarChart';
 import PerformanceChart from '../components/PerformanceChart';
 import { useParams } from 'react-router-dom';
 
-export default function RapportForm({ onSaved }) {
+export default function RapportForm({ onSaved, resetKey }) {
   const [period, setPeriod] = useState('');
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -197,6 +197,14 @@ export default function RapportForm({ onSaved }) {
       loadLastReport();
     }
   }, [loadingUser, viewedUserId]);
+
+    // RESET complet du rapport lorsque resetKey change (icône Trash)
+  useEffect(() => {
+    if (resetKey === undefined) return;
+    setForm(initialForm);
+    setPeriod('');
+    setSaved(false);
+  }, [resetKey]);
 
 
   const clampNote = (value) => {

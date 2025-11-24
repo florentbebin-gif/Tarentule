@@ -26,29 +26,6 @@ function computeTotalsFromReport(data) {
       potentiel12m: 0,
     };
   }
-// Moyenne sécurisée (évite division par zéro)
-const average = (arr) => {
-  const nums = arr.map((v) => Number(v) || 0).filter((n) => !isNaN(n));
-  if (nums.length === 0) return 0;
-  return nums.reduce((a, b) => a + b, 0) / nums.length;
-};
-
-// Retourne une date formatée JJ/MM/AA
-const formatShortDate = (iso) => {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  if (isNaN(d)) return '—';
-  return d.toLocaleDateString('fr-FR');
-};
-
-// Vérifie si la date est > 15 jours
-const isOlderThan15Days = (iso) => {
-  if (!iso) return false;
-  const now = new Date();
-  const d = new Date(iso);
-  const diff = now - d;
-  return diff > 15 * 24 * 60 * 60 * 1000;
-};
 
   const {
     objectifs = [],
@@ -74,6 +51,30 @@ const isOlderThan15Days = (iso) => {
 
   return totals;
 }
+// Moyenne sécurisée (évite division par zéro)
+const average = (arr) => {
+  const nums = arr.map((v) => Number(v) || 0).filter((n) => !isNaN(n));
+  if (nums.length === 0) return 0;
+  return nums.reduce((a, b) => a + b, 0) / nums.length;
+};
+
+// Retourne une date formatée JJ/MM/AA
+const formatShortDate = (iso) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return '—';
+  return d.toLocaleDateString('fr-FR');
+};
+
+// Vérifie si la date est > 15 jours
+const isOlderThan15Days = (iso) => {
+  if (!iso) return false;
+  const now = new Date();
+  const d = new Date(iso);
+  const diff = now - d;
+  return diff > 15 * 24 * 60 * 60 * 1000;
+};
+
 
 export default function ManagerReports() {
   const [loading, setLoading] = useState(true);

@@ -717,3 +717,7 @@ body {
   color: #555;
   margin-bottom: 4px;
 }
+/* Couleur des cases à cocher des agences sur la page manager */
+.manager-filter-chip input[type="checkbox"] {
+  accent-color: #2B3E37;
+}

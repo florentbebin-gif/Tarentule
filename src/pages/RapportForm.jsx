@@ -540,8 +540,8 @@ export default function RapportForm({ onSaved }) {
 
             <div className="rapport-table-header-sub rapport-table-header-sub--part">
               <span className="col-libelle">Libellés</span>
-              <span>Objectifs (nb)</span>
-              <span>Réalisés (nb)</span>
+              <span>Objectifs N (nb)</span>
+              <span>Réalisés N (nb)</span>
               <span>CGP</span>
               <span>N+1</span>
             </div>

@@ -65,7 +65,7 @@ export default function RapportForm({ onSaved, resetKey }) {
   ];
 
   const bienEtreLabels = [
-    '1 - Équilibre psychologique / gestion du stress',
+    '1 - Équilibre / gestion du stress',
     '2 - Motivation',
     '3 - Niveau d’intégration dans l’équipe et l’entreprise',
     '4 - Satisfaction et épanouissement au travail',
@@ -74,8 +74,8 @@ export default function RapportForm({ onSaved, resetKey }) {
   const techniqueLabels = [
     '1 - Commerciale : techniques de vente et relation client',
     '2 - Civile : compétences techniques sur les aspects civils / juridiques',
-    '3 - Société : montages et problématiques',
-    '4 - Outils : Big, Hubspot, SIO2, Extranet, Power BI',
+    '3 - Société : détention, structuration et problématiques',
+    '4 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, Capacité d'épargne, SER1',
     '5 - Process interne : organisation Relation Middle',
   ];
 

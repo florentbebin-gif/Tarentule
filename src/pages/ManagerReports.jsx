@@ -345,7 +345,7 @@ export default function ManagerReports() {
                     (sortDirection === 'asc' ? ' ▲' : ' ▼')}
                 </th>
                 <th onClick={() => handleSort('potentiel12m')}>
-                  Potentiel
+                  Potentiel 31/12
                   {sortKey === 'potentiel12m' &&
                     (sortDirection === 'asc' ? ' ▲' : ' ▼')}
                 </th>

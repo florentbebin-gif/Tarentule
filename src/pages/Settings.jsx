@@ -191,4 +191,27 @@ if (!user) {
     </div>
   </div>
 );
+  <div className="settings-admin-box">
+  <label className="settings-label">Contacter l'administrateur</label>
+
+  <textarea
+    className="settings-textarea"
+    placeholder="Votre message…"
+    value={adminMessage}
+    onChange={(e) => setAdminMessage(e.target.value)}
+  />
+
+  <button
+    className="login-btn"
+    onClick={sendToAdmin}
+    disabled={!adminMessage.trim()}
+  >
+    Envoyer le message
+  </button>
+
+  {sendStatus && (
+    <p style={{ marginTop: 8, color: '#2B3E37' }}>{sendStatus}</p>
+  )}
+</div>
+
 }

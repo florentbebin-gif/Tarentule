@@ -110,7 +110,7 @@ export default function ManagerReports() {
         // 2. Récupérer le rôle dans profiles
         const { data: meProfile, error: meProfileError } = await supabase
           .from('profiles')
-          .select('role')
+          .select('role, agences_filtrees')
           .eq('id', user.id)
           .maybeSingle();
 
@@ -235,7 +235,13 @@ export default function ManagerReports() {
 
         setRows(rowsData);
         setAgencies(agenciesList);
-        setSelectedAgencies(agenciesList); // par défaut toutes sélectionnées
+        // Appliquer filtres sauvegardés ou toutes les agences si vide
+        const saved = meProfile?.agences_filtrees;
+        if (saved && saved.length > 0) {
+          setSelectedAgencies(saved);
+        } else {
+          setSelectedAgencies(agenciesList);
+        }
         setLoading(false);
       } catch (e) {
         console.error(e);
@@ -248,14 +254,34 @@ export default function ManagerReports() {
   }, [navigate]);
 
   // Gestion du filtre agences
-  const toggleAgency = (bureau) => {
-    setSelectedAgencies((prev) => {
-      if (prev.includes(bureau)) {
-        return prev.filter((b) => b !== bureau);
-      }
-      return [...prev, bureau];
-    });
-  };
+const toggleAgency = async (bureau) => {
+  setSelectedAgencies((prev) => {
+    let updated;
+    if (prev.includes(bureau)) {
+      updated = prev.filter((b) => b !== bureau);
+    } else {
+      updated = [...prev, bureau];
+    }
+
+    // Sauvegarde Supabase
+    saveAgencyFilters(updated);
+    return updated;
+  });
+};
+
+const saveAgencyFilters = async (list) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return;
+
+  await supabase
+    .from('profiles')
+    .update({ agences_filtrees: list })
+    .eq('id', user.id);
+};
+
 
   // Tri + filtrage
   const sortedRows = useMemo(() => {

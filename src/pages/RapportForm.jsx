@@ -372,7 +372,7 @@ export default function RapportForm({ onSaved, resetKey }) {
               <span className="col-libelle">Libellés</span>
               <span>Objectifs</span>
               <span>Réalisés</span>
-              <span className="col-potentiel-header">Signature 1 mois</span>
+              <span className="col-potentiel-header">%</span>
               <span className="col-potentiel-header">Potentiel 31/12</span>
               <span>CGP</span>
               <span>N+1</span>
@@ -447,35 +447,45 @@ export default function RapportForm({ onSaved, resetKey }) {
                     />
                   )}
 
-                  {/* Signature 1 mois */}
-                  {isCampaignRow ? (
-                    <span></span>
-                  ) : isTotalRow ? (
-                    <input
-                      className="rapport-input rapport-input-potentiel manager-cell total-cell"
-                      type="text"
-                      value={euroFromNumber(totals.potentiel3m)}
-                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                    />
-                  ) : (
-                    <input
-                      className="rapport-input rapport-input-potentiel"
-                      type="text"
-                      value={form.resultats.potentiel3m[i]}
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'potentiel3m',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => {
-                        formatEuroField('potentiel3m', i);
-                        handleAutoSave();
-                      }}
-                    />
-                  )}
+{/* % de réalisation auto (Réalisés / Objectifs) */}
+                  {(() => {
+                    if (isCampaignRow) {
+                      // Ligne "Campagnes diverses" : on ne met rien
+                      return <span></span>;
+                    }
+
+                    let objectifsValue;
+                    let realisesValue;
+
+                    if (isTotalRow) {
+                      // Ligne 1 : on utilise les totaux déjà calculés
+                      objectifsValue = totals.objectifs;
+                      realisesValue = totals.realises;
+                    } else {
+                      // Lignes 2 à 7 : on lit les valeurs de la ligne
+                      objectifsValue = parseEuro(form.resultats.objectifs[i]);
+                      realisesValue = parseEuro(form.resultats.realises[i]);
+                    }
+
+                    const percent =
+                      objectifsValue > 0
+                        ? Math.round((realisesValue / objectifsValue) * 100)
+                        : 0;
+
+                    const display = `${percent} %`;
+
+                    return (
+                      <input
+                        className={`rapport-input rapport-input-potentiel${
+                          isTotalRow ? ' manager-cell total-cell' : ''
+                        }`}
+                        type="text"
+                        value={display}
+                        readOnly
+                      />
+                    );
+                  })()}
+
 
                   {/* Potentiel */}
                   {isCampaignRow ? (

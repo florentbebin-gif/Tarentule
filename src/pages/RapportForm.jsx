@@ -388,21 +388,13 @@ export default function RapportForm({ onSaved, resetKey }) {
                       readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
                     />
                   ) : (
-<input
-  className="rapport-input manager-cell"
-  type="text"
-  value={form.resultats.objectifs[i]}
-  onChange={(e2) =>
-    updateArrayField('resultats', 'objectifs', i, e2.target.value)
-  }
-  onBlur={() => {
-    formatEuroField('objectifs', i);
-    handleAutoSave();
-  }}
-  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-  placeholder="—"
-/>
-
+                    <input
+                      className="rapport-input manager-cell"
+                      type="text"
+                      value={form.resultats.objectifs[i]}
+                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                      placeholder="—"
+                    />
                   )}
 
                   {/* Réalisé */}
@@ -519,24 +511,14 @@ export default function RapportForm({ onSaved, resetKey }) {
                         }
                         onBlur={handleAutoSave}
                       />
-<input
-  className="rapport-input rapport-input-note manager-cell"
-  type="number"
-  min="0"
-  max="10"
-  value={form.resultats.notesManager?.[i] || ''}
-  onChange={(e2) =>
-    updateArrayField(
-      'resultats',
-      'notesManager',
-      i,
-      clampNote(e2.target.value)
-    )
-  }
-  onBlur={handleAutoSave}
-  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-/>
-
+                      <input
+                        className="rapport-input rapport-input-note manager-cell"
+                        type="number"
+                        min="0"
+                        max="10"
+                        readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                        placeholder="—"
+                      />
                     </>
                   )}
                 </div>
@@ -597,22 +579,13 @@ export default function RapportForm({ onSaved, resetKey }) {
                 <span className="col-libelle">{label}</span>
 
                 {/* Objectifs (nb) – manager (lecture seule pour CGP) */}
-<input
-  className="rapport-input rapport-input-narrow manager-cell"
-  type="number"
-  value={form.partenariat.objectifs[i] || ''}
-  onChange={(e2) =>
-    updateArrayField(
-      'partenariat',
-      'objectifs',
-      i,
-      e2.target.value
-    )
-  }
-  onBlur={handleAutoSave}
-  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-/>
-
+                <input
+                  className="rapport-input rapport-input-narrow manager-cell"
+                  type="number"
+                  value={form.partenariat.objectifs[i] || ''}
+                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                  placeholder="—"
+                />
 
                 {/* Réalisé (nb) – conseiller */}
                 <input

@@ -340,6 +340,10 @@ body {
   font-size: 11px;
   font-style: italic;
 }
+/* Colonne % résultats (lecture seule) */
+.rapport-input-percent {
+  text-align: center;
+}
 /* PARTENARIAT : Libellé / Réalisé / CGP / N+1 */
 
 .rapport-section-table--part {

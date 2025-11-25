@@ -90,7 +90,7 @@ export default function RadarChart({ labels, cgpValues = [], managerValues = [] 
         <path
           d={buildPath(managerValues)}
           fill="#2B3E37"
-          fillOpacity="0.9"
+          fillOpacity="0.95"
           stroke="#e5e7eb"
           strokeWidth="1.2"
         />

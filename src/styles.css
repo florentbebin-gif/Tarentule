@@ -534,19 +534,19 @@ body {
   }
 
   .radar-card--resultats {
-    margin-top: 30px;     /* juste sous Performance globale */
+    margin-top: 50px;     /* juste sous Performance globale */
   }
 
   .radar-card--partenariat {
-    margin-top: 30px;   
+    margin-top: 50px;   
   }
 
   .radar-card--technique {
-    margin-top: 30px;   
+    margin-top: 50px;   
   }
 
   .radar-card--bienetre {
-    margin-top: 30px;   
+    margin-top: 50px;   
   }
 }
 .save-message {

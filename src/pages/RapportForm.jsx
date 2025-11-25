@@ -82,7 +82,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     '5 - Honoraires : production / chiffre d’affaires généré',
     '6 - Arbitrages : gestion pilotée, structurés, Pams',
     '7 - PER : dispositifs d’épargne retraite',
-    '8 - Primes périodiques : réalisation/détection de PER en VP ou de prévoyance',
+    '8 - VP : réalisation/détection de VP en PER (ou prévoyance)',
     '9 - Campagnes diverses : participation et efficacité',
   ];
 
@@ -313,7 +313,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     'Honoraire',
     'Arbitrages',
     'PER',
-    'Primes périodiques',
+    'VP',
   ];
   const resultatsCgpRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
     Number(form.resultats.notesCgp[i] || 0)

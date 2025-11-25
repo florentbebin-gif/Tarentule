@@ -551,16 +551,6 @@ export default function RapportForm({ onSaved, resetKey }) {
             })}
           </div>
 
-          <div className="rapport-comments-block">
-            <label>Commentaires</label>
-            <textarea
-              value={form.resultats.commentaires}
-              onChange={(e2) =>
-                updateField('resultats', 'commentaires', e2.target.value)
-              }
-              onBlur={handleAutoSave}
-            />
-
             <label>Stratégie d’amélioration (manager)</label>
             <textarea
               className="rapport-strategie-manager"
@@ -680,16 +670,6 @@ export default function RapportForm({ onSaved, resetKey }) {
             ))}
           </div>
 
-          <div className="rapport-comments-block">
-            <label>Commentaires</label>
-            <textarea
-              value={form.partenariat.commentaires}
-              onChange={(e2) =>
-                updateField('partenariat', 'commentaires', e2.target.value)
-              }
-              onBlur={handleAutoSave}
-            />
-
             <label>Stratégie d’amélioration (manager)</label>
                 <textarea
                   className="rapport-strategie-manager"
@@ -768,16 +748,6 @@ export default function RapportForm({ onSaved, resetKey }) {
             ))}
           </div>
 
-          <div className="rapport-comments-block">
-            <label>Commentaires</label>
-            <textarea
-              value={form.technique.commentaires}
-              onChange={(e2) =>
-                updateField('technique', 'commentaires', e2.target.value)
-              }
-              onBlur={handleAutoSave}
-            />
-
             <label>Stratégie d’amélioration (manager)</label>
               <textarea
                 className="rapport-strategie-manager"
@@ -855,16 +825,6 @@ export default function RapportForm({ onSaved, resetKey }) {
               </div>
             ))}
           </div>
-
-          <div className="rapport-comments-block">
-            <label>Commentaires</label>
-            <textarea
-              value={form.bienEtre.commentaires}
-              onChange={(e2) =>
-                updateField('bienEtre', 'commentaires', e2.target.value)
-              }
-              onBlur={handleAutoSave}
-            />
 
             <label>Stratégie d’amélioration (manager)</label>
               <textarea

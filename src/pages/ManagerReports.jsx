@@ -484,7 +484,7 @@ const saveAgencyFilters = async (list) => {
                     textAlign: 'center',
                   }}
                 >
-                  Notes
+                  Notes CGP
                 </th>
               </tr>
               <tr>

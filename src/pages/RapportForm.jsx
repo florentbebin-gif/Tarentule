@@ -31,18 +31,18 @@ export default function RapportForm({ onSaved, resetKey }) {
       strategie: '',
     },
     resultats: {
-      objectifs: Array(8).fill(''),
-      realises: Array(8).fill(''),
-      potentiel3m: Array(8).fill(''),
-      potentiel12m: Array(8).fill(''),
-      notesCgp: Array(8).fill(''),
-      notesManager: Array(8).fill(''),
+      objectifs: Array(9).fill(''),
+      realises: Array(9).fill(''),
+      potentiel3m: Array(9).fill(''),
+      potentiel12m: Array(9).fill(''),
+      notesCgp: Array(9).fill(''),
+      notesManager: Array(9).fill(''),
       commentaires: '',
       strategie: '',
     },
     technique: {
-      notesCgp: ['', '', '', '', ''],
-      notesManager: ['', '', '', '', ''],
+      notesCgp: ['', '', '', '', '', ''],
+      notesManager: ['', '', '', '', '', ''],
       commentaires: '',
       strategie: '',
     },
@@ -82,8 +82,10 @@ export default function RapportForm({ onSaved, resetKey }) {
     '5 - Honoraires : production / chiffre d’affaires généré',
     '6 - Arbitrages : gestion pilotée, structurés, Pams',
     '7 - PER : dispositifs d’épargne retraite',
-    '8 - Campagnes diverses : participation et efficacité',
+    '8 - Primes périodiques : réalisation/détection de PER en VP ou de prévoyance',
+    '9 - Campagnes diverses : participation et efficacité',
   ];
+
 
   const partenariatLabels = [
     '1 - Clubs Experts : gestion des invitations, relances et animation',
@@ -104,6 +106,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     '3 - Société : détention, structuration et problématiques',
     '4 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, Capacité d\'épargne, SER1',
     '5 - Process interne : organisation Relation Middle',
+    '6 - Social : Retraite, prévoyance, épargne salariale,... / capacité à détecter',
   ];
 
   // Conversion "1 000 €" -> 1000
@@ -149,6 +152,7 @@ export default function RapportForm({ onSaved, resetKey }) {
   };
 
   for (let i = 1; i < 8; i += 1) {
+    // i = 1 à 7 -> lignes 2 à 8
     totals.objectifs += parseEuro(form.resultats.objectifs[i]);
     totals.realises += parseEuro(form.resultats.realises[i]);
     totals.potentiel3m += parseEuro(form.resultats.potentiel3m[i]);
@@ -309,7 +313,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     'Honoraire',
     'Arbitrages',
     'PER',
-    'Divers',
+    'Primes périodiques',
   ];
   const resultatsCgpRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
     Number(form.resultats.notesCgp[i] || 0)
@@ -332,12 +336,13 @@ export default function RapportForm({ onSaved, resetKey }) {
     'Société',
     'Outils',
     'Process',
+    'Social',
   ];
-  const techniqueCgpRadar = [0, 1, 2, 3, 4].map((i) =>
+    const techniqueCgpRadar = [0, 1, 2, 3, 4, 5].map((i) =>
     Number(form.technique.notesCgp[i] || 0)
   );
-  const techniqueManagerRadar = [0, 1, 2, 3, 4].map((i) =>
-  Number(form.technique.notesManager?.[i] || 0)
+    const techniqueManagerRadar = [0, 1, 2, 3, 4, 5].map((i) =>
+    Number(form.technique.notesManager?.[i] || 0)
 );
 
   const bienEtreRadarLabels = [
@@ -396,9 +401,9 @@ export default function RapportForm({ onSaved, resetKey }) {
               <span>N+1</span>
             </div>
 
-            {Array.from({ length: 8 }).map((_, i) => {
+            {Array.from({ length: 9 }).map((_, i) => {
               const isTotalRow = i === 0;
-              const isCampaignRow = i === 7;
+              const isCampaignRow = i === 8; // nouvelle dernière ligne = Campagnes diverses
               const label = resultatsLabels[i];
 
               return (

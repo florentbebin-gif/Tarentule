@@ -447,7 +447,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                     />
                   )}
 
-{/* % de réalisation auto (Réalisés / Objectifs) */}
+                  {/* % de réalisation auto (Réalisés / Objectifs) */}
                   {(() => {
                     if (isCampaignRow) {
                       // Ligne "Campagnes diverses" : on ne met rien
@@ -476,8 +476,8 @@ export default function RapportForm({ onSaved, resetKey }) {
 
                     return (
                       <input
-                        className={`rapport-input rapport-input-potentiel${
-                          isTotalRow ? ' manager-cell total-cell' : ''
+                        className={`rapport-input rapport-input-percent manager-cell${
+                          isTotalRow ? ' total-cell' : ''
                         }`}
                         type="text"
                         value={display}
@@ -485,7 +485,6 @@ export default function RapportForm({ onSaved, resetKey }) {
                       />
                     );
                   })()}
-
 
                   {/* Potentiel */}
                   {isCampaignRow ? (

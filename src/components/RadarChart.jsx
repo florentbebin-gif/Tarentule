@@ -74,24 +74,24 @@ export default function RadarChart({ labels, cgpValues = [], managerValues = [] 
         );
       })}
 
-      {/* N+1 : zone pleine #2B3E37, opacité 80% */}
-      {hasManager && (
-        <path
-          d={buildPath(managerValues)}
-          fill="#2B3E37"
-          fillOpacity="0.8"
-          stroke="#2B3E37"
-          strokeWidth="1.2"
-        />
-      )}
-
-      {/* CGP : zone pleine #CFDED8 */}
+      {/* CGP : zone pleine #CFDED8 en fond */}
       {hasCgp && (
         <path
           d={buildPath(cgpValues)}
           fill="#CFDED8"
           fillOpacity="1"
           stroke="#2B3E37"
+          strokeWidth="1.2"
+        />
+      )}
+
+      {/* N+1 : au-dessus, opacité 80%, bord gris clair */}
+      {hasManager && (
+        <path
+          d={buildPath(managerValues)}
+          fill="#2B3E37"
+          fillOpacity="0.8"
+          stroke="#e5e7eb"
           strokeWidth="1.2"
         />
       )}

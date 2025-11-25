@@ -268,16 +268,28 @@ export default function RapportForm({ onSaved, resetKey }) {
   };
 
   const updateArrayField = (section, field, index, value) => {
-    setForm((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: prev[section][field].map((v, i) =>
-          i === index ? value : v
-        ),
-      },
-    }));
+    setForm((prev) => {
+      const prevSection = prev[section] || {};
+      const prevArray = prevSection[field] || [];
+      const nextArray = [...prevArray];
+
+      // Si l'index demandé dépasse la longueur actuelle, on agrandit le tableau
+      if (index >= nextArray.length) {
+        nextArray.length = index + 1;
+      }
+
+      nextArray[index] = value;
+
+      return {
+        ...prev,
+        [section]: {
+          ...prevSection,
+          [field]: nextArray,
+        },
+      };
+    });
   };
+
 
   const updateField = (section, field, value) => {
     setForm((prev) => ({

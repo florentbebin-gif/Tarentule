@@ -105,8 +105,6 @@ select * from reports;
 
 📌 Roadmap
 
-Finir de paramétrer les cases notes Manager dans le rapport conseiller
-Remplacer Signature 1 mois par une colonne % dans le rapport conseiller
 Définir, avant de remplir les champs, un exercice allant du 1/01/.... au 31/12/.... Un bouton de sauvegarde de l'exercice (Archivage de l'exerccie) permettra d'archiver l'exercice et de le réouvrir (on aura jusqu'à 2archives pouvant etre réouverte sans perdre les données (prévoir les boutons). Tout de suite après l'archivage, créer nouvel exercice du 1/01/.... au 31/12/.... avec un rapport vierge (pas plus de 3 exercices pouvant être archivé, le dernier archivage faisant glisser les anciens et supprimant le plus ancien (confimation à demander à l'utilisateur)).
 Dans le rapport conseiller, ajouter en ligne 8 (redéfinir la suivante en 9) sur le meme fonctionnement que la ligne 7 : "8 - Primes périodiques : réalisation/détection de PER en VP ou de prévoyance" => Adapter le graphique radar => adapter le rapport Manager (moyenne).
 

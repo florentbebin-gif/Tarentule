@@ -18,6 +18,7 @@ export default function RapportForm({ onSaved, resetKey }) {
   const initialForm = {
     bienEtre: {
       notesCgp: ['', '', '', ''],
+      notesManager: ['', '', ''],
       commentaires: '',
       strategie: '',
     },
@@ -25,6 +26,7 @@ export default function RapportForm({ onSaved, resetKey }) {
       objectifs: ['', '', ''],
       realises: ['', '', ''],
       notesCgp: ['', '', ''],
+      notesManager: ['', '', ''],
       commentaires: '',
       strategie: '',
     },
@@ -40,6 +42,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     },
     technique: {
       notesCgp: ['', '', '', '', ''],
+      notesManager: ['', '', '', '', ''],
       commentaires: '',
       strategie: '',
     },

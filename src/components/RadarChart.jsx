@@ -6,7 +6,7 @@ const MAX_NOTE = 10;
 export default function RadarChart({ labels, cgpValues = [], managerValues = [] }) {
   const size = 140;
   const center = size / 2;
-  const radius = size / 2 - 28; // un peu plus petit pour laisser de la marge
+  const radius = size / 2 - 32;
   const angleStep = (Math.PI * 2) / labels.length;
 
   const toPoint = (value, index, rOverride) => {
@@ -35,12 +35,7 @@ export default function RadarChart({ labels, cgpValues = [], managerValues = [] 
   const hasManager = managerValues.some((v) => Number(v) > 0);
 
   return (
-    <svg
-      width={size}
-      height={size}
-      className="radar-chart"
-      style={{ overflow: 'visible' }} // pour que le texte puisse dépasser du SVG sans être coupé
-    >
+    <svg width={size} height={size} className="radar-chart">
       {/* Grille */}
       {gridLevels.map((lvl, idx) => {
         const r = (lvl / MAX_NOTE) * radius;
@@ -104,7 +99,7 @@ export default function RadarChart({ labels, cgpValues = [], managerValues = [] 
       {/* Libellés autour */}
       {labels.map((label, i) => {
         const angle = -Math.PI / 2 + angleStep * i;
-        const labelRadius = radius + 8; // moins loin pour éviter d'être coupé
+        const labelRadius = radius + 12; // texte en dehors de la zone notée
         const x = center + labelRadius * Math.cos(angle);
         const y = center + labelRadius * Math.sin(angle);
         return (
@@ -115,7 +110,6 @@ export default function RadarChart({ labels, cgpValues = [], managerValues = [] 
             textAnchor="middle"
             dominantBaseline="middle"
             className="radar-label"
-            style={{ fontSize: '10px' }} // texte plus petit
           >
             {label}
           </text>

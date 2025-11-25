@@ -82,7 +82,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     '5 - Honoraires : production / chiffre d’affaires généré',
     '6 - Arbitrages : gestion pilotée, structurés, Pams',
     '7 - PER : dispositifs d’épargne retraite',
-    '8 - VP : réalisation/détection de VP en PER (ou prévoyance)',
+    '8 - VP : réalisation/détection de VP PER/prévoyance',
     '9 - Campagnes diverses : participation et efficacité',
   ];
 

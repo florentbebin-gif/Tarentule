@@ -2,9 +2,9 @@ Tarentule – Application de suivi commercial & managérial
 
 Tarentule est une application interne permettant :
 
-aux conseillers : de remplir leur rapport de performance
+aux conseillers : de remplir leur rapport de performance et de préparer leur entretien avec le manager
 
-aux managers : de consulter les résultats d’équipe et d’accéder aux rapports détaillés
+aux managers : de consulter les résultats d’équipe, d’accéder aux rapports détaillés et de préparer son entretien avec le conseiller
 
 à l’administrateur : de gérer les accès et toutes les données
 
@@ -18,34 +18,38 @@ Sécurité	Row Level Security (RLS) Supabase
 Backend Serverless	Supabase Edge Functions
 Stockage principal	Table reports (JSONB)
 Gestion des utilisateurs	Table profiles (liée à auth.users)
-📦 Installation
-1. Cloner le projet
-git clone https://github.com/tonrepo/tarentule.git
-cd tarentule
 
-2. Installer les dépendances
-npm install
-
-3. Configurer les variables d’environnement
-
-Créer un fichier .env.local :
+📦 Variables d’environnement
 
 VITE_SUPABASE_URL=https://xxxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key
 
 
-Ne jamais mettre la clé service_role dans le front.
-
 🛠 Structure du projet
+public/
+  login-bg.jpg
 src/
-  App.jsx              → Layout + topbar + navigation
-  RapportForm.jsx      → Rapport conseiller
-  ManagerReports.jsx   → Tableau manager
-  Settings.jsx         → Page profil + commentaires
-  RadarChart.jsx       → Graphiques radars
-  PerformanceChart.jsx → Graphique performance globale
-  supabase.js          → Client Supabase
-  styles.css           → Styles globaux
+  components/
+    RadarChart.jsx
+    PerformanceChart.jsx
+  pages/
+    ForgotPassword.css
+    ForgotPassword.jsx
+    Login.css
+    Login.jsx
+    RapportForm.jsx
+    ManagerReports.jsx
+    Settings.jsx
+    Signup.jsx
+  App.jsx
+  main.jsx
+  supabase.js
+  styles.css
+.gitignore
+index.html
+package.json
+vercel.json
+.env.example
 
 🔐 Sécurité & Rôles
 Rôles définis dans profiles.role
@@ -101,11 +105,24 @@ select * from reports;
 
 📌 Roadmap
 
-Export PDF
+Finir de paramétrer les cases notes Manager dans le rapport conseiller
+Supprimer les champs commentaires pour le conseiller dans le rapport conseiller
+Remplacer Signature 1 mois par une colonne % dans le rapport conseiller
+Création d'une archive par le conseiller (jusqu'à 2) permettant d'archiver une année (box archive du .../.../...) pouvant etre réouverte sans perdre les données actuelles (bouton de reprise de la situation actuelle)
+Changer la couleur de la barre du réalisé dans le graphique performance (La couleur du réalisé doit être #D9D9D9)
+Dans le rapport conseiller, ajouter en ligne 8 (redéfinir la suivante en 9) sur le meme fonctionnement que la ligne 7 : "8 - Primes périodiques : réalisation/détection de PER en VP ou de prévoyance" => Adapter le graphique radar => adapter le rapport Manager (moyenne).
 
-Historique des versions d’un rapport
 
-Notifications email automatiques
+Email settings admin fonctionne mais n'arrive pas
+
+Dans le rapport Manager supprimer la colonne Signature 1 mois
+Dans le rapport Manager créer au-dessus de la carte Synthèse Manager une autre carte s’intitulant Board Manager. Il pourra cocher les agences également ici (elles seront liées avec celles du Synthèse Manager). Création de plusieurs graphique :Il y aura plusieurs graphiques :
+    1-	total réalisé comparé à l’objectifs total
+    2-	Un graphique camembert rappelant le % d’atteinte total (Somme de réalisé en rapport à la somme des Objectifs)
+    3-	Un graphique barre empilé (réalisé + signature 1 mois) comparé à l’objectifs total
+    4-	Un graphique barre empilé (réalisé + signature 1 mois + potentiel 31/12) comparé à l’objectifs total
+    5-	Un graphique histogramme empilé reprenant les Notes CGP sur une base 100
+    Ces graphiques doivent s’adapter en fonction des agences sélectionnées.
 
 Mode mobile amélioré
 

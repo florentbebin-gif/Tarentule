@@ -302,13 +302,17 @@ export default function RapportForm({ onSaved, resetKey }) {
   const resultatsCgpRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
     Number(form.resultats.notesCgp[i] || 0)
   );
-  const resultatsManagerRadar = [1, 2, 3, 4, 5, 6, 7].map(() => 0);
+  const resultatsManagerRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
+  Number(form.resultats.notesManager?.[i] || 0)
+);
 
   const partenariatRadarLabels = ['Clubs Experts', 'Animation', 'Prospection'];
   const partenariatCgpRadar = [0, 1, 2].map((i) =>
     Number(form.partenariat.notesCgp[i] || 0)
   );
-  const partenariatManagerRadar = [0, 1, 2].map(() => 0);
+  const partenariatManagerRadar = [0, 1, 2].map((i) =>
+  Number(form.partenariat.notesManager?.[i] || 0)
+);
 
   const techniqueRadarLabels = [
     'Commercial',
@@ -320,7 +324,9 @@ export default function RapportForm({ onSaved, resetKey }) {
   const techniqueCgpRadar = [0, 1, 2, 3, 4].map((i) =>
     Number(form.technique.notesCgp[i] || 0)
   );
-  const techniqueManagerRadar = [0, 1, 2, 3, 4].map(() => 0);
+  const techniqueManagerRadar = [0, 1, 2, 3, 4].map((i) =>
+  Number(form.technique.notesManager?.[i] || 0)
+);
 
   const bienEtreRadarLabels = [
     'Stress',
@@ -331,7 +337,9 @@ export default function RapportForm({ onSaved, resetKey }) {
   const bienEtreCgpRadar = [0, 1, 2, 3].map((i) =>
     Number(form.bienEtre.notesCgp[i] || 0)
   );
-  const bienEtreManagerRadar = [0, 1, 2, 3].map(() => 0);
+  const bienEtreManagerRadar = [0, 1, 2, 3].map((i) =>
+  Number(form.bienEtre.notesManager?.[i] || 0)
+);
 
   if (loadingUser) {
     return <p>Chargement…</p>;

@@ -570,8 +570,7 @@ export default function RapportForm({ onSaved, resetKey }) {
               {error}
             </div>
           )}
-        </div>
-
+        
         {/* 2. PARTENARIAT */}
         <div className="section-card">
           <div className="section-title strong-title">Partenariat</div>
@@ -683,7 +682,6 @@ export default function RapportForm({ onSaved, resetKey }) {
                 />
 
           </div>
-        </div>
 
         {/* 3. TECHNIQUE */}
         <div className="section-card">
@@ -761,7 +759,7 @@ export default function RapportForm({ onSaved, resetKey }) {
               />
 
           </div>
-        </div>
+
 
         {/* 4. BIEN-ÊTRE */}
         <div className="section-card">
@@ -840,7 +838,6 @@ export default function RapportForm({ onSaved, resetKey }) {
 
           </div>
         </div>
-      </div>
 
       {/* Colonne droite : graphiques */}
       <div className="rapport-charts">

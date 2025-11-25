@@ -330,14 +330,13 @@ body {
   background-color: #f3f4f6;
   color: #6b7280;
 }
-/* Potentiels : plus petit et en italique */
 .col-potentiel-header {
   font-style: italic;
-  font-size: 11px; 
+  font-size: 14px; 
 }
 
 .rapport-input-potentiel {
-  font-size: 11px;
+  font-size: 14px;
   font-style: italic;
 }
 /* Colonne % résultats (lecture seule) */
@@ -387,6 +386,10 @@ body {
 .rapport-input-narrow {
   padding: 2px 6px;
   font-size: 12px;
+}
+/* Forcer taille uniforme du header Partenariat */
+.rapport-table-header-sub--part span {
+  font-size: 14px !important;
 }
 /* BIEN-ÊTRE / TECHNIQUE : Libellé / CGP / N+1 */
 

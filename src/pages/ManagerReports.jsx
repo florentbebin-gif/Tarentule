@@ -16,13 +16,11 @@ const parseEuro = (value) => {
 const formatEuro = (n) =>
   (Number.isNaN(n) ? 0 : n).toLocaleString('fr-FR') + ' €';
 
-// Calcule les totaux Objectifs / Réalisé / Potentiels à partir du JSON du rapport
 function computeTotalsFromReport(data) {
   if (!data || !data.resultats) {
     return {
       objectifs: 0,
       realises: 0,
-      potentiel3m: 0,
       potentiel12m: 0,
     };
   }
@@ -30,14 +28,12 @@ function computeTotalsFromReport(data) {
   const {
     objectifs = [],
     realises = [],
-    potentiel3m = [],
     potentiel12m = [],
   } = data.resultats;
 
   const totals = {
     objectifs: 0,
     realises: 0,
-    potentiel3m: 0,
     potentiel12m: 0,
   };
 
@@ -45,7 +41,6 @@ function computeTotalsFromReport(data) {
   for (let i = 1; i < 8; i += 1) {
     totals.objectifs += parseEuro(objectifs[i] || 0);
     totals.realises += parseEuro(realises[i] || 0);
-    totals.potentiel3m += parseEuro(potentiel3m[i] || 0);
     totals.potentiel12m += parseEuro(potentiel12m[i] || 0);
   }
 
@@ -177,7 +172,6 @@ export default function ManagerReports() {
           let totals = {
             objectifs: 0,
             realises: 0,
-            potentiel3m: 0,
             potentiel12m: 0,
           };
           let lastSave = null;
@@ -217,7 +211,6 @@ export default function ManagerReports() {
             bureau,
             objectifs: totals.objectifs,
             realises: totals.realises,
-            potentiel3m: totals.potentiel3m,
             potentiel12m: totals.potentiel12m,
             percentRealise,
             lastSave,
@@ -363,7 +356,6 @@ const saveAgencyFilters = async (list) => {
   // Totaux / moyennes pour la ligne TOTAL / MOYENNE
   const totalObjectifs = sortedRows.reduce((a, r) => a + (r.objectifs || 0), 0);
   const totalRealises = sortedRows.reduce((a, r) => a + (r.realises || 0), 0);
-  const totalPot3 = sortedRows.reduce((a, r) => a + (r.potentiel3m || 0), 0);
   const totalPot12 = sortedRows.reduce((a, r) => a + (r.potentiel12m || 0), 0);
 
   let totalPercent = 0;
@@ -455,15 +447,6 @@ const saveAgencyFilters = async (list) => {
                 </th>
                 <th
                   rowSpan="2"
-                  onClick={() => handleSort('potentiel3m')}
-                  style={{ backgroundColor: '#D9D9D9' }}
-                >
-                  Signature 1 mois
-                  {sortKey === 'potentiel3m' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th
-                  rowSpan="2"
                   onClick={() => handleSort('potentiel12m')}
                   style={{ backgroundColor: '#D9D9D9' }}
                 >
@@ -498,7 +481,7 @@ const saveAgencyFilters = async (list) => {
               {sortedRows.length === 0 && (
                 <tr>
                   <td
-                    colSpan={12}
+                    colSpan={11}
                     style={{ textAlign: 'center', padding: '16px' }}
                   >
                     Aucun utilisateur trouvé pour les agences sélectionnées.
@@ -523,7 +506,6 @@ const saveAgencyFilters = async (list) => {
                       ? `${Math.round(row.percentRealise)}%`
                       : '—'}
                   </td>
-                  <td>{formatEuro(row.potentiel3m)}</td>
                   <td>{formatEuro(row.potentiel12m)}</td>
                   <td
                     style={{
@@ -576,7 +558,6 @@ const saveAgencyFilters = async (list) => {
                   <td>
                     {totalPercent ? `${Math.round(totalPercent)}%` : '—'}
                   </td>
-                  <td>{formatEuro(totalPot3)}</td>
                   <td>{formatEuro(totalPot12)}</td>
                   <td>—</td>
                   <td>{avgRes ? `${Math.round(avgRes)}%` : '—'}</td>

@@ -1,4 +1,4 @@
-  // src/pages/RapportForm.jsx
+    // src/pages/RapportForm.jsx
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import './Login.css';
@@ -365,7 +365,13 @@ export default function RapportForm({ onSaved, resetKey }) {
               <span></span>
               <span></span>
               <span></span>
-              <span className="note-group-header">Positionnement</span>
+              <span
+                className="note-group-header"
+                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+              >
+              Positionnement
+              </span>
+
             </div>
 
             <div className="rapport-table-header-sub">
@@ -588,7 +594,13 @@ export default function RapportForm({ onSaved, resetKey }) {
             <div className="rapport-table-header-top rapport-table-header-top--part">
               <span className="col-libelle"></span>
               <span></span>
-              <span className="note-group-header">Positionnement</span>
+              <span
+                className="note-group-header"
+                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+              >
+              Positionnement
+              </span>
+
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--part">
@@ -699,7 +711,13 @@ export default function RapportForm({ onSaved, resetKey }) {
           <div className="rapport-section-table rapport-section-table--simple">
             <div className="rapport-table-header-top rapport-table-header-top--simple">
               <span className="col-libelle"></span>
-              <span className="note-group-header">Positionnement</span>
+              <span
+              className="note-group-header"
+              title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+              >
+              Positionnement
+              </span>
+
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
@@ -777,7 +795,13 @@ export default function RapportForm({ onSaved, resetKey }) {
           <div className="rapport-section-table rapport-section-table--simple">
             <div className="rapport-table-header-top rapport-table-header-top--simple">
               <span className="col-libelle"></span>
-              <span className="note-group-header">Positionnement</span>
+              <span
+              className="note-group-header"
+              title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+              >
+              Positionnement
+              </span>
+
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">

@@ -381,7 +381,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                 className="note-group-header"
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-              Positionnement
+              Positionnement*
               </span>
 
             </div>
@@ -610,7 +610,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                 className="note-group-header"
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-              Positionnement
+              Positionnement*
               </span>
 
             </div>
@@ -727,7 +727,7 @@ export default function RapportForm({ onSaved, resetKey }) {
               className="note-group-header"
               title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-              Positionnement
+              Positionnement*
               </span>
 
             </div>
@@ -811,7 +811,7 @@ export default function RapportForm({ onSaved, resetKey }) {
               className="note-group-header"
               title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-              Positionnement
+              Positionnement*
               </span>
 
             </div>

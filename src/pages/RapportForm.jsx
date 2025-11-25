@@ -18,7 +18,7 @@ export default function RapportForm({ onSaved, resetKey }) {
   const initialForm = {
     bienEtre: {
       notesCgp: ['', '', '', ''],
-      notesManager: ['', '', ''],
+      notesManager: ['', '', '', ''],
       commentaires: '',
       strategie: '',
     },

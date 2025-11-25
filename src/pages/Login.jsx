@@ -42,7 +42,7 @@ function ResetBox({ onDone, at, rt }) {
       <div className="login-grid">
         <div className="login-title">
           <h1 className="login-brand">TARENTULE</h1>
-          <div className="login-sub">Outil de préparation d'entretien</div>
+          <div className="login-sub">Outil de préparation de l'EAE</div>
         </div>
         <div className="login-card">
           <h2 className="card-title">Réinitialisation du mot de passe</h2>

@@ -73,7 +73,7 @@ export default function PerformanceChart({ objectif, realise }) {
         width={realiseWidth}
         height="10"
         rx="3"
-        fill="#2B3E37"
+        fill="#D9D9D9"
       />
       <text
         x={width - 4}

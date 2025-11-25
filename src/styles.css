@@ -537,17 +537,16 @@ body {
     margin-top: 8px;     /* juste sous Performance globale */
   }
 
-  /* Ces trois-là doivent descendre plus bas */
   .radar-card--partenariat {
-    margin-top: 515px;   /* ajuste la valeur si nécessaire */
+    margin-top: 8px;   
   }
 
   .radar-card--technique {
-    margin-top: 365px;   /* même décalage pour Technique */
+    margin-top: 8px;   
   }
 
   .radar-card--bienetre {
-    margin-top: 445px;   /* et pour Bien-être */
+    margin-top: 8px;   
   }
 }
 .save-message {

@@ -1,4 +1,4 @@
-// src/pages/RapportForm.jsx
+  // src/pages/RapportForm.jsx
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import './Login.css';
@@ -34,6 +34,7 @@ export default function RapportForm({ onSaved, resetKey }) {
       potentiel3m: Array(8).fill(''),
       potentiel12m: Array(8).fill(''),
       notesCgp: Array(8).fill(''),
+      notesManager: Array(8).fill(''),
       commentaires: '',
       strategie: '',
     },
@@ -393,8 +394,16 @@ export default function RapportForm({ onSaved, resetKey }) {
                       type="text"
                       value={form.resultats.objectifs[i]}
                       readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                      onChange={(e2) =>
+                        updateArrayField('resultats','objectifs', i, e2.target.value)
+                      }
+                      onBlur={() => {
+                        formatEuroField('objectifs', i);
+                        handleAutoSave();
+                      }}
                       placeholder="—"
                     />
+
                   )}
 
                   {/* Réalisé */}
@@ -517,6 +526,11 @@ export default function RapportForm({ onSaved, resetKey }) {
                         min="0"
                         max="10"
                         readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                        value={form.resultats.notesManager?.[i] || ''}
+                        onChange={(e2) =>
+                        updateArrayField('resultats', 'notesManager', i, clampNote(e2.target.value))
+                         }
+                        onBlur={handleAutoSave}
                         placeholder="—"
                       />
                     </>
@@ -541,8 +555,13 @@ export default function RapportForm({ onSaved, resetKey }) {
               className="rapport-strategie-manager"
               value={form.resultats.strategie}
               readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+              onChange={(e2) =>
+              updateField('resultats','strategie', e2.target.value)
+              }
+              onBlur={handleAutoSave}
               placeholder="Renseigné par le manager"
             />
+
           </div>
 
           {error && (
@@ -579,13 +598,18 @@ export default function RapportForm({ onSaved, resetKey }) {
                 <span className="col-libelle">{label}</span>
 
                 {/* Objectifs (nb) – manager (lecture seule pour CGP) */}
-                <input
-                  className="rapport-input rapport-input-narrow manager-cell"
-                  type="number"
-                  value={form.partenariat.objectifs[i] || ''}
-                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                  <input
+                    className="rapport-input rapport-input-narrow manager-cell"
+                    type="number"
+                    value={form.partenariat.objectifs[i] || ''}
+                    readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                    onChange={(e2) =>
+                      updateArrayField('partenariat','objectifs', i, e2.target.value)
+                    }
+                  onBlur={handleAutoSave}
                   placeholder="—"
-                />
+                  />
+
 
                 {/* Réalisé (nb) – conseiller */}
                 <input
@@ -622,14 +646,25 @@ export default function RapportForm({ onSaved, resetKey }) {
                 />
 
                 {/* Note N+1 – lecture seule */}
-                <input
-                  className="rapport-input rapport-input-note rapport-input-narrow manager-cell"
-                  type="number"
-                  min="0"
-                  max="10"
-                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                  placeholder="—"
-                />
+                    <input
+                    className="rapport-input rapport-input-note manager-cell"
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={form.partenariat.notesManager?.[i] || ''}
+                    readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                    onChange={(e2) =>
+                    updateArrayField(
+                    'partenariat',
+                    'notesManager',
+                      i,
+                    clampNote(e2.target.value)
+                      )
+                    }
+                    onBlur={handleAutoSave}
+                    placeholder="—"
+                    />
+
               </div>
             ))}
           </div>
@@ -645,12 +680,17 @@ export default function RapportForm({ onSaved, resetKey }) {
             />
 
             <label>Stratégie d’amélioration (manager)</label>
-            <textarea
-              className="rapport-strategie-manager"
-              value={form.partenariat.strategie}
-              readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-              placeholder="Renseigné par le manager"
-            />
+                <textarea
+                  className="rapport-strategie-manager"
+                  value={form.partenariat.strategie}
+                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                  onChange={(e2) =>
+                  updateField('partenariat', 'strategie', e2.target.value)
+                    }
+                  onBlur={handleAutoSave}
+                  placeholder="Renseigné par le manager"
+                />
+
           </div>
         </div>
 
@@ -694,14 +734,25 @@ export default function RapportForm({ onSaved, resetKey }) {
                   onBlur={handleAutoSave}
                 />
 
-                <input
-                  className="rapport-input rapport-input-note manager-cell"
-                  type="number"
-                  min="0"
-                  max="10"
-                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                  placeholder="—"
-                />
+                  <input
+                    className="rapport-input rapport-input-note manager-cell"
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={form.technique.notesManager?.[i] || ''}
+                    readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                    onChange={(e2) =>
+                    updateArrayField(
+                    'technique',
+                    'notesManager',
+                      i,
+                    clampNote(e2.target.value)
+                    )
+                    }
+                    onBlur={handleAutoSave}
+                    placeholder="—"
+                  />
+
               </div>
             ))}
           </div>
@@ -717,12 +768,17 @@ export default function RapportForm({ onSaved, resetKey }) {
             />
 
             <label>Stratégie d’amélioration (manager)</label>
-            <textarea
-              className="rapport-strategie-manager"
-              value={form.technique.strategie}
-              readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-              placeholder="Renseigné par le manager"
-            />
+              <textarea
+                className="rapport-strategie-manager"
+                value={form.technique.strategie}
+                readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                onChange={(e2) =>
+                updateField('technique', 'strategie', e2.target.value)
+                }
+                onBlur={handleAutoSave}
+                placeholder="Renseigné par le manager"
+              />
+
           </div>
         </div>
 
@@ -766,14 +822,25 @@ export default function RapportForm({ onSaved, resetKey }) {
                   onBlur={handleAutoSave}
                 />
 
-                <input
-                  className="rapport-input rapport-input-note manager-cell"
-                  type="number"
-                  min="0"
-                  max="10"
-                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                  placeholder="—"
-                />
+                  <input
+                    className="rapport-input rapport-input-note manager-cell"
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={form.bienEtre.notesManager?.[i] || ''}
+                    readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                    onChange={(e2) =>
+                    updateArrayField(
+                      'bienEtre',
+                      'notesManager',
+                      i,
+                    clampNote(e2.target.value)
+                    )
+                    }
+                    onBlur={handleAutoSave}
+                    placeholder="—"
+                  />
+
               </div>
             ))}
           </div>
@@ -789,12 +856,17 @@ export default function RapportForm({ onSaved, resetKey }) {
             />
 
             <label>Stratégie d’amélioration (manager)</label>
-            <textarea
-              className="rapport-strategie-manager"
-              value={form.bienEtre.strategie}
-              readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-              placeholder="Renseigné par le manager"
-            />
+              <textarea
+                className="rapport-strategie-manager"
+                value={form.bienEtre.strategie}
+                readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                onChange={(e2) =>
+                updateField('bienEtre', 'strategie', e2.target.value)
+                }
+                onBlur={handleAutoSave}
+                placeholder="Renseigné par le manager"
+              />
+
           </div>
         </div>
       </div>

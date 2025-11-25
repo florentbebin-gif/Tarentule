@@ -24,15 +24,13 @@ function formatShortEuro(value) {
 }
 
 export default function PerformanceChart({ objectif, realise }) {
-  const width = 190;
+  const width = 200;           // un peu plus large
   const height = 70;
-
-  // on laisse un peu plus de marge à droite pour que le texte ne soit pas coupé
-  const innerWidth = width - 80;
+  const barStartX = 60;
+  const innerWidth = width - barStartX - 20; // marge à droite pour le texte
 
   const safeObj = Number(objectif) || 0;
   const safeReal = Number(realise) || 0;
-
   const max = Math.max(safeObj, safeReal, 1);
 
   const objectifWidth = (safeObj / max) * innerWidth;
@@ -48,7 +46,7 @@ export default function PerformanceChart({ objectif, realise }) {
         Objectifs
       </text>
       <rect
-        x="60"
+        x={barStartX}
         y="10"
         width={objectifWidth}
         height="10"
@@ -56,10 +54,11 @@ export default function PerformanceChart({ objectif, realise }) {
         fill="#CFDED8"
       />
       <text
-        x={60 + objectifWidth + 4}
+        x={width - 4}
         y="19"
         fontSize="10"
         fill="#4b5563"
+        textAnchor="end"     // texte collé au bord droit mais jamais coupé
       >
         {formatShortEuro(safeObj)}
       </text>
@@ -69,7 +68,7 @@ export default function PerformanceChart({ objectif, realise }) {
         Réalisé
       </text>
       <rect
-        x="60"
+        x={barStartX}
         y="36"
         width={realiseWidth}
         height="10"
@@ -77,10 +76,11 @@ export default function PerformanceChart({ objectif, realise }) {
         fill="#2B3E37"
       />
       <text
-        x={60 + realiseWidth + 4}
+        x={width - 4}
         y="45"
         fontSize="10"
         fill="#4b5563"
+        textAnchor="end"
       >
         {percent} %
       </text>

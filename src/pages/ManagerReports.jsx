@@ -388,7 +388,7 @@ const saveAgencyFilters = async (list) => {
   );
 
   // 4. Histogramme empilé des notes CGP (base 100)
-  const noteLabels = ['Résultats', 'Part.', 'Tech.', 'Bien-être'];
+  const noteLabels = ['Résultats', 'Partenariats', 'Technique', 'Bien-être'];
   const noteValues = [avgRes, avgPart, avgTech, avgBien];
   const noteColors = ['#2B3E37', '#788781', '#9fbdb2', '#CFDED8'];
 
@@ -792,8 +792,8 @@ const saveAgencyFilters = async (list) => {
               </tr>
               <tr>
                 <th style={{ backgroundColor: '#F5F3F0' }}>Résultat</th>
-                <th style={{ backgroundColor: '#F5F3F0' }}>Partenariat</th>
-                <th style={{ backgroundColor: '#F5F3F0' }}>Technique.</th>
+                <th style={{ backgroundColor: '#F5F3F0' }}>Part.</th>
+                <th style={{ backgroundColor: '#F5F3F0' }}>Tech.</th>
                 <th style={{ backgroundColor: '#F5F3F0' }}>Bien-être</th>
               </tr>
             </thead>

@@ -791,9 +791,9 @@ const saveAgencyFilters = async (list) => {
                 </th>
               </tr>
               <tr>
-                <th style={{ backgroundColor: '#F5F3F0' }}>Résultats</th>
-                <th style={{ backgroundColor: '#F5F3F0' }}>Part.</th>
-                <th style={{ backgroundColor: '#F5F3F0' }}>Tech.</th>
+                <th style={{ backgroundColor: '#F5F3F0' }}>Résultat</th>
+                <th style={{ backgroundColor: '#F5F3F0' }}>Partenariat</th>
+                <th style={{ backgroundColor: '#F5F3F0' }}>Technique.</th>
                 <th style={{ backgroundColor: '#F5F3F0' }}>Bien-être</th>
               </tr>
             </thead>

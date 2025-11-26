@@ -41,8 +41,8 @@ export default function RapportForm({ onSaved, resetKey }) {
       strategie: '',
     },
     technique: {
-      notesCgp: ['', '', '', '', '', ''],
-      notesManager: ['', '', '', '', '', ''],
+    notesCgp: ['', '', '', '', '', '', ''],
+      notesManager: ['', '', '', '', '', '', ''],
       commentaires: '',
       strategie: '',
     },
@@ -101,12 +101,13 @@ export default function RapportForm({ onSaved, resetKey }) {
   ];
 
   const techniqueLabels = [
-    '1 - Commerciale : techniques de vente et relation client',
-    '2 - Civile : compétences techniques sur les aspects civils / juridiques',
-    '3 - Société : détention, structuration et problématiques',
-    '4 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, Capacité d\'épargne, SER1',
-    '5 - Process interne : organisation Relation Middle',
-    '6 - Social : Retraite, prévoyance, épargne salariale,... / capacité à détecter',
+  '1 - Commerciale : techniques de vente et relation client',
+  '2 - Civile : compétences techniques sur les aspects civils / juridiques',
+  '3 - Société : détention, structuration et problématiques',
+  '4 - Capacité d’épargne : Analyse et utilisation de la capacité',
+  '5 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, SER1',
+  '6 - Process interne : organisation Relation Middle',
+  '7 - Social : Retraite, prévoyance, épargne salariale,... / capacité à détecter',
   ];
 
   // Conversion "1 000 €" -> 1000
@@ -330,20 +331,23 @@ export default function RapportForm({ onSaved, resetKey }) {
   Number(form.partenariat.notesManager?.[i] || 0)
 );
 
-  const techniqueRadarLabels = [
-    'Commercial',
-    'Civil',
-    'Société',
-    'Outils',
-    'Process',
-    'Social',
-  ];
-    const techniqueCgpRadar = [0, 1, 2, 3, 4, 5].map((i) =>
-    Number(form.technique.notesCgp[i] || 0)
-  );
-    const techniqueManagerRadar = [0, 1, 2, 3, 4, 5].map((i) =>
-    Number(form.technique.notesManager?.[i] || 0)
+const techniqueRadarLabels = [
+  'Commercial',
+  'Civil',
+  'Société',
+  'Cap épargne',
+  'Outils',
+  'Process',
+  'Social',
+];
+
+const techniqueCgpRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
+  Number(form.technique.notesCgp[i] || 0)
 );
+const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
+  Number(form.technique.notesManager?.[i] || 0)
+);
+
 
   const bienEtreRadarLabels = [
     'Stress',

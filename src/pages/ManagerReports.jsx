@@ -16,7 +16,7 @@ const parseEuro = (value) => {
 const formatEuro = (n) =>
   (Number.isNaN(n) ? 0 : n).toLocaleString('fr-FR') + ' €';
 
-function computeTotalsFromReport(data) {
+function computeTotalsFromReport(data, collecteAll = false) {
   if (!data || !data.resultats) {
     return {
       objectifs: 0,
@@ -38,7 +38,13 @@ function computeTotalsFromReport(data) {
   };
 
   // On somme les lignes 2 à 8 (index 1 à 7)
+  // Si "Collecte All" est actif, on enlève les lignes 5 et 6
+  // => index 4 (Honoraires) et 5 (Arbitrages)
   for (let i = 1; i < 8; i += 1) {
+    if (collecteAll && (i === 4 || i === 5)) {
+      continue;
+    }
+
     totals.objectifs += parseEuro(objectifs[i] || 0);
     totals.realises += parseEuro(realises[i] || 0);
     totals.potentiel12m += parseEuro(potentiel12m[i] || 0);
@@ -46,6 +52,7 @@ function computeTotalsFromReport(data) {
 
   return totals;
 }
+
 
 // Moyenne sécurisée (évite division par zéro)
 const average = (arr) => {
@@ -81,7 +88,89 @@ export default function ManagerReports() {
 
   const [sortKey, setSortKey] = useState('bureau');
   const [sortDirection, setSortDirection] = useState('asc');
+  const [collecteAll, setCollecteAll] = useState(false);
 
+  // Thématiques pour le graphique à la demande
+  const themeOptions = [
+    // Résultats
+    {
+      value: 'produitsFinanciers',
+      label: 'Produits financiers',
+      section: 'resultats',
+      index: 1,
+      isEuro: true,
+    },
+    {
+      value: 'privateEquity',
+      label: 'Private Equity',
+      section: 'resultats',
+      index: 2,
+      isEuro: true,
+    },
+    {
+      value: 'immobilier',
+      label: 'Produits immobiliers',
+      section: 'resultats',
+      index: 3,
+      isEuro: true,
+    },
+    {
+      value: 'honoraires',
+      label: 'Honoraires',
+      section: 'resultats',
+      index: 4,
+      isEuro: true,
+    },
+    {
+      value: 'arbitrages',
+      label: 'Arbitrages',
+      section: 'resultats',
+      index: 5,
+      isEuro: true,
+    },
+    {
+      value: 'per',
+      label: 'PER',
+      section: 'resultats',
+      index: 6,
+      isEuro: true,
+    },
+    {
+      value: 'vp',
+      label: 'VP',
+      section: 'resultats',
+      index: 7,
+      isEuro: true,
+    },
+    // Partenariats
+    {
+      value: 'clubsExperts',
+      label: 'Clubs Experts',
+      section: 'partenariat',
+      index: 0,
+      isEuro: false,
+    },
+    {
+      value: 'animation',
+      label: 'Animation',
+      section: 'partenariat',
+      index: 1,
+      isEuro: false,
+    },
+    {
+      value: 'prospection',
+      label: 'Prospection',
+      section: 'partenariat',
+      index: 2,
+      isEuro: false,
+    },
+  ];
+
+  const [selectedTheme, setSelectedTheme] = useState(
+    themeOptions[0].value
+  );
+
+  
   const navigate = useNavigate();
 
   // Charge les données pour la synthèse manager
@@ -169,22 +258,15 @@ export default function ManagerReports() {
           agencySet.add(bureau);
 
           const rep = latestByUser[p.id] || null;
-          let totals = {
-            objectifs: 0,
-            realises: 0,
-            potentiel12m: 0,
-          };
+
           let lastSave = null;
           let noteRes = 0;
           let notePart = 0;
           let noteTech = 0;
           let noteBien = 0;
           let noteSocial = 0;
-          let percentRealise = 0;
-
 
           if (rep) {
-            totals = computeTotalsFromReport(rep.data);
             lastSave = rep.created_at || null;
 
             const data = rep.data || {};
@@ -198,27 +280,21 @@ export default function ManagerReports() {
             const coreResultats = notesResultats.slice(1, 6); // index 1 à 5
             noteRes = average(coreResultats) * 10;
 
-            // 2) Partenariats : inchangé
+            // 2) Partenariats
             notePart = average(notesPart) * 10;
 
             // 3) Technique : sans la ligne 6 "Social" (index 5)
             const coreTechnique = notesTechArr.slice(0, 5); // index 0 à 4
             noteTech = average(coreTechnique) * 10;
 
-            // 4) Bien-être : inchangé
+            // 4) Bien-être
             noteBien = average(notesBienArr) * 10;
 
             // 5) Social = moyenne PER (7) + VP (8) + Technique Social (6)
-            const perNote = Number(notesResultats[6] || 0);  // "7 - PER ..."
-            const vpNote = Number(notesResultats[7] || 0);   // "8 - VP ..."
+            const perNote = Number(notesResultats[6] || 0); // "7 - PER ..."
+            const vpNote = Number(notesResultats[7] || 0); // "8 - VP ..."
             const socialTechNote = Number(notesTechArr[5] || 0); // "6 - Social ..."
             noteSocial = average([perNote, vpNote, socialTechNote]) * 10;
-
-
-            // % réalisé vs objectifs (sur les totaux)
-            if (totals.objectifs > 0) {
-              percentRealise = (totals.realises / totals.objectifs) * 100;
-            }
           }
 
           rowsData.push({
@@ -226,11 +302,10 @@ export default function ManagerReports() {
             firstName: p.first_name || '',
             lastName: p.last_name || '',
             bureau,
-            objectifs: totals.objectifs,
-            realises: totals.realises,
-            potentiel12m: totals.potentiel12m,
-            percentRealise,
+            // les données brutes du rapport pour recalculer plus tard
+            reportData: rep?.data || null,
             lastSave,
+            // notes
             noteRes,
             notePart,
             noteTech,
@@ -238,6 +313,7 @@ export default function ManagerReports() {
             noteSocial,
             role: role || 'conseiller',
           });
+
         });
 
         const agenciesList = Array.from(agencySet).sort((a, b) =>
@@ -296,12 +372,40 @@ const saveAgencyFilters = async (list) => {
 
   // Tri + filtrage
   const sortedRows = useMemo(() => {
+    // 1. Filtre agences
     let filtered = rows;
 
     if (selectedAgencies.length > 0) {
       filtered = rows.filter((r) => selectedAgencies.includes(r.bureau));
     }
 
+    // 2. Recalcul des totaux / % selon "Collecte All"
+    const withMetrics = filtered.map((r) => {
+      let objectifs = 0;
+      let realises = 0;
+      let potentiel12m = 0;
+      let percentRealise = 0;
+
+      if (r.reportData) {
+        const totals = computeTotalsFromReport(r.reportData, collecteAll);
+        objectifs = totals.objectifs;
+        realises = totals.realises;
+        potentiel12m = totals.potentiel12m;
+        if (objectifs > 0) {
+          percentRealise = (realises / objectifs) * 100;
+        }
+      }
+
+      return {
+        ...r,
+        objectifs,
+        realises,
+        potentiel12m,
+        percentRealise,
+      };
+    });
+
+    // 3. Tri
     const dir = sortDirection === 'asc' ? 1 : -1;
 
     const compare = (a, b) => {
@@ -332,8 +436,9 @@ const saveAgencyFilters = async (list) => {
       return (av < bv ? -1 : 1) * dir;
     };
 
-    return [...filtered].sort(compare);
-  }, [rows, selectedAgencies, sortKey, sortDirection]);
+    return [...withMetrics].sort(compare);
+  }, [rows, selectedAgencies, sortKey, sortDirection, collecteAll]);
+
 
   const handleSort = (key) => {
     if (sortKey === key) {
@@ -422,6 +527,46 @@ const saveAgencyFilters = async (list) => {
     sumNotes > 0
       ? noteValues.map((v) => (v / sumNotes) * 100)
       : noteValues.map(() => 0);
+  // ---- Données pour le graphique thématique (indépendant de Collecte All) ----
+  const themeData = useMemo(() => {
+    const opt =
+      themeOptions.find((o) => o.value === selectedTheme) ||
+      themeOptions[0];
+
+    let objectifs = 0;
+    let realises = 0;
+
+    rows.forEach((r) => {
+      if (selectedAgencies.length > 0 && !selectedAgencies.includes(r.bureau)) {
+        return;
+      }
+
+      const data = r.reportData;
+      if (!data) return;
+
+      if (opt.section === 'resultats') {
+        const objArr = data.resultats?.objectifs || [];
+        const reaArr = data.resultats?.realises || [];
+        objectifs += parseEuro(objArr[opt.index] || 0);
+        realises += parseEuro(reaArr[opt.index] || 0);
+      } else if (opt.section === 'partenariat') {
+        const objArr = data.partenariat?.objectifs || [];
+        const reaArr = data.partenariat?.realises || [];
+        objectifs += Number(objArr[opt.index] || 0);
+        realises += Number(reaArr[opt.index] || 0);
+      }
+    });
+
+    return { objectifs, realises };
+  }, [rows, selectedAgencies, selectedTheme]);
+
+  const currentTheme =
+    themeOptions.find((o) => o.value === selectedTheme) || themeOptions[0];
+
+  const themePercent =
+    themeData.objectifs > 0
+      ? Math.round((themeData.realises / themeData.objectifs) * 100)
+      : 0;
 
   return (
     <div className="credit-panel">
@@ -451,6 +596,63 @@ const saveAgencyFilters = async (list) => {
           </div>
         </div>
 
+                {/* Barre Collecte All + sélection thématique */}
+        <div
+          style={{
+            marginTop: '8px',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '12px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setCollecteAll((prev) => !prev)}
+            style={{
+              padding: '4px 10px',
+              borderRadius: 9999,
+              border: '1px solid #9ca3af',
+              backgroundColor: collecteAll ? '#2B3E37' : '#ffffff',
+              color: collecteAll ? '#ffffff' : '#111827',
+              fontSize: 12,
+              cursor: 'pointer',
+            }}
+          >
+            Collecte All
+          </button>
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            <span style={{ fontSize: 12, color: '#4b5563' }}>
+              Graphique thématique :
+            </span>
+            <select
+              value={selectedTheme}
+              onChange={(e) => setSelectedTheme(e.target.value)}
+              style={{
+                fontSize: 12,
+                padding: '4px 8px',
+                borderRadius: 6,
+                border: '1px solid #d1d5db',
+                backgroundColor: '#ffffff',
+              }}
+            >
+              {themeOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         {/* Grille des petits graphiques */}
         <div
           style={{
@@ -460,6 +662,68 @@ const saveAgencyFilters = async (list) => {
             marginTop: '8px',
           }}
         >
+                    {/* Graphique thématique : Total réalisé vs objectifs */}
+          <div
+            style={{
+              border: '1px solid #e5e7eb',
+              borderRadius: 12,
+              padding: '10px 12px',
+              backgroundColor: '#fbfbfb',
+            }}
+          >
+            <div
+              style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
+            >
+              Thématique : {currentTheme.label}
+            </div>
+            <div
+              style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}
+            >
+              Objectifs :{' '}
+              {currentTheme.isEuro
+                ? formatEuro(themeData.objectifs)
+                : themeData.objectifs.toLocaleString('fr-FR')}
+              <br />
+              Réalisé :{' '}
+              {currentTheme.isEuro
+                ? formatEuro(themeData.realises)
+                : themeData.realises.toLocaleString('fr-FR')}
+            </div>
+            <div
+              style={{
+                height: 12,
+                borderRadius: 9999,
+                backgroundColor: '#e5e7eb',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  width:
+                    themeData.objectifs > 0
+                      ? `${Math.min(
+                          100,
+                          (themeData.realises / themeData.objectifs) * 100
+                        )}%`
+                      : '0%',
+                  height: '100%',
+                  backgroundColor: '#2B3E37',
+                }}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: 6,
+                fontSize: 11,
+                color: '#4b5563',
+              }}
+            >
+              {themeData.objectifs > 0
+                ? `${themePercent}% d'atteinte`
+                : 'Aucune donnée sur la période.'}
+            </div>
+          </div>
+
           {/* 1) Total réalisé vs objectifs */}
           <div
             style={{
@@ -741,6 +1005,24 @@ const saveAgencyFilters = async (list) => {
               </span>
             )}
           </div>
+        </div>
+
+                <div style={{ marginTop: '8px' }}>
+          <button
+            type="button"
+            onClick={() => setCollecteAll((prev) => !prev)}
+            style={{
+              padding: '4px 10px',
+              borderRadius: 9999,
+              border: '1px solid #9ca3af',
+              backgroundColor: collecteAll ? '#2B3E37' : '#ffffff',
+              color: collecteAll ? '#ffffff' : '#111827',
+              fontSize: 12,
+              cursor: 'pointer',
+            }}
+          >
+            Collecte All
+          </button>
         </div>
 
         {/* Tableau de synthèse */}

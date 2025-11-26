@@ -218,6 +218,7 @@ export default function ManagerReports() {
         const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
           .select('id, first_name, last_name, bureau, role');
+        console.log('profiles:', profiles);
 
         if (profilesError) {
           console.error(profilesError);
@@ -232,6 +233,8 @@ export default function ManagerReports() {
           .select('id, user_id, period, data, created_at')
           .eq('period', selectedYear)
           .order('created_at', { ascending: false });
+        console.log('ManagerReports → selectedYear:', selectedYear);
+        console.log('ManagerReports → reports:', reports);
 
         if (reportsError) {
           console.error(reportsError);
@@ -247,6 +250,7 @@ export default function ManagerReports() {
             latestByUser[rep.user_id] = rep;
           }
         });
+        console.log('latestByUser:', latestByUser);
 
         const rowsData = [];
         const agencySet = new Set();
@@ -324,6 +328,8 @@ export default function ManagerReports() {
         const agenciesList = Array.from(agencySet).sort((a, b) =>
           a.localeCompare(b, 'fr')
         );
+        
+        console.log('rowsData final:', rowsData);
 
         setRows(rowsData);
         setAgencies(agenciesList);

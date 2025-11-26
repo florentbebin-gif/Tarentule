@@ -918,9 +918,8 @@ const saveAgencyFilters = async (list) => {
               ))}
             </ul>
           </div>
-        </div>
-      </div>
-          {/* Graphique thématique : Total réalisé vs objectifs */}
+
+ {/* Graphique thématique : Total réalisé vs objectifs */}
           <div
             style={{
               border: '1px solid #e5e7eb',
@@ -981,6 +980,10 @@ const saveAgencyFilters = async (list) => {
                 : 'Aucune donnée sur la période.'}
             </div>
           </div>
+          
+        </div>
+      </div>
+         
       {/* 2. SYNTHÈSE MANAGER (inchangé, juste déplacé en dessous) */}
       <div className="section-card" style={{ marginTop: '24px' }}>
         <div className="section-title strong-title">Synthèse Manager</div>

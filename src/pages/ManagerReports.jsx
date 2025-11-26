@@ -283,17 +283,17 @@ export default function ManagerReports() {
             // 2) Partenariats
             notePart = average(notesPart) * 10;
 
-            // 3) Technique : sans la ligne 6 "Social" (index 5)
-            const coreTechnique = notesTechArr.slice(0, 5); // index 0 à 4
+            // 3) Technique : sans la ligne 7 "Social" (index 6)
+            const coreTechnique = notesTechArr.slice(0, 6); // index 0 à 5
             noteTech = average(coreTechnique) * 10;
 
             // 4) Bien-être
             noteBien = average(notesBienArr) * 10;
 
-            // 5) Social = moyenne PER (7) + VP (8) + Technique Social (6)
+            // 5) Social = moyenne PER (7) + VP (8) + Technique Social (7)
             const perNote = Number(notesResultats[6] || 0); // "7 - PER ..."
             const vpNote = Number(notesResultats[7] || 0); // "8 - VP ..."
-            const socialTechNote = Number(notesTechArr[5] || 0); // "6 - Social ..."
+            const socialTechNote = Number(notesTechArr[6] || 0); // "7 - Social ..."
             noteSocial = average([perNote, vpNote, socialTechNote]) * 10;
           }
 

@@ -532,7 +532,7 @@ const saveAgencyFilters = async (list) => {
               </div>
             </div>
             <div style={{ fontSize: 11, color: '#6b7280' }}>
-              Somme Réalisé / Somme Objectifs
+              Réalisé / Objectifs
             </div>
           </div>
 

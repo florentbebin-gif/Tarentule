@@ -605,7 +605,7 @@ export default function RapportForm({ onSaved, resetKey }) {
         
         {/* 2. PARTENARIAT */}
         <div className="section-card">
-          <div className="section-title strong-title">Partenariat</div>
+          <div className="section-title strong-title">Partenariats</div>
 
           <div className="rapport-section-table rapport-section-table--part">
             <div className="rapport-table-header-top rapport-table-header-top--part">
@@ -723,7 +723,7 @@ export default function RapportForm({ onSaved, resetKey }) {
 
         {/* 3. TECHNIQUE */}
         <div className="section-card">
-          <div className="section-title strong-title">Technique</div>
+          <div className="section-title strong-title">Techniques</div>
 
           <div className="rapport-section-table rapport-section-table--simple">
             <div className="rapport-table-header-top rapport-table-header-top--simple">

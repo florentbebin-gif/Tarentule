@@ -105,8 +105,6 @@ select * from reports;
 
 📌 Roadmap
 
-Dans le RapportForm, l'utilisateur doit, avant de pouvoir remplir les champs, définir un exercice allant du 1/01/.... au 31/12/....
-Un bouton de sauvegarde de l'exercice (Archivage de l'exerccie) permettra d'archiver l'exercice et de le réouvrir, on aura jusqu'à 3 archives pouvant etre réouverte sans perdre les données (prévoir les boutons). Si l'utilisateur realise un archivage, tout de suite après l'archivage, il devra créer un nouvel exercice du 1/01/.... au 31/12/.... avec un rapport vierge (pas plus de 3 exercices pouvant être archivé, le dernier archivage faisant glisser les anciens et supprimant le plus ancien (confimation à demander à l'utilisateur)).
 
 Blocage création de compte sur login (compte déjà créé) + bouton création de compte pour le manager et l'admin (sans envoi d'email de validation à l'utilisateur), il fera mot de passe oublié.
 

@@ -385,7 +385,6 @@ body {
 
 .rapport-input-narrow {
   padding: 2px 6px;
-  font-size: 12px;
 }
 /* Forcer taille uniforme du header Partenariat */
 .rapport-table-header-sub--part span {
@@ -545,7 +544,7 @@ body {
   }
 
   .radar-card--partenariat {
-    margin-top: 260px;   
+    margin-top: 290px;   
   }
 
   .radar-card--technique {

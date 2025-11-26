@@ -179,7 +179,9 @@ export default function ManagerReports() {
           let notePart = 0;
           let noteTech = 0;
           let noteBien = 0;
+          let noteSocial = 0;
           let percentRealise = 0;
+
 
           if (rep) {
             totals = computeTotalsFromReport(rep.data);
@@ -192,11 +194,26 @@ export default function ManagerReports() {
             const notesTechArr = data?.technique?.notesCgp || [];
             const notesBienArr = data?.bienEtre?.notesCgp || [];
 
-            // Moyennes en %
-            noteRes = average(notesResultats.slice(1, 8)) * 10;
+            // 1) Moyenne Résultats : sans PER (7) ni VP (8)
+            const coreResultats = notesResultats.slice(1, 6); // index 1 à 5
+            noteRes = average(coreResultats) * 10;
+
+            // 2) Partenariats : inchangé
             notePart = average(notesPart) * 10;
-            noteTech = average(notesTechArr) * 10;
+
+            // 3) Technique : sans la ligne 6 "Social" (index 5)
+            const coreTechnique = notesTechArr.slice(0, 5); // index 0 à 4
+            noteTech = average(coreTechnique) * 10;
+
+            // 4) Bien-être : inchangé
             noteBien = average(notesBienArr) * 10;
+
+            // 5) Social = moyenne PER (7) + VP (8) + Technique Social (6)
+            const perNote = Number(notesResultats[6] || 0);  // "7 - PER ..."
+            const vpNote = Number(notesResultats[7] || 0);   // "8 - VP ..."
+            const socialTechNote = Number(notesTechArr[5] || 0); // "6 - Social ..."
+            noteSocial = average([perNote, vpNote, socialTechNote]) * 10;
+
 
             // % réalisé vs objectifs (sur les totaux)
             if (totals.objectifs > 0) {
@@ -218,6 +235,7 @@ export default function ManagerReports() {
             notePart,
             noteTech,
             noteBien,
+            noteSocial,
             role: role || 'conseiller',
           });
         });
@@ -367,6 +385,7 @@ const saveAgencyFilters = async (list) => {
   const avgPart = average(sortedRows.map((r) => r.notePart || 0));
   const avgTech = average(sortedRows.map((r) => r.noteTech || 0));
   const avgBien = average(sortedRows.map((r) => r.noteBien || 0));
+  const avgSocial = average(sortedRows.map((r) => r.noteSocial || 0));
 
   // ---- Données pour le "Board Manager" ----
 
@@ -388,9 +407,15 @@ const saveAgencyFilters = async (list) => {
   );
 
   // 4. Histogramme empilé des notes CGP (base 100)
-  const noteLabels = ['Résultats', 'Partenariats', 'Technique', 'Bien-être'];
-  const noteValues = [avgRes, avgPart, avgTech, avgBien];
-  const noteColors = ['#2B3E37', '#788781', '#9fbdb2', '#CFDED8'];
+  const noteLabels = [
+    'Résultats',
+    'Partenariats',
+    'Technique',
+    'Bien-être',
+    'Social',
+  ];
+  const noteValues = [avgRes, avgPart, avgTech, avgBien, avgSocial];
+  const noteColors = ['#2B3E37', '#788781', '#9fbdb2', '#CFDED8', '#CEC1B6'];
 
   const sumNotes = noteValues.reduce((a, b) => a + (b || 0), 0);
   const noteSegments =
@@ -781,7 +806,7 @@ const saveAgencyFilters = async (list) => {
                   Dernière actu.
                 </th>
                 <th
-                  colSpan="4"
+                  colSpan="5"
                   style={{
                     backgroundColor: '#D9D9D9',
                     textAlign: 'center',
@@ -789,19 +814,21 @@ const saveAgencyFilters = async (list) => {
                 >
                   Notes CGP
                 </th>
+
               </tr>
               <tr>
                 <th style={{ backgroundColor: '#F5F3F0' }}>Résultat</th>
                 <th style={{ backgroundColor: '#F5F3F0' }}>Part.</th>
                 <th style={{ backgroundColor: '#F5F3F0' }}>Tech.</th>
                 <th style={{ backgroundColor: '#F5F3F0' }}>Bien-être</th>
+                <th style={{ backgroundColor: '#CEC1B6' }}>Social</th>
               </tr>
             </thead>
             <tbody>
               {sortedRows.length === 0 && (
                 <tr>
                   <td
-                    colSpan={11}
+                    colSpan={12}
                     style={{ textAlign: 'center', padding: '16px' }}
                   >
                     Aucun utilisateur trouvé pour les agences sélectionnées.
@@ -864,6 +891,20 @@ const saveAgencyFilters = async (list) => {
                   >
                     {row.noteBien ? `${Math.round(row.noteBien)}%` : '—'}
                   </td>
+                  <td
+                    style={{
+                      color: row.noteBien < 50 ? '#b91c1c' : undefined,
+                    }}
+                  >
+                    {row.noteBien ? `${Math.round(row.noteBien)}%` : '—'}
+                  </td>
+                  <td
+                    style={{
+                      color: row.noteSocial < 50 ? '#b91c1c' : undefined,
+                    }}
+                  >
+                    {row.noteSocial ? `${Math.round(row.noteSocial)}%` : '—'}
+                  </td>
                 </tr>
               ))}
 
@@ -884,6 +925,8 @@ const saveAgencyFilters = async (list) => {
                   <td>{avgPart ? `${Math.round(avgPart)}%` : '—'}</td>
                   <td>{avgTech ? `${Math.round(avgTech)}%` : '—'}</td>
                   <td>{avgBien ? `${Math.round(avgBien)}%` : '—'}</td>
+                  <td>{avgBien ? `${Math.round(avgBien)}%` : '—'}</td>
+                  <td>{avgSocial ? `${Math.round(avgSocial)}%` : '—'}</td>
                 </tr>
               )}
             </tbody>

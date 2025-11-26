@@ -902,7 +902,7 @@ export default function RapportForm({ onSaved, resetKey }) {
 
         {/* Notes Résultats */}
         <div className="section-card radar-card radar-card--resultats">
-          <div className="radar-title">Position Résultats</div>
+          <div className="radar-title">Positions Résultats</div>
           <RadarChart
             labels={resultatsRadarLabels}
             cgpValues={resultatsCgpRadar}
@@ -912,7 +912,7 @@ export default function RapportForm({ onSaved, resetKey }) {
 
         {/* Notes Partenariats */}
         <div className="section-card radar-card radar-card--partenariat">
-          <div className="radar-title">Position Partenariats</div>
+          <div className="radar-title">Positions Partenariats</div>
           <RadarChart
             labels={partenariatRadarLabels}
             cgpValues={partenariatCgpRadar}
@@ -922,7 +922,7 @@ export default function RapportForm({ onSaved, resetKey }) {
 
         {/* Notes Techniques */}
         <div className="section-card radar-card radar-card--technique">
-          <div className="radar-title">Position Techniques</div>
+          <div className="radar-title">Positions Techniques</div>
           <RadarChart
             labels={techniqueRadarLabels}
             cgpValues={techniqueCgpRadar}
@@ -932,7 +932,7 @@ export default function RapportForm({ onSaved, resetKey }) {
 
         {/* Notes Bien-être */}
         <div className="section-card radar-card radar-card--bienetre">
-          <div className="radar-title">Position Bien-être</div>
+          <div className="radar-title">Positions Bien-être</div>
           <RadarChart
             labels={bienEtreRadarLabels}
             cgpValues={bienEtreCgpRadar}

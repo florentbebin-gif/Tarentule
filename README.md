@@ -105,20 +105,13 @@ select * from reports;
 
 📌 Roadmap
 
-Définir, avant de remplir les champs, un exercice allant du 1/01/.... au 31/12/.... Un bouton de sauvegarde de l'exercice (Archivage de l'exerccie) permettra d'archiver l'exercice et de le réouvrir (on aura jusqu'à 2archives pouvant etre réouverte sans perdre les données (prévoir les boutons). Tout de suite après l'archivage, créer nouvel exercice du 1/01/.... au 31/12/.... avec un rapport vierge (pas plus de 3 exercices pouvant être archivé, le dernier archivage faisant glisser les anciens et supprimant le plus ancien (confimation à demander à l'utilisateur)).
+Dans le RapportForm, l'utilisateur doit, avant de pouvoir remplir les champs, définir un exercice allant du 1/01/.... au 31/12/....
+Un bouton de sauvegarde de l'exercice (Archivage de l'exerccie) permettra d'archiver l'exercice et de le réouvrir, on aura jusqu'à 3 archives pouvant etre réouverte sans perdre les données (prévoir les boutons). Si l'utilisateur realise un archivage, tout de suite après l'archivage, il devra créer un nouvel exercice du 1/01/.... au 31/12/.... avec un rapport vierge (pas plus de 3 exercices pouvant être archivé, le dernier archivage faisant glisser les anciens et supprimant le plus ancien (confimation à demander à l'utilisateur)).
 
 
 
 Email settings admin fonctionne mais n'arrive pas
 
-Dans le rapport Manager supprimer la colonne Signature 1 mois
-Dans le rapport Manager créer au-dessus de la carte Synthèse Manager une autre carte s’intitulant Board Manager. Il pourra cocher les agences également ici (elles seront liées avec celles du Synthèse Manager). Création de plusieurs graphique :Il y aura plusieurs graphiques :
-    1-	total réalisé comparé à l’objectifs total
-    2-	Un graphique camembert rappelant le % d’atteinte total (Somme de réalisé en rapport à la somme des Objectifs)
-    3-	Un graphique barre empilé (réalisé + signature 1 mois) comparé à l’objectifs total
-    4-	Un graphique barre empilé (réalisé + signature 1 mois + potentiel 31/12) comparé à l’objectifs total
-    5-	Un graphique histogramme empilé reprenant les Notes CGP sur une base 100
-    Ces graphiques doivent s’adapter en fonction des agences sélectionnées.
 
 Mode mobile amélioré
 

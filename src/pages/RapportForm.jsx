@@ -310,7 +310,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     'Financier',
     'PE',
     'Immobilier',
-    'Honoraire',
+    'Honoraires',
     'Arbitrages',
     'PER',
     'VP',

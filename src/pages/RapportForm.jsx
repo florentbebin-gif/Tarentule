@@ -104,7 +104,7 @@ export default function RapportForm({ onSaved, resetKey }) {
   '1 - Commerciale : techniques de vente et relation client',
   '2 - Civile : compétences techniques sur les aspects civils / juridiques',
   '3 - Société : détention, structuration et problématiques',
-  '4 - Capacité d’épargne : Analyse et utilisation de la capacité',
+  '4 - Capacité d’épargne : Analyse et utilisation à des fins commerciales',
   '5 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, SER1',
   '6 - Process interne : organisation Relation Middle',
   '7 - Social : Retraite, prévoyance, épargne salariale,... / capacité à détecter',

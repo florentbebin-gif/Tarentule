@@ -368,8 +368,331 @@ const saveAgencyFilters = async (list) => {
   const avgTech = average(sortedRows.map((r) => r.noteTech || 0));
   const avgBien = average(sortedRows.map((r) => r.noteBien || 0));
 
+  // ---- Données pour le "Board Manager" ----
+
+  // 1/2. % d'atteinte global (borné entre 0 et 100)
+  const attainment = Math.max(0, Math.min(100, totalPercent || 0));
+
+  // 3. Barres empilées (Réalisé + Potentiel / Objectifs)
+  const realisedRatio =
+    totalObjectifs > 0
+      ? Math.max(0, Math.min(100, (totalRealises / totalObjectifs) * 100))
+      : 0;
+
+  const potentialRatioRaw =
+    totalObjectifs > 0 ? (totalPot12 / totalObjectifs) * 100 : 0;
+
+  const potentialRatio = Math.max(
+    0,
+    Math.min(100 - realisedRatio, potentialRatioRaw)
+  );
+
+  // 4. Histogramme empilé des notes CGP (base 100)
+  const noteLabels = ['Résultats', 'Part.', 'Tech.', 'Bien-être'];
+  const noteValues = [avgRes, avgPart, avgTech, avgBien];
+  const noteColors = ['#2B3E37', '#9fbdb2', '#CFDED8', '#facc15'];
+
+  const sumNotes = noteValues.reduce((a, b) => a + (b || 0), 0);
+  const noteSegments =
+    sumNotes > 0
+      ? noteValues.map((v) => (v / sumNotes) * 100)
+      : noteValues.map(() => 0);
+
   return (
     <div className="credit-panel">
+      {/* 1. BOARD MANAGER */}
+      <div className="section-card">
+        <div className="section-title strong-title">Board Manager</div>
+
+        {/* Filtres agences (mêmes cases que la synthèse) */}
+        <div className="manager-filters">
+          <div className="manager-filters-label">Agences :</div>
+          <div className="manager-filters-list">
+            {agencies.map((bureau) => (
+              <label key={bureau} className="manager-filter-chip">
+                <input
+                  type="checkbox"
+                  checked={selectedAgencies.includes(bureau)}
+                  onChange={() => toggleAgency(bureau)}
+                />
+                <span>{bureau}</span>
+              </label>
+            ))}
+            {agencies.length === 0 && (
+              <span className="manager-filters-empty">
+                Aucune agence trouvée.
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Grille des petits graphiques */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+            gap: '16px',
+            marginTop: '8px',
+          }}
+        >
+          {/* 1) Total réalisé vs objectifs */}
+          <div
+            style={{
+              border: '1px solid #e5e7eb',
+              borderRadius: 12,
+              padding: '10px 12px',
+              backgroundColor: '#fbfbfb',
+            }}
+          >
+            <div
+              style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
+            >
+              Total réalisé vs objectifs
+            </div>
+            <div
+              style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}
+            >
+              Objectifs : {formatEuro(totalObjectifs)}<br />
+              Réalisé : {formatEuro(totalRealises)}
+            </div>
+            <div
+              style={{
+                height: 12,
+                borderRadius: 9999,
+                backgroundColor: '#e5e7eb',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  width:
+                    totalObjectifs > 0
+                      ? `${Math.min(
+                          100,
+                          (totalRealises / totalObjectifs) * 100
+                        )}%`
+                      : '0%',
+                  height: '100%',
+                  backgroundColor: '#2B3E37',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* 2) Camembert : % d'atteinte global */}
+          <div
+            style={{
+              border: '1px solid #e5e7eb',
+              borderRadius: 12,
+              padding: '10px 12px',
+              backgroundColor: '#fbfbfb',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                alignSelf: 'flex-start',
+                marginBottom: 4,
+              }}
+            >
+              % d&apos;atteinte global
+            </div>
+            <div
+              style={{
+                width: 90,
+                height: 90,
+                borderRadius: '50%',
+                background: `conic-gradient(#2B3E37 0 ${
+                  attainment || 0
+                }%, #e5e7eb ${attainment || 0}% 100%)`,
+                position: 'relative',
+                marginBottom: 4,
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '20%',
+                  borderRadius: '50%',
+                  backgroundColor: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: '#111827',
+                }}
+              >
+                {totalObjectifs > 0 ? `${Math.round(attainment)}%` : '—'}
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: '#6b7280' }}>
+              Somme Réalisé / Somme Objectifs
+            </div>
+          </div>
+
+          {/* 3) Barre empilée : Réalisé + Potentiel 31/12 vs objectifs */}
+          <div
+            style={{
+              border: '1px solid #e5e7eb',
+              borderRadius: 12,
+              padding: '10px 12px',
+              backgroundColor: '#fbfbfb',
+            }}
+          >
+            <div
+              style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
+            >
+              Réalisé + Potentiel vs Objectifs
+            </div>
+            <div
+              style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}
+            >
+              Objectifs : {formatEuro(totalObjectifs)}<br />
+              Réalisé : {formatEuro(totalRealises)}<br />
+              Potentiel 31/12 : {formatEuro(totalPot12)}
+            </div>
+            <div
+              style={{
+                height: 12,
+                borderRadius: 9999,
+                backgroundColor: '#e5e7eb',
+                overflow: 'hidden',
+                display: 'flex',
+              }}
+            >
+              <div
+                style={{
+                  width: `${realisedRatio}%`,
+                  backgroundColor: '#2B3E37',
+                }}
+              />
+              <div
+                style={{
+                  width: `${potentialRatio}%`,
+                  backgroundColor: '#9fbdb2',
+                }}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: 6,
+                display: 'flex',
+                gap: 8,
+                flexWrap: 'wrap',
+                fontSize: 11,
+                color: '#4b5563',
+              }}
+            >
+              <span
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              >
+                <span
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 9999,
+                    backgroundColor: '#2B3E37',
+                  }}
+                />
+                Réalisé
+              </span>
+              <span
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              >
+                <span
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 9999,
+                    backgroundColor: '#9fbdb2',
+                  }}
+                />
+                Potentiel 31/12
+              </span>
+            </div>
+          </div>
+
+          {/* 4) Histogramme empilé des notes CGP (base 100) */}
+          <div
+            style={{
+              border: '1px solid #e5e7eb',
+              borderRadius: 12,
+              padding: '10px 12px',
+              backgroundColor: '#fbfbfb',
+            }}
+          >
+            <div
+              style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
+            >
+              Notes CGP (base 100)
+            </div>
+            <div
+              style={{
+                height: 12,
+                borderRadius: 9999,
+                overflow: 'hidden',
+                display: 'flex',
+                backgroundColor: '#e5e7eb',
+              }}
+            >
+              {noteSegments.map((w, idx) => (
+                <div
+                  key={noteLabels[idx]}
+                  style={{
+                    width: `${w}%`,
+                    backgroundColor: noteColors[idx],
+                  }}
+                />
+              ))}
+            </div>
+            <ul
+              style={{
+                margin: 0,
+                marginTop: 6,
+                padding: 0,
+                listStyle: 'none',
+                fontSize: 11,
+                color: '#374151',
+              }}
+            >
+              {noteLabels.map((label, idx) => (
+                <li
+                  key={label}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    marginTop: 2,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 9999,
+                      backgroundColor: noteColors[idx],
+                    }}
+                  />
+                  <span>
+                    {label} :{' '}
+                    {noteValues[idx]
+                      ? `${Math.round(noteValues[idx])}%`
+                      : '—'}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. SYNTHÈSE MANAGER (inchangé, juste déplacé en dessous) */}
       <div className="section-card">
         <div className="section-title strong-title">Synthèse Manager</div>
 
@@ -454,10 +777,7 @@ const saveAgencyFilters = async (list) => {
                   {sortKey === 'potentiel12m' &&
                     (sortDirection === 'asc' ? ' ▲' : ' ▼')}
                 </th>
-                <th
-                  rowSpan="2"
-                  style={{ backgroundColor: '#D9D9D9' }}
-                >
+                <th rowSpan="2" style={{ backgroundColor: '#D9D9D9' }}>
                   Dernière actu.
                 </th>
                 <th
@@ -576,4 +896,5 @@ const saveAgencyFilters = async (list) => {
       </div>
     </div>
   );
+
 }

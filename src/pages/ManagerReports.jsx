@@ -664,69 +664,7 @@ const saveAgencyFilters = async (list) => {
             marginTop: '8px',
           }}
         >
-                    {/* Graphique thématique : Total réalisé vs objectifs */}
-          <div
-            style={{
-              border: '1px solid #e5e7eb',
-              borderRadius: 12,
-              padding: '10px 12px',
-              backgroundColor: '#fbfbfb',
-            }}
-          >
-            <div
-              style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
-            >
-              Thématique : {currentTheme.label}
-            </div>
-            <div
-              style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}
-            >
-              Objectifs :{' '}
-              {currentTheme.isEuro
-                ? formatEuro(themeData.objectifs)
-                : themeData.objectifs.toLocaleString('fr-FR')}
-              <br />
-              Réalisé :{' '}
-              {currentTheme.isEuro
-                ? formatEuro(themeData.realises)
-                : themeData.realises.toLocaleString('fr-FR')}
-            </div>
-            <div
-              style={{
-                height: 12,
-                borderRadius: 9999,
-                backgroundColor: '#e5e7eb',
-                overflow: 'hidden',
-              }}
-            >
-              <div
-                style={{
-                  width:
-                    themeData.objectifs > 0
-                      ? `${Math.min(
-                          100,
-                          (themeData.realises / themeData.objectifs) * 100
-                        )}%`
-                      : '0%',
-                  height: '100%',
-                  backgroundColor: '#2B3E37',
-                }}
-              />
-            </div>
-            <div
-              style={{
-                marginTop: 6,
-                fontSize: 11,
-                color: '#4b5563',
-              }}
-            >
-              {themeData.objectifs > 0
-                ? `${themePercent}% d'atteinte`
-                : 'Aucune donnée sur la période.'}
-            </div>
-          </div>
-
-          {/* 1) Total réalisé vs objectifs */}
+         {/* 1) Total réalisé vs objectifs */}
           <div
             style={{
               border: '1px solid #e5e7eb',
@@ -982,7 +920,67 @@ const saveAgencyFilters = async (list) => {
           </div>
         </div>
       </div>
-
+          {/* Graphique thématique : Total réalisé vs objectifs */}
+          <div
+            style={{
+              border: '1px solid #e5e7eb',
+              borderRadius: 12,
+              padding: '10px 12px',
+              backgroundColor: '#fbfbfb',
+            }}
+          >
+            <div
+              style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
+            >
+              Thématique : {currentTheme.label}
+            </div>
+            <div
+              style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}
+            >
+              Objectifs :{' '}
+              {currentTheme.isEuro
+                ? formatEuro(themeData.objectifs)
+                : themeData.objectifs.toLocaleString('fr-FR')}
+              <br />
+              Réalisé :{' '}
+              {currentTheme.isEuro
+                ? formatEuro(themeData.realises)
+                : themeData.realises.toLocaleString('fr-FR')}
+            </div>
+            <div
+              style={{
+                height: 12,
+                borderRadius: 9999,
+                backgroundColor: '#e5e7eb',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  width:
+                    themeData.objectifs > 0
+                      ? `${Math.min(
+                          100,
+                          (themeData.realises / themeData.objectifs) * 100
+                        )}%`
+                      : '0%',
+                  height: '100%',
+                  backgroundColor: '#2B3E37',
+                }}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: 6,
+                fontSize: 11,
+                color: '#4b5563',
+              }}
+            >
+              {themeData.objectifs > 0
+                ? `${themePercent}% d'atteinte`
+                : 'Aucune donnée sur la période.'}
+            </div>
+          </div>
       {/* 2. SYNTHÈSE MANAGER (inchangé, juste déplacé en dessous) */}
       <div className="section-card" style={{ marginTop: '24px' }}>
         <div className="section-title strong-title">Synthèse Manager</div>

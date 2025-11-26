@@ -439,6 +439,38 @@ const saveAgencyFilters = async (list) => {
     return [...withMetrics].sort(compare);
   }, [rows, selectedAgencies, sortKey, sortDirection, collecteAll]);
 
+    const themeData = useMemo(() => {
+    const opt =
+      themeOptions.find((o) => o.value === selectedTheme) ||
+      themeOptions[0];
+
+    let objectifs = 0;
+    let realises = 0;
+
+    rows.forEach((r) => {
+      if (selectedAgencies.length > 0 && !selectedAgencies.includes(r.bureau)) {
+        return;
+      }
+
+      const data = r.reportData;
+      if (!data) return;
+
+      if (opt.section === 'resultats') {
+        const objArr = data.resultats?.objectifs || [];
+        const reaArr = data.resultats?.realises || [];
+        objectifs += parseEuro(objArr[opt.index] || 0);
+        realises += parseEuro(reaArr[opt.index] || 0);
+      } else if (opt.section === 'partenariat') {
+        const objArr = data.partenariat?.objectifs || [];
+        const reaArr = data.partenariat?.realises || [];
+        objectifs += Number(objArr[opt.index] || 0);
+        realises += Number(reaArr[opt.index] || 0);
+      }
+    });
+
+    return { objectifs, realises };
+  }, [rows, selectedAgencies, selectedTheme]);
+
 
   const handleSort = (key) => {
     if (sortKey === key) {
@@ -528,37 +560,7 @@ const saveAgencyFilters = async (list) => {
       ? noteValues.map((v) => (v / sumNotes) * 100)
       : noteValues.map(() => 0);
   // ---- Données pour le graphique thématique (indépendant de Collecte All) ----
-  const themeData = useMemo(() => {
-    const opt =
-      themeOptions.find((o) => o.value === selectedTheme) ||
-      themeOptions[0];
 
-    let objectifs = 0;
-    let realises = 0;
-
-    rows.forEach((r) => {
-      if (selectedAgencies.length > 0 && !selectedAgencies.includes(r.bureau)) {
-        return;
-      }
-
-      const data = r.reportData;
-      if (!data) return;
-
-      if (opt.section === 'resultats') {
-        const objArr = data.resultats?.objectifs || [];
-        const reaArr = data.resultats?.realises || [];
-        objectifs += parseEuro(objArr[opt.index] || 0);
-        realises += parseEuro(reaArr[opt.index] || 0);
-      } else if (opt.section === 'partenariat') {
-        const objArr = data.partenariat?.objectifs || [];
-        const reaArr = data.partenariat?.realises || [];
-        objectifs += Number(objArr[opt.index] || 0);
-        realises += Number(reaArr[opt.index] || 0);
-      }
-    });
-
-    return { objectifs, realises };
-  }, [rows, selectedAgencies, selectedTheme]);
 
   const currentTheme =
     themeOptions.find((o) => o.value === selectedTheme) || themeOptions[0];

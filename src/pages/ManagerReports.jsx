@@ -718,7 +718,7 @@ const saveAgencyFilters = async (list) => {
       </div>
 
       {/* 2. SYNTHÈSE MANAGER (inchangé, juste déplacé en dessous) */}
-      <div className="section-card">
+      <div className="section-card" style={{ marginTop: '24px' }}>
         <div className="section-title strong-title">Synthèse Manager</div>
 
         {/* Filtres agences */}
@@ -854,57 +854,50 @@ const saveAgencyFilters = async (list) => {
                       : '—'}
                   </td>
                   <td>{formatEuro(row.potentiel12m)}</td>
-                  <td
-                    style={{
-                      color: isOlderThan15Days(row.lastSave)
-                        ? '#b91c1c'
-                        : undefined,
-                    }}
-                  >
-                    {formatShortDate(row.lastSave)}
-                  </td>
-                  <td
-                    style={{
-                      color: row.noteRes < 50 ? '#b91c1c' : undefined,
-                    }}
-                  >
-                    {row.noteRes ? `${Math.round(row.noteRes)}%` : '—'}
-                  </td>
-                  <td
-                    style={{
-                      color: row.notePart < 50 ? '#b91c1c' : undefined,
-                    }}
-                  >
-                    {row.notePart ? `${Math.round(row.notePart)}%` : '—'}
-                  </td>
-                  <td
-                    style={{
-                      color: row.noteTech < 50 ? '#b91c1c' : undefined,
-                    }}
-                  >
-                    {row.noteTech ? `${Math.round(row.noteTech)}%` : '—'}
-                  </td>
-                  <td
-                    style={{
-                      color: row.noteBien < 50 ? '#b91c1c' : undefined,
-                    }}
-                  >
-                    {row.noteBien ? `${Math.round(row.noteBien)}%` : '—'}
-                  </td>
-                  <td
-                    style={{
-                      color: row.noteBien < 50 ? '#b91c1c' : undefined,
-                    }}
-                  >
-                    {row.noteBien ? `${Math.round(row.noteBien)}%` : '—'}
-                  </td>
-                  <td
-                    style={{
-                      color: row.noteSocial < 50 ? '#b91c1c' : undefined,
-                    }}
-                  >
-                    {row.noteSocial ? `${Math.round(row.noteSocial)}%` : '—'}
-                  </td>
+                      <td
+      style={{
+        color: isOlderThan15Days(row.lastSave)
+          ? '#b91c1c'
+          : undefined,
+      }}
+    >
+      {formatShortDate(row.lastSave)}
+    </td>
+    <td
+      style={{
+        color: row.noteRes < 50 ? '#b91c1c' : undefined,
+      }}
+    >
+      {row.noteRes ? `${Math.round(row.noteRes)}%` : '—'}
+    </td>
+    <td
+      style={{
+        color: row.notePart < 50 ? '#b91c1c' : undefined,
+      }}
+    >
+      {row.notePart ? `${Math.round(row.notePart)}%` : '—'}
+    </td>
+    <td
+      style={{
+        color: row.noteTech < 50 ? '#b91c1c' : undefined,
+      }}
+    >
+      {row.noteTech ? `${Math.round(row.noteTech)}%` : '—'}
+    </td>
+    <td
+      style={{
+        color: row.noteBien < 50 ? '#b91c1c' : undefined,
+      }}
+    >
+      {row.noteBien ? `${Math.round(row.noteBien)}%` : '—'}
+    </td>
+    <td
+      style={{
+        color: row.noteSocial < 50 ? '#b91c1c' : undefined,
+      }}
+    >
+      {row.noteSocial ? `${Math.round(row.noteSocial)}%` : '—'}
+    </td>
                 </tr>
               ))}
 
@@ -924,7 +917,6 @@ const saveAgencyFilters = async (list) => {
                   <td>{avgRes ? `${Math.round(avgRes)}%` : '—'}</td>
                   <td>{avgPart ? `${Math.round(avgPart)}%` : '—'}</td>
                   <td>{avgTech ? `${Math.round(avgTech)}%` : '—'}</td>
-                  <td>{avgBien ? `${Math.round(avgBien)}%` : '—'}</td>
                   <td>{avgBien ? `${Math.round(avgBien)}%` : '—'}</td>
                   <td>{avgSocial ? `${Math.round(avgSocial)}%` : '—'}</td>
                 </tr>

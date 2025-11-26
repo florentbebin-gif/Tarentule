@@ -390,7 +390,7 @@ const saveAgencyFilters = async (list) => {
   // 4. Histogramme empilé des notes CGP (base 100)
   const noteLabels = ['Résultats', 'Part.', 'Tech.', 'Bien-être'];
   const noteValues = [avgRes, avgPart, avgTech, avgBien];
-  const noteColors = ['#2B3E37', '#9fbdb2', '#CFDED8', '#facc15'];
+  const noteColors = ['#2B3E37', '#788781', '#9fbdb2', '#CFDED8'];
 
   const sumNotes = noteValues.reduce((a, b) => a + (b || 0), 0);
   const noteSegments =

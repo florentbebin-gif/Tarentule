@@ -82,6 +82,10 @@ export default function ManagerReports() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const currentYear = new Date().getFullYear();
+  const availableYears = [currentYear - 1, currentYear];
+  const [selectedYear, setSelectedYear] = useState(String(currentYear));
+  
   const [rows, setRows] = useState([]); // lignes conseillers
   const [agencies, setAgencies] = useState([]); // liste agences distinctes
   const [selectedAgencies, setSelectedAgencies] = useState([]); // filtres agences
@@ -226,6 +230,7 @@ export default function ManagerReports() {
         const { data: reports, error: reportsError } = await supabase
           .from('reports')
           .select('id, user_id, period, data, created_at')
+          .eq('period', selectedYear)
           .order('created_at', { ascending: false });
 
         if (reportsError) {
@@ -338,7 +343,7 @@ export default function ManagerReports() {
     };
 
     load();
-  }, [navigate]);
+  }, [navigate, selectedYear]);
 
   // Gestion du filtre agences
 const toggleAgency = async (bureau) => {
@@ -572,6 +577,39 @@ const saveAgencyFilters = async (list) => {
 
   return (
     <div className="credit-panel">
+{/* Sélecteur d'exercice */}
+      <div
+        style={{
+          marginBottom: '8px',
+          display: 'flex',
+          gap: '8px',
+        }}
+      >
+        {availableYears.map((year) => {
+          const isActive = selectedYear === String(year);
+          return (
+            <button
+              key={year}
+              type="button"
+              onClick={() => setSelectedYear(String(year))}
+              style={{
+                padding: '4px 10px',
+                borderRadius: 9999,
+                border: '1px solid #9ca3af',
+                backgroundColor: isActive ? '#2B3E37' : '#ffffff',
+                color: isActive ? '#ffffff' : '#111827',
+                fontSize: 12,
+                cursor: 'pointer',
+              }}
+            >
+              {year}
+            </button>
+          );
+        })}
+      </div>
+
+
+      
       {/* 1. BOARD MANAGER */}
       <div className="section-card">
         <div className="section-title strong-title">Board Manager</div>

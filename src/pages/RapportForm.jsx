@@ -7,7 +7,9 @@ import PerformanceChart from '../components/PerformanceChart';
 import { useParams } from 'react-router-dom';
 
 export default function RapportForm({ onSaved, resetKey }) {
-  const [period, setPeriod] = useState('');
+  const currentYear = new Date().getFullYear();
+  const availableYears = [currentYear - 1, currentYear];
+  const [selectedYear, setSelectedYear] = useState(String(currentYear));
   const [error, setError] = useState('');
   const [loadingUser, setLoadingUser] = useState(true);
   const { userId: routeUserId } = useParams(); // id du conseiller si /rapport/:userId
@@ -57,7 +59,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     setError('');
     const { error: insertError } = await supabase.from('reports').insert({
       user_id: viewedUserId,
-      period,
+      period: selectedYear,
       global_score: null,
       comment: '',
       data: form,
@@ -203,31 +205,31 @@ export default function RapportForm({ onSaved, resetKey }) {
     const loadLastReport = async () => {
       if (!viewedUserId) return;
 
+      // On repart d'un formulaire vierge pour cette année
+      setForm(initialForm);
+
       const { data, error } = await supabase
         .from('reports')
-        .select('data, period')
+        .select('data')
         .eq('user_id', viewedUserId)
+        .eq('period', selectedYear)
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
 
-      if (!error && data) {
-        if (data.data) {
-          setForm((prev) => ({
-            ...prev,
-            ...data.data,
-          }));
-        }
-        if (data.period) {
-          setPeriod(data.period);
-        }
+      if (!error && data && data.data) {
+        setForm((prev) => ({
+          ...prev,
+          ...data.data,
+        }));
       }
     };
 
     if (!loadingUser) {
       loadLastReport();
     }
-  }, [loadingUser, viewedUserId]);
+  }, [loadingUser, viewedUserId, selectedYear]);
+
 
   // Charge le profil du conseiller affiché (pour afficher son nom)
   useEffect(() => {
@@ -260,7 +262,6 @@ export default function RapportForm({ onSaved, resetKey }) {
     if (!ok) return;
 
     setForm(initialForm);
-    setPeriod('');
     setError('');
   }, [resetKey]);
 
@@ -895,6 +896,31 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
 
       {/* Colonne droite : graphiques */}
       <div className="rapport-charts">
+      {/* Sélecteur d'exercice */}
+        <div style={{ marginBottom: '8px', display: 'flex', gap: '8px' }}>
+          {availableYears.map((year) => {
+            const isActive = selectedYear === String(year);
+            return (
+              <button
+                key={year}
+                type="button"
+                onClick={() => setSelectedYear(String(year))}
+                style={{
+                  padding: '4px 10px',
+                  borderRadius: 9999,
+                  border: '1px solid #9ca3af',
+                  backgroundColor: isActive ? '#2B3E37' : '#ffffff',
+                  color: isActive ? '#ffffff' : '#111827',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                {year}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Performance globale */}
         <div className="section-card radar-card radar-card--perf">
           <div className="radar-title">Performance globale</div>

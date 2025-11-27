@@ -1,4 +1,4 @@
-// src/pages/CPSocial.jsx
+    // src/pages/RapportForm.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import './Login.css';
@@ -11,14 +11,11 @@ export default function CPSocial({ onSaved, resetKey }) {
   const [selectedYear, setSelectedYear] = useState(String(currentYear));
   const [error, setError] = useState('');
   const [loadingUser, setLoadingUser] = useState(true);
-  const { userId: routeUserId } = useParams(); // id du CP Social si /cpsocial/:userId
+  const { userId: routeUserId } = useParams(); // id du conseiller si /rapport/:userId
   const [currentUserRole, setCurrentUserRole] = useState('user');
   const [viewedUserId, setViewedUserId] = useState(null); // id du rapport affiché
-  const [advisorName, setAdvisorName] = useState({
-    firstName: '',
-    lastName: '',
-  });
-  const [collecteAll, setCollecteAll] = useState(false);
+  const [advisorName, setAdvisorName] = useState({ firstName: '', lastName: '' });
+    const [collecteAll, setCollecteAll] = useState(false);
 
   const initialForm = {
     bienEtre: {
@@ -46,7 +43,7 @@ export default function CPSocial({ onSaved, resetKey }) {
       strategie: '',
     },
     technique: {
-      notesCgp: ['', '', '', '', '', '', ''],
+    notesCgp: ['', '', '', '', '', '', ''],
       notesManager: ['', '', '', '', '', '', ''],
       commentaires: '',
       strategie: '',
@@ -91,6 +88,7 @@ export default function CPSocial({ onSaved, resetKey }) {
     '9 - Campagnes diverses : participation et efficacité',
   ];
 
+
   const partenariatLabels = [
     '1 - Clubs Experts : gestion des invitations, relances et animation',
     '2 - Animation : entretien du réseau, suivi, régularité des visites',
@@ -105,16 +103,16 @@ export default function CPSocial({ onSaved, resetKey }) {
   ];
 
   const techniqueLabels = [
-    '1 - Commerciale : techniques de vente et relation client',
-    '2 - Civile : compétences techniques sur les aspects civils / juridiques',
-    '3 - Société : détention, structuration et problématiques',
-    '4 - Capacité d’épargne : Analyse et préconisation',
-    '5 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, SER1',
-    '6 - Process interne : organisation Relation Middle',
-    '7 - Social : Retraite, prévoyance, épargne salariale,... / capacité à détecter',
+  '1 - Commerciale : techniques de vente et relation client',
+  '2 - Civile : compétences techniques sur les aspects civils / juridiques',
+  '3 - Société : détention, structuration et problématiques',
+  '4 - Capacité d’épargne : Analyse et préconisation',
+  '5 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, SER1',
+  '6 - Process interne : organisation Relation Middle',
+  '7 - Social : Retraite, prévoyance, épargne salariale,... / capacité à détecter',
   ];
 
-  const themeOptions = [
+      const themeOptions = [
     // Résultats
     {
       value: 'produitsFinanciers',
@@ -189,8 +187,11 @@ export default function CPSocial({ onSaved, resetKey }) {
     },
   ];
 
-  const [selectedTheme, setSelectedTheme] = useState(themeOptions[0].value);
+  const [selectedTheme, setSelectedTheme] = useState(
+    themeOptions[0].value
+  );
 
+    
   // Conversion "1 000 €" -> 1000
   const parseEuro = (value) => {
     if (!value) return 0;
@@ -206,7 +207,7 @@ export default function CPSocial({ onSaved, resetKey }) {
     return safe.toLocaleString('fr-FR') + ' €';
   };
 
-  // Moyenne sécurisée
+      // Moyenne sécurisée (évite division par zéro)
   const average = (arr) => {
     const nums = arr
       .map((v) => Number(v) || 0)
@@ -243,6 +244,7 @@ export default function CPSocial({ onSaved, resetKey }) {
   };
 
   for (let i = 1; i < 8; i += 1) {
+    // i = 1 à 7 -> lignes 2 à 8
     totals.objectifs += parseEuro(form.resultats.objectifs[i]);
     totals.realises += parseEuro(form.resultats.realises[i]);
     totals.potentiel3m += parseEuro(form.resultats.potentiel3m[i]);
@@ -261,7 +263,7 @@ export default function CPSocial({ onSaved, resetKey }) {
         return;
       }
 
-      // rôle dans profiles
+      // on récupère le rôle dans profiles
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
@@ -287,11 +289,12 @@ export default function CPSocial({ onSaved, resetKey }) {
     initUser();
   }, [routeUserId]);
 
-  // Charge le dernier rapport sauvegardé pour l'utilisateur "vu"
+  // Charge le dernier rapport sauvegardé pour l'utilisateur "vu" (viewedUserId)
   useEffect(() => {
     const loadLastReport = async () => {
       if (!viewedUserId) return;
 
+      // On repart d'un formulaire vierge pour cette année
       setForm(initialForm);
 
       const { data, error } = await supabase
@@ -316,7 +319,8 @@ export default function CPSocial({ onSaved, resetKey }) {
     }
   }, [loadingUser, viewedUserId, selectedYear]);
 
-  // Charge le profil du CP Social affiché (pour afficher son nom)
+
+  // Charge le profil du conseiller affiché (pour afficher son nom)
   useEffect(() => {
     const loadAdvisorProfile = async () => {
       if (!viewedUserId) return;
@@ -338,22 +342,26 @@ export default function CPSocial({ onSaved, resetKey }) {
     loadAdvisorProfile();
   }, [viewedUserId]);
 
-  const hasMountedReset = useRef(false);
-  // RESET complet du rapport lorsque resetKey change
-  useEffect(() => {
-    if (!hasMountedReset.current) {
-      hasMountedReset.current = true;
-      return;
-    }
+    const hasMountedReset = useRef(false);
+// RESET complet du rapport lorsque resetKey change (icône Trash)
+// On ignore le premier passage (au montage) pour éviter la popup à l'ouverture
+useEffect(() => {
+  // Première exécution de l'effet : on ne fait rien, on marque juste comme "monté"
+  if (!hasMountedReset.current) {
+    hasMountedReset.current = true;
+    return;
+  }
 
-    if (!resetKey) return;
+  // Si resetKey est vide / 0, on ne fait rien
+  if (!resetKey) return;
 
-    const ok = window.confirm('Voulez-vous vraiment vider votre rapport ?');
-    if (!ok) return;
+  const ok = window.confirm('Voulez-vous vraiment vider votre rapport ?');
+  if (!ok) return;
 
-    setForm(initialForm);
-    setError('');
-  }, [resetKey]);
+  setForm(initialForm);
+  setError('');
+}, [resetKey]);
+
 
   const clampNote = (value) => {
     const n = Number(value);
@@ -369,6 +377,7 @@ export default function CPSocial({ onSaved, resetKey }) {
       const prevArray = prevSection[field] || [];
       const nextArray = [...prevArray];
 
+      // Si l'index demandé dépasse la longueur actuelle, on agrandit le tableau
       if (index >= nextArray.length) {
         nextArray.length = index + 1;
       }
@@ -384,6 +393,7 @@ export default function CPSocial({ onSaved, resetKey }) {
       };
     });
   };
+
 
   const updateField = (section, field, value) => {
     setForm((prev) => ({
@@ -409,32 +419,34 @@ export default function CPSocial({ onSaved, resetKey }) {
     Number(form.resultats.notesCgp[i] || 0)
   );
   const resultatsManagerRadar = [1, 2, 3, 4, 5, 6, 7].map((i) =>
-    Number(form.resultats.notesManager?.[i] || 0)
-  );
+  Number(form.resultats.notesManager?.[i] || 0)
+);
 
   const partenariatRadarLabels = ['Clubs Experts', 'Animation', 'Prospection'];
   const partenariatCgpRadar = [0, 1, 2].map((i) =>
     Number(form.partenariat.notesCgp[i] || 0)
   );
   const partenariatManagerRadar = [0, 1, 2].map((i) =>
-    Number(form.partenariat.notesManager?.[i] || 0)
-  );
+  Number(form.partenariat.notesManager?.[i] || 0)
+);
 
-  const techniqueRadarLabels = [
-    'Commercial',
-    'Civil',
-    'Société',
-    'Cap épargne',
-    'Outils',
-    'Process',
-    'Social',
-  ];
-  const techniqueCgpRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
-    Number(form.technique.notesCgp[i] || 0)
-  );
-  const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
-    Number(form.technique.notesManager?.[i] || 0)
-  );
+const techniqueRadarLabels = [
+  'Commercial',
+  'Civil',
+  'Société',
+  'Cap épargne',
+  'Outils',
+  'Process',
+  'Social',
+];
+
+const techniqueCgpRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
+  Number(form.technique.notesCgp[i] || 0)
+);
+const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
+  Number(form.technique.notesManager?.[i] || 0)
+);
+
 
   const bienEtreRadarLabels = [
     'Stress',
@@ -446,10 +458,10 @@ export default function CPSocial({ onSaved, resetKey }) {
     Number(form.bienEtre.notesCgp[i] || 0)
   );
   const bienEtreManagerRadar = [0, 1, 2, 3].map((i) =>
-    Number(form.bienEtre.notesManager?.[i] || 0)
-  );
+  Number(form.bienEtre.notesManager?.[i] || 0)
+);
 
-  // ---- Totaux Board (Collecte All) ----
+  // ---- Totaux Board Conseiller (avec Collecte All) ----
   const boardTotals = (() => {
     const objectifs = form.resultats.objectifs || [];
     const realises = form.resultats.realises || [];
@@ -459,8 +471,13 @@ export default function CPSocial({ onSaved, resetKey }) {
     let rea = 0;
     let pot12 = 0;
 
+    // lignes 2 à 8 => index 1 à 7
     for (let i = 1; i < 8; i += 1) {
-      if (collecteAll && (i === 4 || i === 5)) continue;
+      // si Collecte All => on enlève Honoraires (5, index 4) et Arbitrages (6, index 5)
+      if (collecteAll && (i === 4 || i === 5)) {
+        continue;
+      }
+
       obj += parseEuro(objectifs[i] || 0);
       rea += parseEuro(realises[i] || 0);
       pot12 += parseEuro(potentiel12m[i] || 0);
@@ -497,21 +514,26 @@ export default function CPSocial({ onSaved, resetKey }) {
     Math.min(100 - realisedRatio, potentialRatioRaw)
   );
 
-  const notesResultats = form.resultats.notesCgp || [];
+      const notesResultats = form.resultats.notesCgp || [];
   const notesPart = form.partenariat.notesCgp || [];
   const notesTechArr = form.technique.notesCgp || [];
   const notesBienArr = form.bienEtre.notesCgp || [];
 
+  // 1) Résultats : sans PER (7) ni VP (8) -> index 1 à 5
   const coreResultats = notesResultats.slice(1, 6);
   const noteRes = average(coreResultats) * 10;
 
+  // 2) Partenariats
   const notePart = average(notesPart) * 10;
 
+  // 3) Technique : sans la ligne 7 "Social" (index 6) -> index 0 à 5
   const coreTechnique = notesTechArr.slice(0, 6);
   const noteTech = average(coreTechnique) * 10;
 
+  // 4) Bien-être
   const noteBien = average(notesBienArr) * 10;
 
+  // 5) Social = PER (7) + VP (8) + Technique Social (7)
   const perNote = Number(notesResultats[6] || 0);
   const vpNote = Number(notesResultats[7] || 0);
   const socialTechNote = Number(notesTechArr[6] || 0);
@@ -533,7 +555,7 @@ export default function CPSocial({ onSaved, resetKey }) {
       ? noteValues.map((v) => (v / sumNotes) * 100)
       : noteValues.map(() => 0);
 
-  const currentTheme =
+      const currentTheme =
     themeOptions.find((o) => o.value === selectedTheme) || themeOptions[0];
 
   let themeObjectifs = 0;
@@ -556,7 +578,9 @@ export default function CPSocial({ onSaved, resetKey }) {
       ? Math.round((themeRealises / themeObjectifs) * 100)
       : 0;
 
-  if (loadingUser) {
+
+    
+   if (loadingUser) {
     return <p>Chargement…</p>;
   }
 
@@ -564,64 +588,64 @@ export default function CPSocial({ onSaved, resetKey }) {
     <div className="credit-panel rapport-layout">
       {/* Colonne gauche : Board + tableaux */}
       <div className="rapport-main">
-        {/* Header : années + CP Social */}
+        {/* Header : années + Conseiller */}
         <div
-          style={{
-            marginBottom: '0px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-          }}
-        >
-          {/* Années + message */}
-          <div
-            style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+  style={{
+    marginBottom: '0px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
+  }}
+>
+  {/* Années + message */}
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+    <div style={{ display: 'flex', gap: '8px' }}>
+      {availableYears.map((year) => {
+        const isActive = selectedYear === String(year);
+        return (
+          <button
+            key={year}
+            type="button"
+            onClick={() => setSelectedYear(String(year))}
+            style={{
+              padding: '4px 10px',
+              borderRadius: 9999,
+              border: '1px solid #9ca3af',
+              backgroundColor: isActive ? '#2B3E37' : '#ffffff',
+              color: isActive ? '#ffffff' : '#111827',
+              fontSize: 12,
+              cursor: 'pointer',
+            }}
           >
-            <div style={{ display: 'flex', gap: '8px' }}>
-              {availableYears.map((year) => {
-                const isActive = selectedYear === String(year);
-                return (
-                  <button
-                    key={year}
-                    type="button"
-                    onClick={() => setSelectedYear(String(year))}
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: 9999,
-                      border: '1px solid #9ca3af',
-                      backgroundColor: isActive ? '#2B3E37' : '#ffffff',
-                      color: isActive ? '#ffffff' : '#111827',
-                      fontSize: 12,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {year}
-                  </button>
-                );
-              })}
-            </div>
+            {year}
+          </button>
+        );
+      })}
+    </div>
 
-            <span
-              style={{
-                fontSize: 12,
-                color: '#6b7280',
-                fontStyle: 'italic',
-              }}
-            >
-              Année sélectionnée&nbsp;: {selectedYear}
-            </span>
-          </div>
+    <span
+      style={{
+        fontSize: 12,
+        color: '#6b7280',
+        fontStyle: 'italic',
+      }}
+    >
+      Année sélectionnée&nbsp;: {selectedYear}
+    </span>
+  </div>
 
-          {/* CP Social à droite (libellé modifié ici) */}
-          <div style={{ marginLeft: 'auto' }} className="conseiller-label">
-            CP Social : {advisorName.lastName || '—'} {advisorName.firstName}
-          </div>
-        </div>
+  {/* Conseiller à droite */}
+  <div style={{ marginLeft: 'auto' }} className="conseiller-label">
+    CP Social : {advisorName.lastName || '—'} {advisorName.firstName}
+  </div>
+</div>
 
-        {/* Board */}
+
+        {/* Board Conseiller */}
         <div className="section-card">
           <div className="section-title strong-title">Board CP Social</div>
 
+          {/* Barre Collecte All + sélection thématique */}
           <div
             style={{
               marginTop: '8px',
@@ -636,13 +660,13 @@ export default function CPSocial({ onSaved, resetKey }) {
               type="button"
               onClick={() => setCollecteAll((prev) => !prev)}
               style={{
-                padding: '4px 10px',
-                borderRadius: 9999,
-                border: '1px solid #9ca3af',
-                backgroundColor: collecteAll ? '#ffffff' : '#2B3E37',
-                color: collecteAll ? '#111827' : '#ffffff',
-                fontSize: 12,
-                cursor: 'pointer',
+    padding: '4px 10px',
+    borderRadius: 9999,
+    border: '1px solid #9ca3af',
+    backgroundColor: collecteAll ? '#ffffff' : '#2B3E37',
+    color: collecteAll ? '#111827' : '#ffffff',
+    fontSize: 12,
+    cursor: 'pointer',
               }}
             >
               Collecte All
@@ -678,7 +702,7 @@ export default function CPSocial({ onSaved, resetKey }) {
             </div>
           </div>
 
-          {/* Grille des petits graphiques */}
+          {/* Grille des graphiques */}
           <div
             style={{
               display: 'grid',
@@ -687,7 +711,8 @@ export default function CPSocial({ onSaved, resetKey }) {
               marginTop: '8px',
             }}
           >
-            {/* % d'atteinte global */}
+
+            {/* 2) % d'atteinte global */}
             <div
               style={{
                 border: '1px solid #e5e7eb',
@@ -710,19 +735,19 @@ export default function CPSocial({ onSaved, resetKey }) {
               >
                 % d&apos;atteinte global
               </div>
-              <div
-                style={{
-                  fontSize: 12,
-                  color: '#6b7280',
-                  marginBottom: 6,
-                  alignSelf: 'flex-start',
-                }}
-              >
-                Objectifs : {euroFromNumber(totalObjectifs)}
-                <br />
-                Réalisé : {euroFromNumber(totalRealises)}
-              </div>
-
+                  <div
+    style={{
+      fontSize: 12,
+      color: '#6b7280',
+      marginBottom: 6,
+      alignSelf: 'flex-start',
+    }}
+  >
+    Objectifs : {euroFromNumber(totalObjectifs)}
+    <br />
+    Réalisé : {euroFromNumber(totalRealises)}
+  </div>
+                
               <div
                 style={{
                   width: 90,
@@ -757,7 +782,7 @@ export default function CPSocial({ onSaved, resetKey }) {
               </div>
             </div>
 
-            {/* Réalisé + Potentiel vs objectifs */}
+            {/* 3) Réalisé + Potentiel 31/12 vs objectifs */}
             <div
               style={{
                 border: '1px solid #e5e7eb',
@@ -804,7 +829,7 @@ export default function CPSocial({ onSaved, resetKey }) {
               </div>
             </div>
 
-            {/* Positionnement CP Social (base 100) */}
+            {/* 4) Positionnement CP Social (base 100) */}
             <div
               style={{
                 border: '1px solid #e5e7eb',
@@ -816,7 +841,7 @@ export default function CPSocial({ onSaved, resetKey }) {
               <div
                 style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
               >
-                Positionnement CP Social (base 100)
+                Positionnement CGP (base 100)
               </div>
               <div
                 style={{
@@ -876,7 +901,7 @@ export default function CPSocial({ onSaved, resetKey }) {
               </ul>
             </div>
 
-            {/* Graphique thématique */}
+            {/* 5) Graphique thématique */}
             <div
               style={{
                 border: '1px solid #e5e7eb',
@@ -940,16 +965,574 @@ export default function CPSocial({ onSaved, resetKey }) {
           </div>
         </div>
 
-        {/* Sections Résultats / Partenariats / Techniques / Bien-être
-            → identiques à RapportForm, je les laisse telles quelles */}
-        {/* ... (tout le reste du formulaire est inchangé par rapport à RapportForm) ... */}
-        {/* Pour garder la réponse lisible, je ne répète pas ici tout le bloc,
-            mais dans ton fichier tu conserves bien l'intégralité du code actuel
-            de RapportForm à la suite de ce point. */}
+        {/* Carte unique pour les tableaux */}
+        <div className="section-card" style={{ marginTop: '24px' }}>
+          {/* 1. RÉSULTATS */}
+          <div className="section-header">
+            <div className="section-title strong-title">Résultats</div>
+          </div>
+
+          <div className="rapport-section-table">
+            <div className="rapport-table-header-top">
+              <span className="col-libelle"></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span
+                className="note-group-header"
+                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+              >
+                Positionnement*
+              </span>
+            </div>
+
+            <div className="rapport-table-header-sub">
+              <span className="col-libelle">Libellés</span>
+              <span>Objectifs</span>
+              <span>Réalisé</span>
+              <span className="col-potentiel-header">%</span>
+              <span className="col-potentiel-header">Potentiel 31/12</span>
+              <span>CGP</span>
+              <span>N+1</span>
+            </div>
+
+            {Array.from({ length: 9 }).map((_, i) => {
+              const isTotalRow = i === 0;
+              const isCampaignRow = i === 8;
+              const label = resultatsLabels[i];
+
+              return (
+                <div className="rapport-table-row" key={i}>
+                  <span className="col-libelle">
+                    {isTotalRow ? <strong>{label}</strong> : label}
+                  </span>
+
+                  {/* Objectifs */}
+                  {isCampaignRow ? (
+                    <span></span>
+                  ) : isTotalRow ? (
+                    <input
+                      className="rapport-input manager-cell total-cell"
+                      type="text"
+                      value={euroFromNumber(totals.objectifs)}
+                      readOnly={
+                        currentUserRole !== 'manager' &&
+                        currentUserRole !== 'admin'
+                      }
+                    />
+                  ) : (
+                    <input
+                      className="rapport-input manager-cell"
+                      type="text"
+                      value={form.resultats.objectifs[i]}
+                      readOnly={
+                        currentUserRole !== 'manager' &&
+                        currentUserRole !== 'admin'
+                      }
+                      onChange={(e2) =>
+                        updateArrayField(
+                          'resultats',
+                          'objectifs',
+                          i,
+                          e2.target.value
+                        )
+                      }
+                      onBlur={() => {
+                        formatEuroField('objectifs', i);
+                        handleAutoSave();
+                      }}
+                      placeholder="—"
+                    />
+                  )}
+
+                  {/* Réalisé */}
+                  {isCampaignRow ? (
+                    <span></span>
+                  ) : isTotalRow ? (
+                    <input
+                      className="rapport-input manager-cell total-cell"
+                      type="text"
+                      value={euroFromNumber(totals.realises)}
+                      readOnly={
+                        currentUserRole !== 'manager' &&
+                        currentUserRole !== 'admin'
+                      }
+                    />
+                  ) : (
+                    <input
+                      className="rapport-input"
+                      type="text"
+                      value={form.resultats.realises[i]}
+                      onChange={(e2) =>
+                        updateArrayField(
+                          'resultats',
+                          'realises',
+                          i,
+                          e2.target.value
+                        )
+                      }
+                      onBlur={() => {
+                        formatEuroField('realises', i);
+                        handleAutoSave();
+                      }}
+                    />
+                  )}
+
+                  {/* % auto */}
+                  {(() => {
+                    if (isCampaignRow) {
+                      return <span></span>;
+                    }
+
+                    let objectifsValue;
+                    let realisesValue;
+
+                    if (isTotalRow) {
+                      objectifsValue = totals.objectifs;
+                      realisesValue = totals.realises;
+                    } else {
+                      objectifsValue = parseEuro(
+                        form.resultats.objectifs[i]
+                      );
+                      realisesValue = parseEuro(
+                        form.resultats.realises[i]
+                      );
+                    }
+
+                    const percent =
+                      objectifsValue > 0
+                        ? Math.round(
+                            (realisesValue / objectifsValue) * 100
+                          )
+                        : 0;
+
+                    const display = `${percent} %`;
+
+                    return (
+                      <input
+                        className={`rapport-input rapport-input-percent manager-cell${
+                          isTotalRow ? ' total-cell' : ''
+                        }`}
+                        type="text"
+                        value={display}
+                        readOnly
+                      />
+                    );
+                  })()}
+
+                  {/* Potentiel */}
+                  {isCampaignRow ? (
+                    <span></span>
+                  ) : isTotalRow ? (
+                    <input
+                      className="rapport-input rapport-input-potentiel manager-cell total-cell"
+                      type="text"
+                      value={euroFromNumber(totals.potentiel12m)}
+                      readOnly={
+                        currentUserRole !== 'manager' &&
+                        currentUserRole !== 'admin'
+                      }
+                    />
+                  ) : (
+                    <input
+                      className="rapport-input rapport-input-potentiel"
+                      type="text"
+                      value={form.resultats.potentiel12m[i]}
+                      onChange={(e2) =>
+                        updateArrayField(
+                          'resultats',
+                          'potentiel12m',
+                          i,
+                          e2.target.value
+                        )
+                      }
+                      onBlur={() => {
+                        formatEuroField('potentiel12m', i);
+                        handleAutoSave();
+                      }}
+                    />
+                  )}
+
+                  {/* Notes */}
+                  {isTotalRow ? (
+                    <>
+                      <span></span>
+                      <span></span>
+                    </>
+                  ) : (
+                    <>
+                      <input
+                        className="rapport-input rapport-input-note"
+                        type="number"
+                        min="0"
+                        max="10"
+                        value={form.resultats.notesCgp[i]}
+                        onChange={(e2) =>
+                          updateArrayField(
+                            'resultats',
+                            'notesCgp',
+                            i,
+                            clampNote(e2.target.value)
+                          )
+                        }
+                        onBlur={handleAutoSave}
+                      />
+                      <input
+                        className="rapport-input rapport-input-note manager-cell"
+                        type="number"
+                        min="0"
+                        max="10"
+                        readOnly={
+                          currentUserRole !== 'manager' &&
+                          currentUserRole !== 'admin'
+                        }
+                        value={form.resultats.notesManager?.[i] || ''}
+                        onChange={(e2) =>
+                          updateArrayField(
+                            'resultats',
+                            'notesManager',
+                            i,
+                            clampNote(e2.target.value)
+                          )
+                        }
+                        onBlur={handleAutoSave}
+                        placeholder="—"
+                      />
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.resultats.strategie}
+            readOnly={
+              currentUserRole !== 'manager' && currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateField('resultats', 'strategie', e2.target.value)
+            }
+            onBlur={handleAutoSave}
+            placeholder="Renseigné par le manager"
+          />
+
+          {error && (
+            <div className="alert error" style={{ marginTop: '8px' }}>
+              {error}
+            </div>
+          )}
+
+          {/* 2. PARTENARIATS */}
+          <div
+            className="section-title strong-title"
+            style={{ marginTop: '24px' }}
+          >
+            Partenariats
+          </div>
+
+          <div className="rapport-section-table rapport-section-table--part">
+            <div className="rapport-table-header-top rapport-table-header-top--part">
+              <span className="col-libelle"></span>
+              <span></span>
+              <span
+                className="note-group-header"
+                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+              >
+                Positionnement*
+              </span>
+            </div>
+
+            <div className="rapport-table-header-sub rapport-table-header-sub--part">
+              <span className="col-libelle">Libellés</span>
+              <span>Objectifs N (nb)</span>
+              <span>Réalisé N (nb)</span>
+              <span>CGP</span>
+              <span>N+1</span>
+            </div>
+
+            {partenariatLabels.map((label, i) => (
+              <div
+                className="rapport-table-row rapport-table-row--part"
+                key={i}
+              >
+                <span className="col-libelle">{label}</span>
+
+                <input
+                  className="rapport-input rapport-input-narrow manager-cell"
+                  type="number"
+                  value={form.partenariat.objectifs[i] || ''}
+                  readOnly={
+                    currentUserRole !== 'manager' &&
+                    currentUserRole !== 'admin'
+                  }
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'partenariat',
+                      'objectifs',
+                      i,
+                      e2.target.value
+                    )
+                  }
+                  onBlur={handleAutoSave}
+                  placeholder="—"
+                />
+
+                <input
+                  className="rapport-input rapport-input-narrow"
+                  type="number"
+                  value={form.partenariat.realises[i]}
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'partenariat',
+                      'realises',
+                      i,
+                      e2.target.value
+                    )
+                  }
+                  onBlur={handleAutoSave}
+                />
+
+                <input
+                  className="rapport-input rapport-input-note rapport-input-narrow"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.partenariat.notesCgp[i]}
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'partenariat',
+                      'notesCgp',
+                      i,
+                      clampNote(e2.target.value)
+                    )
+                  }
+                  onBlur={handleAutoSave}
+                />
+
+                <input
+                  className="rapport-input rapport-input-note manager-cell"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.partenariat.notesManager?.[i] || ''}
+                  readOnly={
+                    currentUserRole !== 'manager' &&
+                    currentUserRole !== 'admin'
+                  }
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'partenariat',
+                      'notesManager',
+                      i,
+                      clampNote(e2.target.value)
+                    )
+                  }
+                  onBlur={handleAutoSave}
+                  placeholder="—"
+                />
+              </div>
+            ))}
+          </div>
+
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.partenariat.strategie}
+            readOnly={
+              currentUserRole !== 'manager' && currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateField('partenariat', 'strategie', e2.target.value)
+            }
+            onBlur={handleAutoSave}
+            placeholder="Renseigné par le manager"
+          />
+
+          {/* 3. TECHNIQUE */}
+          <div
+            className="section-title strong-title"
+            style={{ marginTop: '24px' }}
+          >
+            Techniques
+          </div>
+
+          <div className="rapport-section-table rapport-section-table--simple">
+            <div className="rapport-table-header-top rapport-table-header-top--simple">
+              <span className="col-libelle"></span>
+              <span
+                className="note-group-header"
+                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+              >
+                Positionnement*
+              </span>
+            </div>
+
+            <div className="rapport-table-header-sub rapport-table-header-sub--simple">
+              <span className="col-libelle">Libellés</span>
+              <span>CGP</span>
+              <span>N+1</span>
+            </div>
+
+            {techniqueLabels.map((label, i) => (
+              <div
+                className="rapport-table-row rapport-table-row--simple"
+                key={i}
+              >
+                <span className="col-libelle">{label}</span>
+
+                <input
+                  className="rapport-input rapport-input-note"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.technique.notesCgp[i]}
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'technique',
+                      'notesCgp',
+                      i,
+                      clampNote(e2.target.value)
+                    )
+                  }
+                  onBlur={handleAutoSave}
+                />
+
+                <input
+                  className="rapport-input rapport-input-note manager-cell"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.technique.notesManager?.[i] || ''}
+                  readOnly={
+                    currentUserRole !== 'manager' &&
+                    currentUserRole !== 'admin'
+                  }
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'technique',
+                      'notesManager',
+                      i,
+                      clampNote(e2.target.value)
+                    )
+                  }
+                  onBlur={handleAutoSave}
+                  placeholder="—"
+                />
+              </div>
+            ))}
+          </div>
+
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.technique.strategie}
+            readOnly={
+              currentUserRole !== 'manager' && currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateField('technique', 'strategie', e2.target.value)
+            }
+            onBlur={handleAutoSave}
+            placeholder="Renseigné par le manager"
+          />
+
+          {/* 4. BIEN-ÊTRE */}
+          <div
+            className="section-title strong-title"
+            style={{ marginTop: '24px' }}
+          >
+            Bien-être
+          </div>
+
+          <div className="rapport-section-table rapport-section-table--simple">
+            <div className="rapport-table-header-top rapport-table-header-top--simple">
+              <span className="col-libelle"></span>
+              <span
+                className="note-group-header"
+                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+              >
+                Positionnement*
+              </span>
+            </div>
+
+            <div className="rapport-table-header-sub rapport-table-header-sub--simple">
+              <span className="col-libelle">Libellés</span>
+              <span>CGP</span>
+              <span>N+1</span>
+            </div>
+
+            {bienEtreLabels.map((label, i) => (
+              <div
+                className="rapport-table-row rapport-table-row--simple"
+                key={i}
+              >
+                <span className="col-libelle">{label}</span>
+
+                <input
+                  className="rapport-input rapport-input-note"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.bienEtre.notesCgp[i]}
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'bienEtre',
+                      'notesCgp',
+                      i,
+                      clampNote(e2.target.value)
+                    )
+                  }
+                  onBlur={handleAutoSave}
+                />
+
+                <input
+                  className="rapport-input rapport-input-note manager-cell"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.bienEtre.notesManager?.[i] || ''}
+                  readOnly={
+                    currentUserRole !== 'manager' && currentUserRole !== 'admin'
+                  }
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'bienEtre',
+                      'notesManager',
+                      i,
+                      clampNote(e2.target.value)
+                    )
+                  }
+                  onBlur={handleAutoSave}
+                  placeholder="—"
+                />
+              </div>
+            ))}
+          </div>
+
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.bienEtre.strategie}
+            readOnly={
+              currentUserRole !== 'manager' && currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateField('bienEtre', 'strategie', e2.target.value)
+            }
+            onBlur={handleAutoSave}
+            placeholder="Renseigné par le manager"
+          />
+        </div>
       </div>
 
-      {/* Colonne droite : Radars */}
+      {/* Colonne droite : graphiques (inchangée) */}
       <div className="rapport-charts">
+        
+        {/* Notes Résultats */}
         <div className="section-card radar-card radar-card--resultats">
           <div className="radar-title">Positions Résultats</div>
           <RadarChart
@@ -959,6 +1542,7 @@ export default function CPSocial({ onSaved, resetKey }) {
           />
         </div>
 
+        {/* Notes Partenariats */}
         <div className="section-card radar-card radar-card--partenariat">
           <div className="radar-title">Positions Partenariats</div>
           <RadarChart
@@ -968,6 +1552,7 @@ export default function CPSocial({ onSaved, resetKey }) {
           />
         </div>
 
+        {/* Notes Techniques */}
         <div className="section-card radar-card radar-card--technique">
           <div className="radar-title">Positions Techniques</div>
           <RadarChart
@@ -977,6 +1562,7 @@ export default function CPSocial({ onSaved, resetKey }) {
           />
         </div>
 
+        {/* Notes Bien-être */}
         <div className="section-card radar-card radar-card--bienetre">
           <div className="radar-title">Positions Bien-être</div>
           <RadarChart

@@ -1,0 +1,169 @@
+/* Layout spécifique à la page CP Social */
+.cpsocial-layout {
+  max-width: 1360px;
+  margin: 24px auto 32px;
+  padding: 0 16px;
+}
+
+/* Colonne principale */
+.rapport-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Cartes et titres (reprise de styles.css) */
+.section-card {
+  background: #fff;
+  border: 1px solid #D9D9D9;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .07);
+}
+
+.section-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  height: 4px;
+  background: #e8ded5;
+  border-radius: 3px;
+  margin-top: 8px;
+}
+
+.strong-title {
+  font-weight: 800;
+}
+
+/* Label CP Social en haut à droite */
+.conseiller-label {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+/* ====== Tableau Résultats CP Social ====== */
+
+.rapport-section-table {
+  margin-top: 16px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background-color: #fbfbfb;
+}
+
+/* En-tête groupée */
+.rapport-table-header-top {
+  display: grid;
+  /* 1 libellé + 3 (Bureaux) + 4 (Accompagnement) + 2 (Positionnement) */
+  grid-template-columns: minmax(0, 3fr) repeat(7, minmax(0, 1fr)) 70px 70px;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+/* En-tête + lignes */
+.rapport-table-header-sub,
+.rapport-table-row {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) repeat(7, minmax(0, 1fr)) 70px 70px;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 14px;
+}
+
+.rapport-table-header-sub {
+  font-weight: 600;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 4px;
+}
+
+/* Centrage des titres (sauf libellé) */
+.rapport-table-header-sub span:not(.col-libelle),
+.rapport-table-header-top span {
+  text-align: center;
+}
+
+.rapport-table-row + .rapport-table-row {
+  margin-top: 4px;
+}
+
+.col-libelle {
+  font-size: 13px;
+}
+
+/* Texte des entêtes de groupe */
+.note-group-header {
+  font-weight: 600;
+}
+
+/* Champs de saisie */
+.rapport-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.rapport-input:focus {
+  outline: none;
+  border-color: #111827;
+}
+
+/* Notes */
+.rapport-input-note {
+  width: 100%;
+}
+
+/* Cellules réservées manager (objectifs, N+1, stratégie...) */
+.manager-cell {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Ligne totale (ligne 1) en gras */
+.total-cell {
+  font-weight: 600;
+}
+
+/* Colonne Potentiel */
+.col-potentiel-header {
+  font-style: italic;
+  font-size: 14px;
+}
+
+.rapport-input-potentiel {
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Colonnes % (plus étroites) */
+.rapport-input-percent {
+  text-align: center;
+}
+
+/* Zone stratégie manager */
+.rapport-strategie-manager {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 70px;
+  resize: vertical;
+  overflow: auto;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 12px;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}

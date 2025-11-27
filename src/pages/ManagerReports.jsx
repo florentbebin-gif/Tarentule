@@ -673,13 +673,13 @@ const saveAgencyFilters = async (list) => {
             type="button"
             onClick={() => setCollecteAll((prev) => !prev)}
             style={{
-              padding: '4px 10px',
-              borderRadius: 9999,
-              border: '1px solid #9ca3af',
-              backgroundColor: collecteAll ? '#2B3E37' : '#ffffff',
-              color: collecteAll ? '#ffffff' : '#111827',
-              fontSize: 12,
-              cursor: 'pointer',
+    padding: '4px 10px',
+    borderRadius: 9999,
+    border: '1px solid #9ca3af',
+    backgroundColor: collecteAll ? '#ffffff' : '#2B3E37',
+    color: collecteAll ? '#111827' : '#ffffff',
+    fontSize: 12,
+    cursor: 'pointer',
             }}
           >
             Collecte All

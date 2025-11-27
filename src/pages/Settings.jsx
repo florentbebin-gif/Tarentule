@@ -9,10 +9,6 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Zone contact admin
-  const [adminMessage, setAdminMessage] = useState('');
-  const [sendStatus, setSendStatus] = useState('');
-
   // -------------------------------
   // Charger user + profil
   // -------------------------------
@@ -121,39 +117,6 @@ export default function Settings() {
   const email = user.email || '—';
   const statut = computeRoleLabel();
 
-  // -------------------------------
-  // Envoi message admin
-  // -------------------------------
-const sendToAdmin = async () => {
-  setSendStatus("Envoi en cours…");
-
-  try {
-    const { data, error } = await supabase.functions.invoke(
-      'send-admin-email',
-      {
-        body: {
-          message: adminMessage,
-          userEmail: email,
-        },
-      }
-    );
-
-    // Cas où la function répond 200 mais signale un problème
-    if (error || (data && data.ok === false)) {
-      console.error('Erreur function:', error || data);
-      setSendStatus("Erreur lors de l'envoi (configuration email).");
-      return;
-    }
-
-    // OK
-    setSendStatus("Message envoyé à l’administrateur !");
-    setAdminMessage('');
-  } catch (err) {
-    // Cas où la function renvoie 500 → FunctionsHttpError
-    console.error('Erreur d’appel function:', err);
-    setSendStatus("Erreur lors de l'envoi (configuration email).");
-  }
-};
 
 
   // -------------------------------
@@ -196,35 +159,10 @@ const sendToAdmin = async () => {
         </div>
 
         <p style={{ marginTop: 20, fontSize: 13, color: '#777' }}>
-          Pour modifier des informations personnelles (agence, statut, etc.), 
-          vous pouvez contacter un Administrateur via la zone ci-dessous.
+          Pour modifier des informations personnelles (agence, statut, etc.),
+          vous pouvez contacter votre manager.
         </p>
 
-        {/* ----------- CONTACT ADMIN ----------- */}
-        <div className="settings-admin-box">
-          <label className="settings-label">Contacter l’administrateur</label>
-
-          <textarea
-            className="settings-textarea"
-            placeholder="Votre message…"
-            value={adminMessage}
-            onChange={(e) => setAdminMessage(e.target.value)}
-          />
-
-          <button
-            className="login-btn"
-            onClick={sendToAdmin}
-            disabled={!adminMessage.trim()}
-          >
-            Envoyer le message
-          </button>
-
-          {sendStatus && (
-            <p style={{ marginTop: 8, color: '#2B3E37' }}>
-              {sendStatus}
-            </p>
-          )}
-        </div>
       </div>
     </div>
   );

@@ -124,24 +124,37 @@ export default function Settings() {
   // -------------------------------
   // Envoi message admin
   // -------------------------------
-  const sendToAdmin = async () => {
-    setSendStatus("Envoi en cours…");
+const sendToAdmin = async () => {
+  setSendStatus("Envoi en cours…");
 
-    const { error } = await supabase.functions.invoke("send-admin-email", {
-      body: {
-        message: adminMessage,
-        userEmail: email,
-      },
-    });
+  try {
+    const { data, error } = await supabase.functions.invoke(
+      'send-admin-email',
+      {
+        body: {
+          message: adminMessage,
+          userEmail: email,
+        },
+      }
+    );
 
-    if (error) {
-      console.error(error);
-      setSendStatus("Erreur lors de l'envoi.");
-    } else {
-      setSendStatus("Message envoyé à l’administrateur !");
-      setAdminMessage('');
+    // Cas où la function répond 200 mais signale un problème
+    if (error || (data && data.ok === false)) {
+      console.error('Erreur function:', error || data);
+      setSendStatus("Erreur lors de l'envoi (configuration email).");
+      return;
     }
-  };
+
+    // OK
+    setSendStatus("Message envoyé à l’administrateur !");
+    setAdminMessage('');
+  } catch (err) {
+    // Cas où la function renvoie 500 → FunctionsHttpError
+    console.error('Erreur d’appel function:', err);
+    setSendStatus("Erreur lors de l'envoi (configuration email).");
+  }
+};
+
 
   // -------------------------------
   // RENDER

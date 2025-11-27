@@ -1,5 +1,5 @@
     // src/pages/RapportForm.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import './Login.css';
 import RadarChart from '../components/RadarChart';
@@ -253,17 +253,26 @@ export default function RapportForm({ onSaved, resetKey }) {
     loadAdvisorProfile();
   }, [viewedUserId]);
 
-  // RESET complet du rapport lorsque resetKey change (icône Trash)
-  // On ignore la valeur initiale (0)
-  useEffect(() => {
-    if (resetKey === undefined || resetKey === 0) return;
+    const hasMountedReset = useRef(false);
+// RESET complet du rapport lorsque resetKey change (icône Trash)
+// On ignore le premier passage (au montage) pour éviter la popup à l'ouverture
+useEffect(() => {
+  // Première exécution de l'effet : on ne fait rien, on marque juste comme "monté"
+  if (!hasMountedReset.current) {
+    hasMountedReset.current = true;
+    return;
+  }
 
-    const ok = window.confirm('Voulez-vous vraiment vider votre rapport ?');
-    if (!ok) return;
+  // Si resetKey est vide / 0, on ne fait rien
+  if (!resetKey) return;
 
-    setForm(initialForm);
-    setError('');
-  }, [resetKey]);
+  const ok = window.confirm('Voulez-vous vraiment vider votre rapport ?');
+  if (!ok) return;
+
+  setForm(initialForm);
+  setError('');
+}, [resetKey]);
+
 
   const clampNote = (value) => {
     const n = Number(value);

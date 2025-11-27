@@ -47,6 +47,7 @@ const BUREAUX = [
   'Valence',
   'Vannes',
 ];
+const ALLOWED_DOMAIN = '@laplace-groupe.com';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -74,9 +75,21 @@ export default function Signup() {
       return;
     }
 
+    // Normaliser l'email
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // Vérification du domaine autorisé
+    if (!normalizedEmail.endsWith(ALLOWED_DOMAIN)) {
+      setError(
+        "L'inscription est réservée aux adresses professionnelles @laplace-groupe.com"
+      );
+      setLoading(false);
+      return;
+    }
+
     // 1) Création du compte dans Supabase Auth
     const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
+      email: normalizedEmail,
       password,
       options: {
         data: {
@@ -87,6 +100,7 @@ export default function Signup() {
         },
       },
     });
+
 
     if (signUpError) {
       const msg = signUpError.message?.toLowerCase() || '';

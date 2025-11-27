@@ -61,6 +61,8 @@ export default function UsersAdmin() {
   const [email, setEmail] = useState('');
   const [creating, setCreating] = useState(false);
   const [info, setInfo] = useState('');
+
+  // Filtre d'affichage des comptes : tous / CGP / CPSocial
   const [posteFilter, setPosteFilter] = useState('all'); // 'all' | 'CGP' | 'CPSocial'
 
   const loadUsers = async () => {
@@ -72,7 +74,10 @@ export default function UsersAdmin() {
       .order('created_at', { ascending: true });
 
     if (profilesError) {
-      setError(profilesError.message || "Erreur lors du chargement des utilisateurs.");
+      setError(
+        profilesError.message ||
+          'Erreur lors du chargement des utilisateurs.'
+      );
       setLoadingList(false);
       return;
     }
@@ -125,13 +130,18 @@ export default function UsersAdmin() {
       },
     });
 
-
     if (signUpError) {
       const msg = signUpError.message?.toLowerCase() || '';
-      if (msg.includes('already registered') || msg.includes('user already exists')) {
+      if (
+        msg.includes('already registered') ||
+        msg.includes('user already exists')
+      ) {
         setError('Un compte existe déjà avec cet email.');
       } else {
-        setError(signUpError.message || "Erreur lors de la création de l'utilisateur.");
+        setError(
+          signUpError.message ||
+            "Erreur lors de la création de l'utilisateur."
+        );
       }
       setCreating(false);
       return;
@@ -165,30 +175,38 @@ export default function UsersAdmin() {
     // Recharger la liste
     await loadUsers();
     setCreating(false);
+  }; // ✅ fermeture de handleCreateUser
 
+  // ✅ calcul de la liste filtrée EN DEHORS de handleCreateUser
   const displayedUsers =
     posteFilter === 'all'
       ? users
-      : users.filter((u) =>
-          (u.poste || '').toLowerCase() === posteFilter.toLowerCase()
+      : users.filter(
+          (u) =>
+            (u.poste || '').toLowerCase() ===
+            posteFilter.toLowerCase()
         );
 
-  
   return (
     <div className="settings-page">
       <div className="settings-card">
-        <h2 className="section-title strong-title">Gestion des utilisateurs</h2>
+        <h2 className="section-title strong-title">
+          Gestion des utilisateurs
+        </h2>
 
         {error && <div className="alert error">{error}</div>}
         {info && <div className="alert success">{info}</div>}
 
         {/* Formulaire de création */}
-        <h3 style={{ marginTop: 0, fontSize: 18 }}>Créer un nouveau conseiller</h3>
+        <h3 style={{ marginTop: 0, fontSize: 18 }}>
+          Créer un nouveau conseiller
+        </h3>
         <form
           onSubmit={handleCreateUser}
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gridTemplateColumns:
+              'repeat(auto-fit, minmax(200px, 1fr))',
             gap: 12,
             marginBottom: 20,
           }}
@@ -290,7 +308,9 @@ export default function UsersAdmin() {
             flexWrap: 'wrap',
           }}
         >
-          <h3 style={{ fontSize: 18, margin: 0 }}>Comptes existants</h3>
+          <h3 style={{ fontSize: 18, margin: 0 }}>
+            Comptes existants
+          </h3>
 
           <div style={{ display: 'flex', gap: 8 }}>
             {/* Bouton CGP */}
@@ -303,7 +323,8 @@ export default function UsersAdmin() {
                 border: '1px solid #9ca3af',
                 backgroundColor:
                   posteFilter === 'CGP' ? '#2B3E37' : '#ffffff',
-                color: posteFilter === 'CGP' ? '#ffffff' : '#111827',
+                color:
+                  posteFilter === 'CGP' ? '#ffffff' : '#111827',
                 fontSize: 12,
                 cursor: 'pointer',
               }}
@@ -320,9 +341,13 @@ export default function UsersAdmin() {
                 borderRadius: 9999,
                 border: '1px solid #9ca3af',
                 backgroundColor:
-                  posteFilter === 'CPSocial' ? '#2B3E37' : '#ffffff',
+                  posteFilter === 'CPSocial'
+                    ? '#2B3E37'
+                    : '#ffffff',
                 color:
-                  posteFilter === 'CPSocial' ? '#ffffff' : '#111827',
+                  posteFilter === 'CPSocial'
+                    ? '#ffffff'
+                    : '#111827',
                 fontSize: 12,
                 cursor: 'pointer',
               }}
@@ -330,7 +355,7 @@ export default function UsersAdmin() {
               CP Social
             </button>
 
-            {/* Bouton Tous (optionnel mais pratique) */}
+            {/* Bouton Tous */}
             <button
               type="button"
               onClick={() => setPosteFilter('all')}
@@ -340,7 +365,8 @@ export default function UsersAdmin() {
                 border: '1px solid #9ca3af',
                 backgroundColor:
                   posteFilter === 'all' ? '#2B3E37' : '#ffffff',
-                color: posteFilter === 'all' ? '#ffffff' : '#111827',
+                color:
+                  posteFilter === 'all' ? '#ffffff' : '#111827',
                 fontSize: 12,
                 cursor: 'pointer',
               }}
@@ -357,7 +383,6 @@ export default function UsersAdmin() {
         ) : displayedUsers.length === 0 ? (
           <p>Aucun utilisateur pour ce filtre.</p>
         ) : (
-
           <div className="manager-table-wrap">
             <table className="manager-table">
               <thead>
@@ -380,7 +405,9 @@ export default function UsersAdmin() {
                     <td>{u.role}</td>
                     <td>
                       {u.created_at
-                        ? new Date(u.created_at).toLocaleDateString('fr-FR')
+                        ? new Date(
+                            u.created_at
+                          ).toLocaleDateString('fr-FR')
                         : '—'}
                     </td>
                   </tr>

@@ -61,6 +61,7 @@ export default function UsersAdmin() {
   const [email, setEmail] = useState('');
   const [creating, setCreating] = useState(false);
   const [info, setInfo] = useState('');
+  const [posteFilter, setPosteFilter] = useState('all'); // 'all' | 'CGP' | 'CPSocial'
 
   const loadUsers = async () => {
     setLoadingList(true);
@@ -164,8 +165,15 @@ export default function UsersAdmin() {
     // Recharger la liste
     await loadUsers();
     setCreating(false);
-  };
 
+  const displayedUsers =
+    posteFilter === 'all'
+      ? users
+      : users.filter((u) =>
+          (u.poste || '').toLowerCase() === posteFilter.toLowerCase()
+        );
+
+  
   return (
     <div className="settings-page">
       <div className="settings-card">
@@ -263,12 +271,93 @@ export default function UsersAdmin() {
         </form>
 
         {/* Liste des utilisateurs */}
-        <h3 style={{ fontSize: 18 }}>Comptes existants</h3>
+
+        {/* Ligne fine au-dessus des comptes existants */}
+        <div
+          style={{
+            borderTop: '1px solid #e5e7eb',
+            margin: '16px 0 8px',
+          }}
+        />
+
+        {/* Titre + boutons filtre alignés droite */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+            flexWrap: 'wrap',
+          }}
+        >
+          <h3 style={{ fontSize: 18, margin: 0 }}>Comptes existants</h3>
+
+          <div style={{ display: 'flex', gap: 8 }}>
+            {/* Bouton CGP */}
+            <button
+              type="button"
+              onClick={() => setPosteFilter('CGP')}
+              style={{
+                padding: '4px 10px',
+                borderRadius: 9999,
+                border: '1px solid #9ca3af',
+                backgroundColor:
+                  posteFilter === 'CGP' ? '#2B3E37' : '#ffffff',
+                color: posteFilter === 'CGP' ? '#ffffff' : '#111827',
+                fontSize: 12,
+                cursor: 'pointer',
+              }}
+            >
+              CGP
+            </button>
+
+            {/* Bouton CP Social */}
+            <button
+              type="button"
+              onClick={() => setPosteFilter('CPSocial')}
+              style={{
+                padding: '4px 10px',
+                borderRadius: 9999,
+                border: '1px solid #9ca3af',
+                backgroundColor:
+                  posteFilter === 'CPSocial' ? '#2B3E37' : '#ffffff',
+                color:
+                  posteFilter === 'CPSocial' ? '#ffffff' : '#111827',
+                fontSize: 12,
+                cursor: 'pointer',
+              }}
+            >
+              CP Social
+            </button>
+
+            {/* Bouton Tous (optionnel mais pratique) */}
+            <button
+              type="button"
+              onClick={() => setPosteFilter('all')}
+              style={{
+                padding: '4px 10px',
+                borderRadius: 9999,
+                border: '1px solid #9ca3af',
+                backgroundColor:
+                  posteFilter === 'all' ? '#2B3E37' : '#ffffff',
+                color: posteFilter === 'all' ? '#ffffff' : '#111827',
+                fontSize: 12,
+                cursor: 'pointer',
+              }}
+            >
+              Tous
+            </button>
+          </div>
+        </div>
+
         {loadingList ? (
           <p>Chargement…</p>
         ) : users.length === 0 ? (
           <p>Aucun utilisateur pour le moment.</p>
+        ) : displayedUsers.length === 0 ? (
+          <p>Aucun utilisateur pour ce filtre.</p>
         ) : (
+
           <div className="manager-table-wrap">
             <table className="manager-table">
               <thead>
@@ -282,7 +371,7 @@ export default function UsersAdmin() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((u) => (
+                {displayedUsers.map((u) => (
                   <tr key={u.id}>
                     <td>{u.last_name || u.lastName}</td>
                     <td>{u.first_name || u.firstName}</td>

@@ -18,67 +18,59 @@ le suivi des mises à jour et de la complétude des rapports,
 
 une analyse visuelle via tableaux et graphiques (radars, indicateurs).
 
-L’outil est strictement réservé à un usage interne, sans accès public, sans interconnexion avec des services tiers non maîtrisés, et sans diffusion de données en externe.
+L’outil est strictement réservé à un usage interne, sans accès public, sans interconnexion avec des services tiers non maîtrisés et sans diffusion de données en externe.
 
 1. Architecture & technologies
+Frontend
 
-Tarentule repose sur une architecture moderne, largement éprouvée dans l’écosystème web professionnel.
+Application React
 
-Frontend (Interface utilisateur)
+Hébergement Vercel
 
-Application React (framework JavaScript)
+Accès sécurisé via authentification
 
-Hébergement sur Vercel (datacenters européens disponibles)
-
-Accès uniquement via authentification
-
-Aucune donnée sensible ni logique métier critique stockée côté client
+Aucune logique critique ni donnée sensible stockée côté client
 
 Backend & base de données
 
 Supabase (PostgreSQL managé)
 
-Région d’hébergement : Union Européenne (Paris)
+Hébergement des données en Union Européenne (Paris)
 
-Stockage des données :
+Stockage :
 
-profils utilisateurs (identité professionnelle, rôle),
+profils utilisateurs (identité professionnelle, rôle, poste),
 
-rapports annuels des conseillers (données structurées au format JSON),
+rapports annuels structurés (JSON),
 
-métadonnées de suivi (dates de modification).
+métadonnées de suivi.
 
 Fonctions serveur
 
-Des Supabase Edge Functions ont été prévues conceptuellement,
+Des Supabase Edge Functions ont été envisagées,
 
-Aucune fonction serveur active d’envoi d’email ou d’automatisation n’est actuellement utilisée,
+Aucune fonction serveur active d’envoi d’email ou d’automatisation n’est utilisée actuellement,
 
-Toute logique critique est contenue dans les règles de sécurité de la base (RLS).
+La sécurité repose principalement sur les règles RLS.
 
 2. Données traitées
-
-L’outil traite exclusivement des données professionnelles.
-
 Données d’identification
 
-Nom
-
-Prénom
+Nom, prénom
 
 Adresse email professionnelle
 
-Agence / bureau de rattachement
+Agence / bureau
 
-Rôle applicatif (conseiller / manager / administrateur)
+Rôle applicatif (conseiller / manager / admin)
 
-Poste occupé (ex. CGP, CPSocial)
+Poste occupé (CGP / CPSocial)
 
 Données professionnelles
 
 Objectifs commerciaux
 
-Réalisés et potentiels estimés
+Réalisés et potentiels
 
 Notes d’autoévaluation (CGP)
 
@@ -86,108 +78,62 @@ Notes et appréciations managériales
 
 Dates de dernière mise à jour
 
-👉 Ces données relèvent de l’évaluation professionnelle et du pilotage managérial, entrant dans le cadre de l’article 6.1.f du RGPD (intérêt légitime de l’entreprise).
+Ces données relèvent de l’évaluation professionnelle, fondée sur l’intérêt légitime de l’entreprise (article 6.1.f du RGPD).
 
 3. Sécurité & protection des données
 Authentification
 
-Authentification Supabase (email + mot de passe)
+Supabase Auth (email + mot de passe)
 
-Gestion de sessions via JWT avec expiration
+Sessions sécurisées par JWT
 
-Aucun accès possible sans authentification valide
+Accès impossible sans authentification valide
 
-Contrôles d’accès (Row Level Security – RLS)
+Contrôles d’accès (RLS)
 
-Des règles d’isolation strictes sont appliquées directement en base de données :
+Conseillers : accès exclusif à leurs données
 
-Conseillers
+Managers : accès aux rapports des équipes
 
-Accès exclusivement à leurs propres données
+Administrateurs : accès global
 
-Lecture et modification uniquement de leur rapport
+Même en cas de compromission du frontend, l’accès aux données reste limité par la base.
 
-Aucun accès aux données d’autres conseillers
+Sauvegarde & intégrité
 
-Managers
+Données stockées en PostgreSQL avec réplication Supabase
 
-Consultation et modification des rapports des conseillers
+Traçabilité via dates de modification
 
-Accès aux tableaux de synthèse et indicateurs globaux
-
-Impossibilité de modifier les rôles applicatifs
-
-Administrateurs
-
-Accès complet aux données (rapports, profils)
-
-Gestion des affectations et rôles
-
-👉 Les règles RLS garantissent que même en cas de compromission du frontend, les données restent protégées.
-
-Sauvegarde & intégrité des données
-
-Données stockées dans PostgreSQL avec mécanismes de réplication Supabase
-
-Dates d’écriture permettant une traçabilité des modifications
-
-Possibilité d’export des données (CSV) sur demande managériale ou DSI
+Possibilité d’export sur demande interne
 
 Protection des secrets
 
-Les clés sensibles (ex. service_role) sont :
+Clés sensibles stockées uniquement en variables d’environnement
 
-stockées uniquement comme variables d’environnement sécurisées
+Aucun secret exposé dans le code ou GitHub
 
-jamais exposées dans le code source
-
-jamais stockées dans GitHub
-
-Séparation stricte entre clés publiques (anon) et clés privées
-
-4. Conformité RGPD & recommandations
+4. Conformité & recommandations
 Éléments de conformité
 
-Base légale : intérêt légitime (pilotage managérial et évaluation professionnelle)
+Usage strictement interne
 
-Absence de données sensibles au sens de l’article 9 du RGPD
+Hébergement UE
 
-Hébergement des données au sein de l’UE
+Aucune donnée sensible (article 9 RGPD)
 
-Pas de transfert volontaire hors Union Européenne
+Pas de transfert hors UE
 
-Usage strictement interne (aucun accès client / tiers)
+Création de compte restreinte aux emails professionnels
 
-Points à valider ou décider
+Points à valider
 
-Validation DSI / DPO pour déploiement et usage interne
+Validation DSI / DPO
 
-Définition d’une politique de conservation des données :
+Politique de conservation des données
 
-durée de conservation des rapports (ex. N + 3 ans),
-
-modalités d’archivage ou de suppression
-
-(Optionnel) Migration vers un plan Supabase payant afin de bénéficier de :
-
-SLA contractuel,
-
-logs avancés,
-
-sauvegardes automatisées managées.
+Option de montée en gamme Supabase (SLA, logs, sauvegardes)
 
 Conclusion
 
-Tarentule est une application interne moderne, structurée et sécurisée, conçue pour améliorer la lisibilité, la cohérence et la fiabilité du suivi commercial et managérial.
-
-L’architecture respecte les bonnes pratiques en matière :
-
-d’authentification,
-
-d’isolation des données via RLS,
-
-de conformité RGPD,
-
-de sécurisation des secrets.
-
-Aucune remontée de données externes, aucun tracking tiers et aucun usage non maîtrisé ne sont mis en œuvre.
+Tarentule est une application interne moderne, sécurisée et conforme aux bonnes pratiques, conçue pour améliorer le pilotage managérial et la lisibilité des performances commerciales, dans le respect des exigences RGPD.

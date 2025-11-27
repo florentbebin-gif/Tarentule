@@ -536,11 +536,11 @@ body {
   }
 
   .radar-card--resultats {
-    margin-top: 700px;     /* juste sous Performance globale */
+    margin-top: 690px;     /* juste sous Performance globale */
   }
 
   .radar-card--partenariat {
-    margin-top: 290px;   
+    margin-top: 220px;   
   }
 
   .radar-card--technique {

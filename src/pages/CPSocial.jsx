@@ -841,7 +841,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               <div
                 style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
               >
-                Positionnement CGP (base 100)
+                Positionnement CP Social (base 100)
               </div>
               <div
                 style={{
@@ -993,7 +993,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               <span>Réalisé</span>
               <span className="col-potentiel-header">%</span>
               <span className="col-potentiel-header">Potentiel 31/12</span>
-              <span>CGP</span>
+              <span>CPS</span>
               <span>N+1</span>
             </div>
 
@@ -1250,7 +1250,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               <span className="col-libelle">Libellés</span>
               <span>Objectifs N (nb)</span>
               <span>Réalisé N (nb)</span>
-              <span>CGP</span>
+              <span>CPS</span>
               <span>N+1</span>
             </div>
 
@@ -1373,7 +1373,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
               <span className="col-libelle">Libellés</span>
-              <span>CGP</span>
+              <span>CPS</span>
               <span>N+1</span>
             </div>
 
@@ -1461,7 +1461,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
               <span className="col-libelle">Libellés</span>
-              <span>CGP</span>
+              <span>CPS</span>
               <span>N+1</span>
             </div>
 

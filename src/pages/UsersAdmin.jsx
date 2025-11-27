@@ -68,10 +68,14 @@ export default function UsersAdmin() {
   const loadUsers = async () => {
     setLoadingList(true);
     setError('');
-    const { data, error: profilesError } = await supabase
-      .from('profiles')
-      .select('id, first_name, last_name, bureau, poste, role, created_at')
-      .order('created_at', { ascending: true });
+const { data, error: profilesError } = await supabase
+  .from('profiles')
+  .select(
+    'id, first_name, last_name, bureau, poste, role, created_at, is_active, cp_social_approved'
+  )
+  .eq('is_active', true) // on n'affiche que les comptes actifs
+  .order('created_at', { ascending: true });
+
 
     if (profilesError) {
       setError(
@@ -86,6 +90,53 @@ export default function UsersAdmin() {
     setLoadingList(false);
   };
 
+  // Désactivation (soft delete) d'un compte
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm('Confirmer la suppression de ce compte ?')) return;
+
+    setError('');
+    setInfo('');
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ is_active: false })
+      .eq('id', userId);
+
+    if (updateError) {
+      setError(
+        updateError.message ||
+          'Erreur lors de la suppression du compte.'
+      );
+      return;
+    }
+
+    setInfo('Compte désactivé.');
+    await loadUsers();
+  };
+
+  // Marquer un CP Social comme "approuvé"
+  const handleApproveCPSocial = async (userId) => {
+    setError('');
+    setInfo('');
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ cp_social_approved: true })
+      .eq('id', userId);
+
+    if (updateError) {
+      setError(
+        updateError.message ||
+          'Erreur lors de la validation CP Social.'
+      );
+      return;
+    }
+
+    setInfo('CP Social approuvé.');
+    await loadUsers();
+  };
+
+  
   useEffect(() => {
     loadUsers();
   }, []);
@@ -385,34 +436,101 @@ export default function UsersAdmin() {
         ) : (
           <div className="manager-table-wrap">
             <table className="manager-table">
-              <thead>
-                <tr>
-                  <th>Nom</th>
-                  <th>Prénom</th>
-                  <th>Bureau</th>
-                  <th>Poste</th>
-                  <th>Rôle</th>
-                  <th>Créé le</th>
-                </tr>
-              </thead>
-              <tbody>
-                {displayedUsers.map((u) => (
-                  <tr key={u.id}>
-                    <td>{u.last_name || u.lastName}</td>
-                    <td>{u.first_name || u.firstName}</td>
-                    <td>{u.bureau || '—'}</td>
-                    <td>{u.poste || '—'}</td>
-                    <td>{u.role}</td>
-                    <td>
-                      {u.created_at
-                        ? new Date(
-                            u.created_at
-                          ).toLocaleDateString('fr-FR')
-                        : '—'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+<thead>
+  <tr>
+    <th>Nom</th>
+    <th>Prénom</th>
+    <th>Bureau</th>
+    <th>Poste</th>
+    <th>Rôle</th>
+    <th>Créé le</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+
+<tbody>
+  {displayedUsers.map((u) => {
+    const posteLower = (u.poste || '').toLowerCase();
+    const isCPSocial = posteLower === 'cpsocial';
+
+    return (
+      <tr key={u.id}>
+        <td>{u.last_name || u.lastName}</td>
+        <td>{u.first_name || u.firstName}</td>
+        <td>{u.bureau || '—'}</td>
+        <td>{u.poste || '—'}</td>
+        <td>{u.role}</td>
+        <td>
+          {u.created_at
+            ? new Date(u.created_at).toLocaleDateString('fr-FR')
+            : '—'}
+        </td>
+        <td>
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+              flexWrap: 'wrap',
+              justifyContent: 'flex-start',
+            }}
+          >
+            {/* Bouton "Approuver" visible seulement pour CP Social non approuvé */}
+            {isCPSocial && !u.cp_social_approved && (
+              <button
+                type="button"
+                onClick={() => handleApproveCPSocial(u.id)}
+                style={{
+                  padding: '4px 10px',
+                  borderRadius: 9999,
+                  border: '1px solid #9ca3af',
+                  backgroundColor: '#ffffff',
+                  color: '#111827',
+                  fontSize: 11,
+                  cursor: 'pointer',
+                }}
+              >
+                Valider CP Social
+              </button>
+            )}
+
+            {/* Badge quand CP Social est approuvé */}
+            {isCPSocial && u.cp_social_approved && (
+              <span
+                style={{
+                  padding: '2px 8px',
+                  borderRadius: 9999,
+                  backgroundColor: '#2B3E37',
+                  color: '#ffffff',
+                  fontSize: 11,
+                }}
+              >
+                CP Social approuvé
+              </span>
+            )}
+
+            {/* Bouton "Supprimer" (désactiver) */}
+            <button
+              type="button"
+              onClick={() => handleDeleteUser(u.id)}
+              style={{
+                padding: '4px 10px',
+                borderRadius: 9999,
+                border: '1px solid #b91c1c',
+                backgroundColor: '#ffffff',
+                color: '#b91c1c',
+                fontSize: 11,
+                cursor: 'pointer',
+              }}
+            >
+              Supprimer
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
             </table>
           </div>
         )}

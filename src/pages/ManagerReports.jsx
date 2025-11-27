@@ -583,65 +583,98 @@ const saveAgencyFilters = async (list) => {
 
   return (
     <div className="credit-panel">
+      
 {/* Sélecteur d'exercice */}
-     <div
+<div
   style={{
     marginBottom: '8px',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',   // ➜ gauche / droite
     gap: '12px',
+    flexWrap: 'wrap',                  // ➜ évite que ça casse sur petits écrans
   }}
 >
-  {/* Boutons années */}
-  <div style={{ display: 'flex', gap: '8px' }}>
-    {availableYears.map((year) => {
-      const isActive = selectedYear === String(year);
-      return (
-        <button
-          key={year}
-          type="button"
-          onClick={() => setSelectedYear(String(year))}
-          style={{
-            padding: '4px 10px',
-            borderRadius: 9999,
-            border: '1px solid #9ca3af',
-            backgroundColor: isActive ? '#2B3E37' : '#ffffff',
-            color: isActive ? '#ffffff' : '#111827',
-            fontSize: 12,
-            cursor: 'pointer',
-          }}
-        >
-          {year}
-        </button>
-      );
-    })}
-  </div>
-
-  {/* Message année sélectionnée */}
-  <span
+  {/* Côté gauche : années + texte */}
+  <div
     style={{
-      fontSize: 12,
-      color: '#6b7280',
-      fontStyle: 'italic',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      flexWrap: 'wrap',
     }}
   >
-    Année sélectionnée&nbsp;: {selectedYear}
-  </span>
-       
-  {/* 🔵 Côté droit : boutons */}
+    {/* Boutons années */}
+    <div style={{ display: 'flex', gap: '8px' }}>
+      {availableYears.map((year) => {
+        const isActive = selectedYear === String(year);
+        return (
+          <button
+            key={year}
+            type="button"
+            onClick={() => setSelectedYear(String(year))}
+            style={{
+              padding: '4px 10px',
+              borderRadius: 9999,
+              border: '1px solid #9ca3af',
+              backgroundColor: isActive ? '#2B3E37' : '#ffffff',
+              color: isActive ? '#ffffff' : '#111827',
+              fontSize: 12,
+              cursor: 'pointer',
+            }}
+          >
+            {year}
+          </button>
+        );
+      })}
+    </div>
+
+    {/* Message année sélectionnée */}
+    <span
+      style={{
+        fontSize: 12,
+        color: '#6b7280',
+        fontStyle: 'italic',
+      }}
+    >
+      Année sélectionnée&nbsp;: {selectedYear}
+    </span>
+  </div>
+
+  {/* Côté droit : boutons Patrimonial / Social */}
   <div style={{ display: 'flex', gap: '8px' }}>
-    <button className="chip active">
+    {/* On reprend EXACTEMENT le style des boutons années */}
+    <button
+      type="button"
+      style={{
+        padding: '4px 10px',
+        borderRadius: 9999,
+        border: '1px solid #9ca3af',
+        backgroundColor: '#2B3E37',  // actif (page actuelle)
+        color: '#ffffff',
+        fontSize: 12,
+        cursor: 'pointer',
+      }}
+    >
       Patrimonial
     </button>
 
     <button
-      className="chip"
+      type="button"
       onClick={() => navigate('/manager-social')}
+      style={{
+        padding: '4px 10px',
+        borderRadius: 9999,
+        border: '1px solid #9ca3af',
+        backgroundColor: '#ffffff',
+        color: '#111827',
+        fontSize: 12,
+        cursor: 'pointer',
+      }}
     >
       Social
     </button>
   </div>
-      
 </div>
       
       {/* 1. BOARD MANAGER */}

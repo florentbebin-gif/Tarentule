@@ -590,46 +590,56 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
       <div className="rapport-main">
         {/* Header : années + Conseiller */}
         <div
-          style={{
-            marginBottom: '0px',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '8px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div style={{ display: 'flex', gap: '8px' }}>
-            {availableYears.map((year) => {
-              const isActive = selectedYear === String(year);
-              return (
-                <button
-                  key={year}
-                  type="button"
-                  onClick={() => setSelectedYear(String(year))}
-                  style={{
-                    padding: '4px 10px',
-                    borderRadius: 9999,
-                    border: '1px solid #9ca3af',
-                    backgroundColor: isActive ? '#2B3E37' : '#ffffff',
-                    color: isActive ? '#ffffff' : '#111827',
-                    fontSize: 12,
-                    cursor: 'pointer',
-                  }}
-                >
-                  {year}
-                </button>
-              );
-            })}
-          </div>
-
-          <div
-            className="conseiller-label"
-            style={{ marginLeft: 'auto' }}
+  style={{
+    marginBottom: '0px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
+  }}
+>
+  {/* Années + message */}
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+    <div style={{ display: 'flex', gap: '8px' }}>
+      {availableYears.map((year) => {
+        const isActive = selectedYear === String(year);
+        return (
+          <button
+            key={year}
+            type="button"
+            onClick={() => setSelectedYear(String(year))}
+            style={{
+              padding: '4px 10px',
+              borderRadius: 9999,
+              border: '1px solid #9ca3af',
+              backgroundColor: isActive ? '#2B3E37' : '#ffffff',
+              color: isActive ? '#ffffff' : '#111827',
+              fontSize: 12,
+              cursor: 'pointer',
+            }}
           >
-            Conseiller : {advisorName.lastName || '—'} {advisorName.firstName}
-          </div>
-        </div>
+            {year}
+          </button>
+        );
+      })}
+    </div>
+
+    <span
+      style={{
+        fontSize: 12,
+        color: '#6b7280',
+        fontStyle: 'italic',
+      }}
+    >
+      Année sélectionnée&nbsp;: {selectedYear}
+    </span>
+  </div>
+
+  {/* Conseiller à droite */}
+  <div style={{ marginLeft: 'auto' }} className="conseiller-label">
+    Conseiller : {advisorName.lastName || '—'} {advisorName.firstName}
+  </div>
+</div>
+
 
         {/* Board Conseiller */}
         <div className="section-card">

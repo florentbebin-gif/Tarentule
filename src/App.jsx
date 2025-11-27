@@ -10,6 +10,7 @@ import RapportForm from './pages/RapportForm';
 import ManagerReports from './pages/ManagerReports';
 import UsersAdmin from './pages/UsersAdmin';
 import CPSocial from './pages/CPSocial';
+import ManagerSocialReports from './pages/ManagerSocialReports';
 
 import './pages/Login.css';
 import './styles.css';
@@ -416,7 +417,10 @@ const isCPSocial = normalizedPoste === 'cpsocial';
 
         {/* Manager */}
         <Route path="/manager" element={<ManagerReports />} />
-
+         <Route
+           path="/manager-social"
+           element={<ManagerSocialReports />}
+         />
         {/* Gestion utilisateurs (manager/admin uniquement) */}
         <Route
           path="/users"

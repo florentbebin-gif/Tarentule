@@ -584,35 +584,51 @@ const saveAgencyFilters = async (list) => {
   return (
     <div className="credit-panel">
 {/* Sélecteur d'exercice */}
-      <div
-        style={{
-          marginBottom: '8px',
-          display: 'flex',
-          gap: '8px',
-        }}
-      >
-        {availableYears.map((year) => {
-          const isActive = selectedYear === String(year);
-          return (
-            <button
-              key={year}
-              type="button"
-              onClick={() => setSelectedYear(String(year))}
-              style={{
-                padding: '4px 10px',
-                borderRadius: 9999,
-                border: '1px solid #9ca3af',
-                backgroundColor: isActive ? '#2B3E37' : '#ffffff',
-                color: isActive ? '#ffffff' : '#111827',
-                fontSize: 12,
-                cursor: 'pointer',
-              }}
-            >
-              {year}
-            </button>
-          );
-        })}
-      </div>
+     <div
+  style={{
+    marginBottom: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+  }}
+>
+  {/* Boutons années */}
+  <div style={{ display: 'flex', gap: '8px' }}>
+    {availableYears.map((year) => {
+      const isActive = selectedYear === String(year);
+      return (
+        <button
+          key={year}
+          type="button"
+          onClick={() => setSelectedYear(String(year))}
+          style={{
+            padding: '4px 10px',
+            borderRadius: 9999,
+            border: '1px solid #9ca3af',
+            backgroundColor: isActive ? '#2B3E37' : '#ffffff',
+            color: isActive ? '#ffffff' : '#111827',
+            fontSize: 12,
+            cursor: 'pointer',
+          }}
+        >
+          {year}
+        </button>
+      );
+    })}
+  </div>
+
+  {/* Message année sélectionnée */}
+  <span
+    style={{
+      fontSize: 12,
+      color: '#6b7280',
+      fontStyle: 'italic',
+    }}
+  >
+    Année sélectionnée&nbsp;: {selectedYear}
+  </span>
+</div>
+
 
 
       

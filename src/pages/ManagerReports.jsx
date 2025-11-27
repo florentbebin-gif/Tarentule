@@ -627,10 +627,22 @@ const saveAgencyFilters = async (list) => {
   >
     Année sélectionnée&nbsp;: {selectedYear}
   </span>
+       
+  {/* 🔵 Côté droit : boutons */}
+  <div style={{ display: 'flex', gap: '8px' }}>
+    <button className="chip active">
+      Patrimonial
+    </button>
+
+    <button
+      className="chip"
+      onClick={() => navigate('/manager-social')}
+    >
+      Social
+    </button>
+  </div>
+      
 </div>
-
-
-
       
       {/* 1. BOARD MANAGER */}
       <div className="section-card">

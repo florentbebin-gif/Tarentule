@@ -8,6 +8,7 @@ import Settings from './pages/Settings';
 import Signup from './pages/Signup';
 import RapportForm from './pages/RapportForm';
 import ManagerReports from './pages/ManagerReports';
+import UsersAdmin from './pages/UsersAdmin';
 
 import './pages/Login.css';
 import './styles.css';
@@ -87,6 +88,20 @@ const IconTrash = ({ className }) => (
     />
   </svg>
 );
+
+const IconPlus = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24">
+    <path
+      d="M12 5v14M5 12h14"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 
 /* -------------------------------------------------------
    APP PRINCIPAL
@@ -264,6 +279,17 @@ export default function App() {
                 </button>
               )}
 
+            {/* ADD USERS → uniquement manager/admin */}
+            {session && isManager && (
+              <button
+                className="chip icon-btn"
+                title="Gestion utilisateurs"
+                onClick={() => navigate('/users')}
+              >
+                <IconPlus className="icon" />
+              </button>
+            )}
+             
             {/* TRASH → uniquement si on est sur SON rapport */}
             {isOwnRapport && (
               <button
@@ -356,6 +382,14 @@ export default function App() {
         {/* Manager */}
         <Route path="/manager" element={<ManagerReports />} />
 
+        {/* Gestion utilisateurs (manager/admin uniquement) */}
+        <Route
+          path="/users"
+          element={
+            isManager ? <UsersAdmin /> : <Navigate to="/rapport" replace />
+          }
+        />
+         
         {/* Paramètres */}
         <Route path="/settings" element={<Settings />} />
       </Routes>

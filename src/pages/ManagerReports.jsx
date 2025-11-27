@@ -683,7 +683,7 @@ const saveAgencyFilters = async (list) => {
 
         {/* Filtres agences (mêmes cases que la synthèse) */}
         <div className="manager-filters">
-          <div className="manager-filters-label">Agences :</div>
+          <div className="manager-filters-label">Bureaux :</div>
           <div className="manager-filters-list">
             {agencies.map((bureau) => (
               <label key={bureau} className="manager-filter-chip">
@@ -1095,7 +1095,7 @@ const saveAgencyFilters = async (list) => {
 
         {/* Filtres agences */}
         <div className="manager-filters">
-          <div className="manager-filters-label">Agences :</div>
+          <div className="manager-filters-label">Bureaux :</div>
           <div className="manager-filters-list">
             {agencies.map((bureau) => (
               <label key={bureau} className="manager-filter-chip">
@@ -1143,7 +1143,7 @@ const saveAgencyFilters = async (list) => {
                   onClick={() => handleSort('bureau')}
                   style={{ backgroundColor: '#D9D9D9' }}
                 >
-                  Agence
+                  Bureau
                   {sortKey === 'bureau' &&
                     (sortDirection === 'asc' ? ' ▲' : ' ▼')}
                 </th>

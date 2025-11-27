@@ -1070,8 +1070,33 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
     <span>CPS</span>
     <span>N+1</span>
   </div>
-  {resultatsLabels.map((label, i) => {
+
+              {resultatsLabels.map((label, i) => {
     const isTotalRow = i === 0;
+
+    // Valeurs Bureaux
+    const objectifsBureauxValue = isTotalRow
+      ? totals.objectifsBureaux
+      : parseEuro(form.resultats.objectifsBureaux[i]);
+    const realisesBureauxValue = isTotalRow
+      ? totals.realisesBureaux
+      : parseEuro(form.resultats.realisesBureaux[i]);
+    const percentBureaux =
+      objectifsBureauxValue > 0
+        ? Math.round((realisesBureauxValue / objectifsBureauxValue) * 100)
+        : 0;
+
+    // Valeurs Accompagnement
+    const objectifsAccValue = isTotalRow
+      ? totals.objectifsAccompagnement
+      : parseEuro(form.resultats.objectifs[i]);
+    const realisesAccValue = isTotalRow
+      ? totals.realisesAccompagnement
+      : parseEuro(form.resultats.realises[i]);
+    const percentAcc =
+      objectifsAccValue > 0
+        ? Math.round((realisesAccValue / objectifsAccValue) * 100)
+        : 0;
 
     return (
       <div className="rapport-table-row" key={i}>
@@ -1131,41 +1156,15 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
         )}
 
         {/* % Bureaux (auto) */}
-        {(() => {
-          let objectifsValue;
-          let realisesValue;
-
-          if (isTotalRow) {
-            objectifsValue = totals.objectifsBureaux;
-            realisesValue = totals.realisesBureaux;
-          } else {
-            objectifsValue = parseEuro(
-              form.resultats.objectifsBureaux[i]
-            );
-            realisesValue = parseEuro(
-              form.resultats.realisesBureaux[i]
-            );
-          }
-
-          const percent =
-            objectifsValue > 0
-              ? Math.round((realisesValue / objectifsValue) * 100)
-              : 0;
-
-          const display = `${percent} %`;
-
-          return (
-            <input
-              className={`rapport-input rapport-input-percent manager-cell${
-                isTotalRow ? ' total-cell' : ''
-              }`}
-              type="text"
-              value={display}
-              readOnly
-                  style={{ maxWidth: 60, textAlign: 'center' }}
-            />
-          );
-        })()}
+        <input
+          className={`rapport-input rapport-input-percent manager-cell${
+            isTotalRow ? ' total-cell' : ''
+          }`}
+          type="text"
+          value={`${percentBureaux} %`}
+          readOnly
+          style={{ maxWidth: 60, textAlign: 'center' }}
+        />
 
         {/* Objectifs Accompagnement (manager/admin seulement, total auto) */}
         {isTotalRow ? (
@@ -1233,37 +1232,15 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
         )}
 
         {/* % Accompagnement (auto) */}
-        {(() => {
-          let objectifsValue;
-          let realisesValue;
-
-          if (isTotalRow) {
-            objectifsValue = totals.objectifsAccompagnement;
-            realisesValue = totals.realisesAccompagnement;
-          } else {
-            objectifsValue = parseEuro(form.resultats.objectifs[i]);
-            realisesValue = parseEuro(form.resultats.realises[i]);
-          }
-
-          const percent =
-            objectifsValue > 0
-              ? Math.round((realisesValue / objectifsValue) * 100)
-              : 0;
-
-          const display = `${percent} %`;
-
-          return (
-            <input
-              className={`rapport-input rapport-input-percent manager-cell${
-                isTotalRow ? ' total-cell' : ''
-              }`}
-              type="text"
-              value={display}
-              readOnly
-                  style={{ maxWidth: 60, textAlign: 'center' }}
-            />
-          );
-        })()}
+        <input
+          className={`rapport-input rapport-input-percent manager-cell${
+            isTotalRow ? ' total-cell' : ''
+          }`}
+          type="text"
+          value={`${percentAcc} %`}
+          readOnly
+          style={{ maxWidth: 60, textAlign: 'center' }}
+        />
 
         {/* Potentiel 31/12 (Accompagnement) – saisissable par le CP Social */}
         {isTotalRow ? (
@@ -1300,8 +1277,8 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
         {/* Positionnement CPS / N+1 */}
         {isTotalRow ? (
           <>
-            <span></span>
-            <span></span>
+            <span />
+            <span />
           </>
         ) : (
           <>
@@ -1354,6 +1331,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
       </div>
     );
   })}
+
 </div>
 
 

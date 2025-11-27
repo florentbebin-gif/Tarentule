@@ -264,6 +264,16 @@ for (let i = 1; i < RESULT_ROWS; i += 1) {
   );
 }
 
+    // Garantit qu'on a bien un tableau de longueur RESULT_ROWS
+const ensureResultArray = (arr, length) => {
+  const safe = Array.isArray(arr) ? arr : [];
+  const result = [];
+  for (let i = 0; i < length; i += 1) {
+    result[i] = safe[i] ?? '';
+  }
+  return result;
+};
+
 
   // Vérifie que l'utilisateur est connecté
   useEffect(() => {
@@ -320,12 +330,51 @@ for (let i = 1; i < RESULT_ROWS; i += 1) {
         .limit(1)
         .maybeSingle();
 
-      if (!error && data && data.data) {
-        setForm((prev) => ({
-          ...prev,
-          ...data.data,
-        }));
-      }
+  if (!error && data && data.data) {
+    setForm((prev) => {
+      const incoming = data.data || {};
+      const incomingResultats = incoming.resultats || {};
+
+      return {
+        ...prev,
+        ...incoming,
+        // On fusionne la section resultats en gardant nos nouveaux champs
+        resultats: {
+          ...prev.resultats,
+          ...incomingResultats,
+          objectifsBureaux: ensureResultArray(
+            incomingResultats.objectifsBureaux ?? prev.resultats.objectifsBureaux,
+            RESULT_ROWS
+          ),
+          realisesBureaux: ensureResultArray(
+            incomingResultats.realisesBureaux ?? prev.resultats.realisesBureaux,
+            RESULT_ROWS
+          ),
+          objectifs: ensureResultArray(
+            incomingResultats.objectifs ?? prev.resultats.objectifs,
+            RESULT_ROWS
+          ),
+          realises: ensureResultArray(
+            incomingResultats.realises ?? prev.resultats.realises,
+            RESULT_ROWS
+          ),
+          potentiel12m: ensureResultArray(
+            incomingResultats.potentiel12m ?? prev.resultats.potentiel12m,
+            RESULT_ROWS
+          ),
+          notesCgp: ensureResultArray(
+            incomingResultats.notesCgp ?? prev.resultats.notesCgp,
+            RESULT_ROWS
+          ),
+          notesManager: ensureResultArray(
+            incomingResultats.notesManager ?? prev.resultats.notesManager,
+            RESULT_ROWS
+          ),
+        },
+      };
+    });
+  }
+
     };
 
     if (!loadingUser) {

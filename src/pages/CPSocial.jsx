@@ -17,6 +17,16 @@ export default function CPSocial({ onSaved, resetKey }) {
   const [advisorName, setAdvisorName] = useState({ firstName: '', lastName: '' });
     const [collecteAll, setCollecteAll] = useState(false);
 
+// Libellés des lignes (CP Social)
+const resultatsLabels = [
+  '1 - Performance globale : Collecte',
+  '2 - Collecte épargne retraite',
+  '3 - Collecte épargne salariale',
+];
+
+const RESULT_ROWS = resultatsLabels.length;
+
+    
   const initialForm = {
     bienEtre: {
       notesCgp: ['', '', '', ''],
@@ -80,17 +90,6 @@ export default function CPSocial({ onSaved, resetKey }) {
       onSaved(new Date());
     }
   };
-
-// Libellés des lignes (CP Social)
-const resultatsLabels = [
-  '1 - Performance globale : Collecte',
-  '2 - Collecte épargne retraite',
-  '3 - Collecte épargne salariale',
-];
-
-const RESULT_ROWS = resultatsLabels.length;
-
-
 
   const partenariatLabels = [
     '1 - Clubs Experts : gestion des invitations, relances et animation',

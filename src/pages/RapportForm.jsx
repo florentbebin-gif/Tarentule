@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import './Login.css';
 import RadarChart from '../components/RadarChart';
-import PerformanceChart from '../components/PerformanceChart';
 import { useParams } from 'react-router-dom';
 
 export default function RapportForm({ onSaved, resetKey }) {
@@ -107,7 +106,7 @@ export default function RapportForm({ onSaved, resetKey }) {
   '1 - Commerciale : techniques de vente et relation client',
   '2 - Civile : compétences techniques sur les aspects civils / juridiques',
   '3 - Société : détention, structuration et problématiques',
-  '4 - Capacité d’épargne : Analyse et utilisation à des fins commerciales',
+  '4 - Capacité d’épargne : Analyse et préconisation',
   '5 - Outils : Big, Hubspot, SIO2, Intranet, Power BI, AP, SER1',
   '6 - Process interne : organisation Relation Middle',
   '7 - Social : Retraite, prévoyance, épargne salariale,... / capacité à détecter',
@@ -592,7 +591,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
         {/* Header : années + Conseiller */}
         <div
           style={{
-            marginBottom: '8px',
+            marginBottom: '0px',
             display: 'flex',
             flexWrap: 'wrap',
             gap: '8px',
@@ -702,50 +701,6 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               marginTop: '8px',
             }}
           >
-            {/* 1) Total réalisé vs objectifs */}
-            <div
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: 12,
-                padding: '10px 12px',
-                backgroundColor: '#fbfbfb',
-              }}
-            >
-              <div
-                style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
-              >
-                Total réalisé vs objectifs
-              </div>
-              <div
-                style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}
-              >
-                Objectifs : {euroFromNumber(totalObjectifs)}
-                <br />
-                Réalisé : {euroFromNumber(totalRealises)}
-              </div>
-              <div
-                style={{
-                  height: 12,
-                  borderRadius: 9999,
-                  backgroundColor: '#e5e7eb',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{
-                    width:
-                      totalObjectifs > 0
-                        ? `${Math.min(
-                            100,
-                            (totalRealises / totalObjectifs) * 100
-                          )}%`
-                        : '0%',
-                    height: '100%',
-                    backgroundColor: '#2B3E37',
-                  }}
-                />
-              </div>
-            </div>
 
             {/* 2) % d'atteinte global */}
             <div
@@ -770,6 +725,19 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               >
                 % d&apos;atteinte global
               </div>
+                  <div
+    style={{
+      fontSize: 12,
+      color: '#6b7280',
+      marginBottom: 6,
+      alignSelf: 'flex-start',
+    }}
+  >
+    Objectifs : {euroFromNumber(totalObjectifs)}
+    <br />
+    Réalisé : {euroFromNumber(totalRealises)}
+  </div>
+                
               <div
                 style={{
                   width: 90,
@@ -851,7 +819,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               </div>
             </div>
 
-            {/* 4) Notes CGP (base 100) */}
+            {/* 4) Positionnement CGP (base 100) */}
             <div
               style={{
                 border: '1px solid #e5e7eb',
@@ -863,7 +831,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               <div
                 style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
               >
-                Notes CGP (base 100)
+                Positionnement CGP (base 100)
               </div>
               <div
                 style={{
@@ -1012,7 +980,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
             <div className="rapport-table-header-sub">
               <span className="col-libelle">Libellés</span>
               <span>Objectifs</span>
-              <span>Réalisés</span>
+              <span>Réalisé</span>
               <span className="col-potentiel-header">%</span>
               <span className="col-potentiel-header">Potentiel 31/12</span>
               <span>CGP</span>
@@ -1271,7 +1239,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
             <div className="rapport-table-header-sub rapport-table-header-sub--part">
               <span className="col-libelle">Libellés</span>
               <span>Objectifs N (nb)</span>
-              <span>Réalisés N (nb)</span>
+              <span>Réalisé N (nb)</span>
               <span>CGP</span>
               <span>N+1</span>
             </div>
@@ -1553,15 +1521,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
 
       {/* Colonne droite : graphiques (inchangée) */}
       <div className="rapport-charts">
-        {/* Performance globale */}
-        <div className="section-card radar-card radar-card--perf">
-          <div className="radar-title">Performance globale</div>
-          <PerformanceChart
-            objectif={totals.objectifs}
-            realise={totals.realises}
-          />
-        </div>
-
+        
         {/* Notes Résultats */}
         <div className="section-card radar-card radar-card--resultats">
           <div className="radar-title">Positions Résultats</div>

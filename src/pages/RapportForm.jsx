@@ -581,12 +581,13 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
 
 
     
-  if (loadingUser) {
+   if (loadingUser) {
     return <p>Chargement…</p>;
   }
 
   return (
-    <div className="credit-panel">
+    <div className="credit-panel rapport-layout">
+      {/* Colonne gauche : Board + tableaux */}
       <div className="rapport-main">
         {/* Header : années + Conseiller */}
         <div
@@ -627,365 +628,10 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
             className="conseiller-label"
             style={{ marginLeft: 'auto' }}
           >
-            Conseiller : {advisorName.lastName || '—'}{' '}
-            {advisorName.firstName}
+            Conseiller : {advisorName.lastName || '—'} {advisorName.firstName}
           </div>
         </div>
 
-                  {/* Board Conseiller */}
-        <div className="section-card">
-          <div className="section-title strong-title">Board Conseiller</div>
-
-          {/* Barre Collecte All + sélection thématique */}
-          <div
-            style={{
-              marginTop: '8px',
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '12px',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => setCollecteAll((prev) => !prev)}
-              style={{
-                padding: '4px 10px',
-                borderRadius: 9999,
-                border: '1px solid #9ca3af',
-                backgroundColor: collecteAll ? '#2B3E37' : '#ffffff',
-                color: collecteAll ? '#ffffff' : '#111827',
-                fontSize: 12,
-                cursor: 'pointer',
-              }}
-            >
-              Collecte All
-            </button>
-
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-              }}
-            >
-              <span style={{ fontSize: 12, color: '#4b5563' }}>
-                Graphique thématique :
-              </span>
-              <select
-                value={selectedTheme}
-                onChange={(e) => setSelectedTheme(e.target.value)}
-                style={{
-                  fontSize: 12,
-                  padding: '4px 8px',
-                  borderRadius: 6,
-                  border: '1px solid #d1d5db',
-                  backgroundColor: '#ffffff',
-                }}
-              >
-                {themeOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Grille des graphiques */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-              gap: '16px',
-              marginTop: '8px',
-            }}
-          >
-            {/* 1) Total réalisé vs objectifs */}
-            <div
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: 12,
-                padding: '10px 12px',
-                backgroundColor: '#fbfbfb',
-              }}
-            >
-              <div
-                style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
-              >
-                Total réalisé vs objectifs
-              </div>
-              <div
-                style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}
-              >
-                Objectifs : {euroFromNumber(totalObjectifs)}
-                <br />
-                Réalisé : {euroFromNumber(totalRealises)}
-              </div>
-              <div
-                style={{
-                  height: 12,
-                  borderRadius: 9999,
-                  backgroundColor: '#e5e7eb',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{
-                    width:
-                      totalObjectifs > 0
-                        ? `${Math.min(
-                            100,
-                            (totalRealises / totalObjectifs) * 100
-                          )}%`
-                        : '0%',
-                    height: '100%',
-                    backgroundColor: '#2B3E37',
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* 2) % d'atteinte global */}
-            <div
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: 12,
-                padding: '10px 12px',
-                backgroundColor: '#fbfbfb',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  alignSelf: 'flex-start',
-                  marginBottom: 4,
-                }}
-              >
-                % d&apos;atteinte global
-              </div>
-              <div
-                style={{
-                  width: 90,
-                  height: 90,
-                  borderRadius: '50%',
-                  background: `conic-gradient(#2B3E37 0 ${
-                    attainment || 0
-                  }%, #e5e7eb ${attainment || 0}% 100%)`,
-                  position: 'relative',
-                  marginBottom: 4,
-                }}
-              >
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: '20%',
-                    borderRadius: '50%',
-                    backgroundColor: '#ffffff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: '#111827',
-                  }}
-                >
-                  {totalObjectifs > 0 ? `${Math.round(attainment)}%` : '—'}
-                </div>
-              </div>
-              <div style={{ fontSize: 11, color: '#6b7280' }}>
-                Réalisé / Objectifs
-              </div>
-            </div>
-
-            {/* 3) Réalisé + Potentiel 31/12 vs objectifs */}
-            <div
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: 12,
-                padding: '10px 12px',
-                backgroundColor: '#fbfbfb',
-              }}
-            >
-              <div
-                style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
-              >
-                Réalisé + Potentiel vs Objectifs
-              </div>
-              <div
-                style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}
-              >
-                Objectifs : {euroFromNumber(totalObjectifs)}
-                <br />
-                Réalisé : {euroFromNumber(totalRealises)}
-                <br />
-                Potentiel 31/12 : {euroFromNumber(totalPot12)}
-              </div>
-              <div
-                style={{
-                  height: 12,
-                  borderRadius: 9999,
-                  backgroundColor: '#e5e7eb',
-                  overflow: 'hidden',
-                  display: 'flex',
-                }}
-              >
-                <div
-                  style={{
-                    width: `${realisedRatio}%`,
-                    backgroundColor: '#2B3E37',
-                  }}
-                />
-                <div
-                  style={{
-                    width: `${potentialRatio}%`,
-                    backgroundColor: '#9fbdb2',
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* 4) Notes CGP (base 100) */}
-            <div
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: 12,
-                padding: '10px 12px',
-                backgroundColor: '#fbfbfb',
-              }}
-            >
-              <div
-                style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
-              >
-                Notes CGP (base 100)
-              </div>
-              <div
-                style={{
-                  height: 12,
-                  borderRadius: 9999,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  backgroundColor: '#e5e7eb',
-                }}
-              >
-                {noteSegments.map((w, idx) => (
-                  <div
-                    key={noteLabels[idx]}
-                    style={{
-                      width: `${w}%`,
-                      backgroundColor: noteColors[idx],
-                    }}
-                  />
-                ))}
-              </div>
-              <ul
-                style={{
-                  margin: 0,
-                  marginTop: 6,
-                  padding: 0,
-                  listStyle: 'none',
-                  fontSize: 11,
-                  color: '#374151',
-                }}
-              >
-                {noteLabels.map((label, idx) => (
-                  <li
-                    key={label}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      marginTop: 2,
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: 9999,
-                        backgroundColor: noteColors[idx],
-                      }}
-                    />
-                    <span>
-                      {label} :{' '}
-                      {noteValues[idx]
-                        ? `${Math.round(noteValues[idx])}%`
-                        : '—'}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* 5) Graphique thématique */}
-            <div
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: 12,
-                padding: '10px 12px',
-                backgroundColor: '#fbfbfb',
-              }}
-            >
-              <div
-                style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}
-              >
-                Thématique : {currentTheme.label}
-              </div>
-              <div
-                style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}
-              >
-                Objectifs :{' '}
-                {currentTheme.isEuro
-                  ? euroFromNumber(themeObjectifs)
-                  : themeObjectifs.toLocaleString('fr-FR')}
-                <br />
-                Réalisé :{' '}
-                {currentTheme.isEuro
-                  ? euroFromNumber(themeRealises)
-                  : themeRealises.toLocaleString('fr-FR')}
-              </div>
-              <div
-                style={{
-                  height: 12,
-                  borderRadius: 9999,
-                  backgroundColor: '#e5e7eb',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{
-                    width:
-                      themeObjectifs > 0
-                        ? `${Math.min(
-                            100,
-                            (themeRealises / themeObjectifs) * 100
-                          )}%`
-                        : '0%',
-                  height: '100%',
-                  backgroundColor: '#2B3E37',
-                }}
-              />
-              </div>
-              <div
-                style={{
-                  marginTop: 6,
-                  fontSize: 11,
-                  color: '#4b5563',
-                }}
-              >
-                {themeObjectifs > 0
-                  ? `${themePercent}% d'atteinte`
-                  : 'Aucune donnée sur la période.'}
-              </div>
-            </div>
-          </div>
-        </div>
         {/* Board Conseiller */}
         <div className="section-card">
           <div className="section-title strong-title">Board Conseiller</div>
@@ -1321,10 +967,10 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                             (themeRealises / themeObjectifs) * 100
                           )}%`
                         : '0%',
-                  height: '100%',
-                  backgroundColor: '#2B3E37',
-                }}
-              />
+                    height: '100%',
+                    backgroundColor: '#2B3E37',
+                  }}
+                />
               </div>
               <div
                 style={{
@@ -1341,11 +987,11 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
           </div>
         </div>
 
-        {/* 1. RÉSULTATS */}
-        <div className="section-card section-card--with-chart">
+        {/* Carte unique pour les tableaux */}
+        <div className="section-card" style={{ marginTop: '24px' }}>
+          {/* 1. RÉSULTATS */}
           <div className="section-header">
             <div className="section-title strong-title">Résultats</div>
-            </div>
           </div>
 
           <div className="rapport-section-table">
@@ -1359,9 +1005,8 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                 className="note-group-header"
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-              Positionnement*
+                Positionnement*
               </span>
-
             </div>
 
             <div className="rapport-table-header-sub">
@@ -1376,7 +1021,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
 
             {Array.from({ length: 9 }).map((_, i) => {
               const isTotalRow = i === 0;
-              const isCampaignRow = i === 8; // nouvelle dernière ligne = Campagnes diverses
+              const isCampaignRow = i === 8;
               const label = resultatsLabels[i];
 
               return (
@@ -1393,16 +1038,27 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                       className="rapport-input manager-cell total-cell"
                       type="text"
                       value={euroFromNumber(totals.objectifs)}
-                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                      readOnly={
+                        currentUserRole !== 'manager' &&
+                        currentUserRole !== 'admin'
+                      }
                     />
                   ) : (
                     <input
                       className="rapport-input manager-cell"
                       type="text"
                       value={form.resultats.objectifs[i]}
-                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                      readOnly={
+                        currentUserRole !== 'manager' &&
+                        currentUserRole !== 'admin'
+                      }
                       onChange={(e2) =>
-                        updateArrayField('resultats','objectifs', i, e2.target.value)
+                        updateArrayField(
+                          'resultats',
+                          'objectifs',
+                          i,
+                          e2.target.value
+                        )
                       }
                       onBlur={() => {
                         formatEuroField('objectifs', i);
@@ -1410,7 +1066,6 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                       }}
                       placeholder="—"
                     />
-
                   )}
 
                   {/* Réalisé */}
@@ -1421,7 +1076,10 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                       className="rapport-input manager-cell total-cell"
                       type="text"
                       value={euroFromNumber(totals.realises)}
-                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                      readOnly={
+                        currentUserRole !== 'manager' &&
+                        currentUserRole !== 'admin'
+                      }
                     />
                   ) : (
                     <input
@@ -1443,10 +1101,9 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                     />
                   )}
 
-                  {/* % de réalisation auto (Réalisés / Objectifs) */}
+                  {/* % auto */}
                   {(() => {
                     if (isCampaignRow) {
-                      // Ligne "Campagnes diverses" : on ne met rien
                       return <span></span>;
                     }
 
@@ -1454,18 +1111,22 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                     let realisesValue;
 
                     if (isTotalRow) {
-                      // Ligne 1 : on utilise les totaux déjà calculés
                       objectifsValue = totals.objectifs;
                       realisesValue = totals.realises;
                     } else {
-                      // Lignes 2 à 7 : on lit les valeurs de la ligne
-                      objectifsValue = parseEuro(form.resultats.objectifs[i]);
-                      realisesValue = parseEuro(form.resultats.realises[i]);
+                      objectifsValue = parseEuro(
+                        form.resultats.objectifs[i]
+                      );
+                      realisesValue = parseEuro(
+                        form.resultats.realises[i]
+                      );
                     }
 
                     const percent =
                       objectifsValue > 0
-                        ? Math.round((realisesValue / objectifsValue) * 100)
+                        ? Math.round(
+                            (realisesValue / objectifsValue) * 100
+                          )
                         : 0;
 
                     const display = `${percent} %`;
@@ -1490,7 +1151,10 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                       className="rapport-input rapport-input-potentiel manager-cell total-cell"
                       type="text"
                       value={euroFromNumber(totals.potentiel12m)}
-                      readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                      readOnly={
+                        currentUserRole !== 'manager' &&
+                        currentUserRole !== 'admin'
+                      }
                     />
                   ) : (
                     <input
@@ -1541,11 +1205,19 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                         type="number"
                         min="0"
                         max="10"
-                        readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
+                        readOnly={
+                          currentUserRole !== 'manager' &&
+                          currentUserRole !== 'admin'
+                        }
                         value={form.resultats.notesManager?.[i] || ''}
                         onChange={(e2) =>
-                        updateArrayField('resultats', 'notesManager', i, clampNote(e2.target.value))
-                         }
+                          updateArrayField(
+                            'resultats',
+                            'notesManager',
+                            i,
+                            clampNote(e2.target.value)
+                          )
+                        }
                         onBlur={handleAutoSave}
                         placeholder="—"
                       />
@@ -1556,29 +1228,33 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
             })}
           </div>
 
-            <label>Stratégie d’amélioration (manager)</label>
-            <textarea
-              className="rapport-strategie-manager"
-              value={form.resultats.strategie}
-              readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-              onChange={(e2) =>
-              updateField('resultats','strategie', e2.target.value)
-              }
-              onBlur={handleAutoSave}
-              placeholder="Renseigné par le manager"
-            />
-
-          </div>
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.resultats.strategie}
+            readOnly={
+              currentUserRole !== 'manager' && currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateField('resultats', 'strategie', e2.target.value)
+            }
+            onBlur={handleAutoSave}
+            placeholder="Renseigné par le manager"
+          />
 
           {error && (
             <div className="alert error" style={{ marginTop: '8px' }}>
               {error}
             </div>
           )}
-        
-        {/* 2. PARTENARIAT */}
-        <div className="section-card">
-          <div className="section-title strong-title">Partenariats</div>
+
+          {/* 2. PARTENARIATS */}
+          <div
+            className="section-title strong-title"
+            style={{ marginTop: '24px' }}
+          >
+            Partenariats
+          </div>
 
           <div className="rapport-section-table rapport-section-table--part">
             <div className="rapport-table-header-top rapport-table-header-top--part">
@@ -1588,9 +1264,8 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                 className="note-group-header"
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-              Positionnement*
+                Positionnement*
               </span>
-
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--part">
@@ -1608,21 +1283,26 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               >
                 <span className="col-libelle">{label}</span>
 
-                {/* Objectifs (nb) – manager (lecture seule pour CGP) */}
-                  <input
-                    className="rapport-input rapport-input-narrow manager-cell"
-                    type="number"
-                    value={form.partenariat.objectifs[i] || ''}
-                    readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                    onChange={(e2) =>
-                      updateArrayField('partenariat','objectifs', i, e2.target.value)
-                    }
+                <input
+                  className="rapport-input rapport-input-narrow manager-cell"
+                  type="number"
+                  value={form.partenariat.objectifs[i] || ''}
+                  readOnly={
+                    currentUserRole !== 'manager' &&
+                    currentUserRole !== 'admin'
+                  }
+                  onChange={(e2) =>
+                    updateArrayField(
+                      'partenariat',
+                      'objectifs',
+                      i,
+                      e2.target.value
+                    )
+                  }
                   onBlur={handleAutoSave}
                   placeholder="—"
-                  />
+                />
 
-
-                {/* Réalisé (nb) – conseiller */}
                 <input
                   className="rapport-input rapport-input-narrow"
                   type="number"
@@ -1638,7 +1318,6 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                   onBlur={handleAutoSave}
                 />
 
-                {/* Note CGP */}
                 <input
                   className="rapport-input rapport-input-note rapport-input-narrow"
                   type="number"
@@ -1656,58 +1335,62 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                   onBlur={handleAutoSave}
                 />
 
-                {/* Note N+1 – lecture seule */}
-                    <input
-                    className="rapport-input rapport-input-note manager-cell"
-                    type="number"
-                    min="0"
-                    max="10"
-                    value={form.partenariat.notesManager?.[i] || ''}
-                    readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                    onChange={(e2) =>
+                <input
+                  className="rapport-input rapport-input-note manager-cell"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.partenariat.notesManager?.[i] || ''}
+                  readOnly={
+                    currentUserRole !== 'manager' &&
+                    currentUserRole !== 'admin'
+                  }
+                  onChange={(e2) =>
                     updateArrayField(
-                    'partenariat',
-                    'notesManager',
+                      'partenariat',
+                      'notesManager',
                       i,
-                    clampNote(e2.target.value)
-                      )
-                    }
-                    onBlur={handleAutoSave}
-                    placeholder="—"
-                    />
-
+                      clampNote(e2.target.value)
+                    )
+                  }
+                  onBlur={handleAutoSave}
+                  placeholder="—"
+                />
               </div>
             ))}
           </div>
 
-            <label>Stratégie d’amélioration (manager)</label>
-                <textarea
-                  className="rapport-strategie-manager"
-                  value={form.partenariat.strategie}
-                  readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                  onChange={(e2) =>
-                  updateField('partenariat', 'strategie', e2.target.value)
-                    }
-                  onBlur={handleAutoSave}
-                  placeholder="Renseigné par le manager"
-                />
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.partenariat.strategie}
+            readOnly={
+              currentUserRole !== 'manager' && currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateField('partenariat', 'strategie', e2.target.value)
+            }
+            onBlur={handleAutoSave}
+            placeholder="Renseigné par le manager"
+          />
 
+          {/* 3. TECHNIQUE */}
+          <div
+            className="section-title strong-title"
+            style={{ marginTop: '24px' }}
+          >
+            Techniques
           </div>
-
-        {/* 3. TECHNIQUE */}
-        <div className="section-card">
-          <div className="section-title strong-title">Techniques</div>
 
           <div className="rapport-section-table rapport-section-table--simple">
             <div className="rapport-table-header-top rapport-table-header-top--simple">
               <span className="col-libelle"></span>
               <span
-              className="note-group-header"
-              title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+                className="note-group-header"
+                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-              Positionnement*
+                Positionnement*
               </span>
-
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
@@ -1740,58 +1423,62 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                   onBlur={handleAutoSave}
                 />
 
-                  <input
-                    className="rapport-input rapport-input-note manager-cell"
-                    type="number"
-                    min="0"
-                    max="10"
-                    value={form.technique.notesManager?.[i] || ''}
-                    readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                    onChange={(e2) =>
+                <input
+                  className="rapport-input rapport-input-note manager-cell"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.technique.notesManager?.[i] || ''}
+                  readOnly={
+                    currentUserRole !== 'manager' &&
+                    currentUserRole !== 'admin'
+                  }
+                  onChange={(e2) =>
                     updateArrayField(
-                    'technique',
-                    'notesManager',
+                      'technique',
+                      'notesManager',
                       i,
-                    clampNote(e2.target.value)
+                      clampNote(e2.target.value)
                     )
-                    }
-                    onBlur={handleAutoSave}
-                    placeholder="—"
-                  />
-
+                  }
+                  onBlur={handleAutoSave}
+                  placeholder="—"
+                />
               </div>
             ))}
           </div>
 
-            <label>Stratégie d’amélioration (manager)</label>
-              <textarea
-                className="rapport-strategie-manager"
-                value={form.technique.strategie}
-                readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                onChange={(e2) =>
-                updateField('technique', 'strategie', e2.target.value)
-                }
-                onBlur={handleAutoSave}
-                placeholder="Renseigné par le manager"
-              />
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.technique.strategie}
+            readOnly={
+              currentUserRole !== 'manager' && currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateField('technique', 'strategie', e2.target.value)
+            }
+            onBlur={handleAutoSave}
+            placeholder="Renseigné par le manager"
+          />
 
+          {/* 4. BIEN-ÊTRE */}
+          <div
+            className="section-title strong-title"
+            style={{ marginTop: '24px' }}
+          >
+            Bien-être
           </div>
-
-
-        {/* 4. BIEN-ÊTRE */}
-        <div className="section-card">
-          <div className="section-title strong-title">Bien-être</div>
 
           <div className="rapport-section-table rapport-section-table--simple">
             <div className="rapport-table-header-top rapport-table-header-top--simple">
               <span className="col-libelle"></span>
               <span
-              className="note-group-header"
-              title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+                className="note-group-header"
+                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-              Positionnement*
+                Positionnement*
               </span>
-
             </div>
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
@@ -1824,71 +1511,48 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                   onBlur={handleAutoSave}
                 />
 
-                  <input
-                    className="rapport-input rapport-input-note manager-cell"
-                    type="number"
-                    min="0"
-                    max="10"
-                    value={form.bienEtre.notesManager?.[i] || ''}
-                    readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                    onChange={(e2) =>
+                <input
+                  className="rapport-input rapport-input-note manager-cell"
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={form.bienEtre.notesManager?.[i] || ''}
+                  readOnly={
+                    currentUserRole !== 'manager' && currentUserRole !== 'admin'
+                  }
+                  onChange={(e2) =>
                     updateArrayField(
                       'bienEtre',
                       'notesManager',
                       i,
-                    clampNote(e2.target.value)
+                      clampNote(e2.target.value)
                     )
-                    }
-                    onBlur={handleAutoSave}
-                    placeholder="—"
-                  />
-
+                  }
+                  onBlur={handleAutoSave}
+                  placeholder="—"
+                />
               </div>
             ))}
           </div>
 
-            <label>Stratégie d’amélioration (manager)</label>
-              <textarea
-                className="rapport-strategie-manager"
-                value={form.bienEtre.strategie}
-                readOnly={currentUserRole !== 'manager' && currentUserRole !== 'admin'}
-                onChange={(e2) =>
-                updateField('bienEtre', 'strategie', e2.target.value)
-                }
-                onBlur={handleAutoSave}
-                placeholder="Renseigné par le manager"
-              />
-
-          </div>
+          <label>Stratégie d’amélioration (manager)</label>
+          <textarea
+            className="rapport-strategie-manager"
+            value={form.bienEtre.strategie}
+            readOnly={
+              currentUserRole !== 'manager' && currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateField('bienEtre', 'strategie', e2.target.value)
+            }
+            onBlur={handleAutoSave}
+            placeholder="Renseigné par le manager"
+          />
         </div>
+      </div>
 
-      {/* Colonne droite : graphiques */}
+      {/* Colonne droite : graphiques (inchangée) */}
       <div className="rapport-charts">
-      {/* Sélecteur d'exercice */}
-        <div style={{ marginBottom: '8px', display: 'flex', gap: '8px' }}>
-          {availableYears.map((year) => {
-            const isActive = selectedYear === String(year);
-            return (
-              <button
-                key={year}
-                type="button"
-                onClick={() => setSelectedYear(String(year))}
-                style={{
-                  padding: '4px 10px',
-                  borderRadius: 9999,
-                  border: '1px solid #9ca3af',
-                  backgroundColor: isActive ? '#2B3E37' : '#ffffff',
-                  color: isActive ? '#ffffff' : '#111827',
-                  fontSize: 12,
-                  cursor: 'pointer',
-                }}
-              >
-                {year}
-              </button>
-            );
-          })}
-        </div>
-
         {/* Performance globale */}
         <div className="section-card radar-card radar-card--perf">
           <div className="radar-title">Performance globale</div>

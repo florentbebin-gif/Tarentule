@@ -1030,24 +1030,32 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
             <div className="section-title strong-title">Résultats</div>
           </div>
 
-<div className="rapport-section-table">
   {/* Ligne d'en-tête groupée : Bureaux / Accompagnement / Positionnement */}
   <div className="rapport-table-header-top">
-    <span className="col-libelle"></span>
+    {/* 1. Libellés */}
+    <span className="col-libelle" />
+
+    {/* 2–4 : Bureaux */}
     <span className="note-group-header">Bureaux</span>
-    <span></span>
-    <span></span>
+    <span />
+    <span />
+
+    {/* 5–8 : Accompagnement */}
     <span className="note-group-header">Accompagnement</span>
-    <span></span>
-    <span></span>
-    <span></span>
+    <span />
+    <span />
+    <span />
+
+    {/* 9–10 : Positionnement* */}
     <span
       className="note-group-header"
       title="Positionnement : faculté à se sentir à l'aise avec la thématique"
     >
       Positionnement*
     </span>
+    <span />
   </div>
+
 
   {/* Ligne d'en-tête détaillée */}
   <div className="rapport-table-header-sub">
@@ -1154,6 +1162,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               type="text"
               value={display}
               readOnly
+                  style={{ maxWidth: 60, textAlign: 'center' }}
             />
           );
         })()}
@@ -1251,6 +1260,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               type="text"
               value={display}
               readOnly
+                  style={{ maxWidth: 60, textAlign: 'center' }}
             />
           );
         })()}

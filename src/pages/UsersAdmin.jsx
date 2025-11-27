@@ -46,6 +46,8 @@ const BUREAUX = [
   'Vannes',
 ];
 
+const ALLOWED_DOMAIN = '@laplace-groupe.com';
+
 export default function UsersAdmin() {
   const [users, setUsers] = useState([]);
   const [loadingList, setLoadingList] = useState(true);
@@ -94,13 +96,23 @@ export default function UsersAdmin() {
       return;
     }
 
+    // Normaliser l'email
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // Vérification du domaine autorisé
+    if (!normalizedEmail.endsWith(ALLOWED_DOMAIN)) {
+      setError(
+        "La création de compte est réservée aux adresses professionnelles @laplace-groupe.com"
+      );
+      setCreating(false);
+      return;
+    }
+
     // Mot de passe temporaire : l'utilisateur utilisera "Mot de passe oublié"
     const tempPassword = Math.random().toString(36).slice(-10);
 
-    // IMPORTANT : pour que cela se fasse SANS mail de validation,
-    // il faut désactiver la confirmation d'email dans Supabase Auth.
     const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
+      email: normalizedEmail,
       password: tempPassword,
       options: {
         data: {
@@ -111,6 +123,7 @@ export default function UsersAdmin() {
         },
       },
     });
+
 
     if (signUpError) {
       const msg = signUpError.message?.toLowerCase() || '';

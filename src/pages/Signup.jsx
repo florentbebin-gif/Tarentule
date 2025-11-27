@@ -115,7 +115,7 @@ export default function Signup() {
 
     setLoading(false);
     setInfo(
-      "Votre compte a été créé. Merci de vérifier votre boîte email et de confirmer votre adresse avant de vous connecter."
+      "Votre compte a été créé. Vous pouvez maintenant vous connecter."
     );
   };
 

@@ -58,12 +58,21 @@ export default function Signup() {
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [bureau, setBureau] = useState('');
+    const [poste, setPoste] = useState('');
+
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setInfo('');
+
+    // Petite validation locale
+    if (!poste) {
+      setError('Merci de sélectionner un poste occupé.');
+      setLoading(false);
+      return;
+    }
 
     // 1) Création du compte dans Supabase Auth
     const { data, error: signUpError } = await supabase.auth.signUp({
@@ -74,28 +83,42 @@ export default function Signup() {
           first_name: firstName,
           last_name: lastName,
           bureau,
+          poste,
         },
       },
     });
 
-
     if (signUpError) {
-      setError(signUpError.message || 'Erreur lors de la création du compte.');
+      const msg = signUpError.message?.toLowerCase() || '';
+
+      if (msg.includes('already registered') || msg.includes('user already exists')) {
+        setError('Un compte existe déjà avec cet email.');
+      } else {
+        setError(signUpError.message || 'Erreur lors de la création du compte.');
+      }
       setLoading(false);
       return;
     }
 
-    // 👉 À ce stade le compte est créé dans Supabase.
-    // Si la confirmation par email est activée, l'utilisateur doit cliquer sur le lien reçu.
+    // 2) Mettre à jour le profil (table public.profiles)
+    if (data?.user) {
+      await supabase
+        .from('profiles')
+        .update({
+          first_name: firstName,
+          last_name: lastName,
+          bureau,
+          poste,
+        })
+        .eq('id', data.user.id);
+    }
 
     setLoading(false);
     setInfo(
       "Votre compte a été créé. Merci de vérifier votre boîte email et de confirmer votre adresse avant de vous connecter."
     );
-
-    // Option : on peut rediriger vers /login après quelques secondes
-    // setTimeout(() => navigate('/login'), 4000);
   };
+
 
   return (
     <div className="login-wrapper">
@@ -142,6 +165,19 @@ export default function Signup() {
             ))}
             
           </select>
+            <label>Poste occupé</label>
+            <select
+              value={poste}
+              onChange={(e) => setPoste(e.target.value)}
+              required
+            >
+              <option value="">Sélectionner un poste</option>
+              <option value="CGP">CGP</option>
+              <option value="CPSocial">CPSocial</option>
+            </select>
+
+
+            
             <label>Email</label>
             <input
               type="email"

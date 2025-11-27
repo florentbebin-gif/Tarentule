@@ -33,15 +33,21 @@ export default function CPSocial({ onSaved, resetKey }) {
       strategie: '',
     },
     resultats: {
-      objectifs: Array(9).fill(''),
-      realises: Array(9).fill(''),
-      potentiel3m: Array(9).fill(''),
-      potentiel12m: Array(9).fill(''),
-      notesCgp: Array(9).fill(''),
-      notesManager: Array(9).fill(''),
+      // Bureaux
+      objectifsBureaux: Array(RESULT_ROWS).fill(''),
+      realisesBureaux: Array(RESULT_ROWS).fill(''),
+      // Accompagnement
+      objectifs: Array(RESULT_ROWS).fill(''),
+      realises: Array(RESULT_ROWS).fill(''),
+      potentiel3m: Array(RESULT_ROWS).fill(''), // pas utilisé à l'écran, mais conservé
+      potentiel12m: Array(RESULT_ROWS).fill(''),
+      // Positionnement
+      notesCgp: Array(RESULT_ROWS).fill(''),
+      notesManager: Array(RESULT_ROWS).fill(''),
       commentaires: '',
       strategie: '',
     },
+
     technique: {
     notesCgp: ['', '', '', '', '', '', ''],
       notesManager: ['', '', '', '', '', '', ''],
@@ -75,18 +81,15 @@ export default function CPSocial({ onSaved, resetKey }) {
     }
   };
 
-  // Libellés des lignes
-  const resultatsLabels = [
-    '1 - Performance globale : atteinte des objectifs',
-    '2 - Produits financiers : assurances vie / Capi',
-    '3 - Private Equity',
-    '4 - Produits immobiliers : directs et indirects',
-    '5 - Honoraires : production / chiffre d’affaires généré',
-    '6 - Arbitrages : gestion pilotée, structurés, Pams',
-    '7 - PER : dispositifs d’épargne retraite',
-    '8 - VP : réalisation/détection de VP PER/prévoyance',
-    '9 - Campagnes diverses : participation et efficacité',
-  ];
+// Libellés des lignes (CP Social)
+const resultatsLabels = [
+  '1 - Performance globale : Collecte',
+  '2 - Collecte épargne retraite',
+  '3 - Collecte épargne salariale',
+];
+
+const RESULT_ROWS = resultatsLabels.length;
+
 
 
   const partenariatLabels = [
@@ -235,21 +238,33 @@ export default function CPSocial({ onSaved, resetKey }) {
     });
   };
 
-  // Totaux pour la ligne 1 (somme des lignes 2 à 8)
-  const totals = {
-    objectifs: 0,
-    realises: 0,
-    potentiel3m: 0,
-    potentiel12m: 0,
-  };
+// Totaux pour la ligne 1 (somme des lignes 2 et 3)
+const totals = {
+  objectifsBureaux: 0,
+  realisesBureaux: 0,
+  objectifsAccompagnement: 0,
+  realisesAccompagnement: 0,
+  potentiel12m: 0,
+};
 
-  for (let i = 1; i < 8; i += 1) {
-    // i = 1 à 7 -> lignes 2 à 8
-    totals.objectifs += parseEuro(form.resultats.objectifs[i]);
-    totals.realises += parseEuro(form.resultats.realises[i]);
-    totals.potentiel3m += parseEuro(form.resultats.potentiel3m[i]);
-    totals.potentiel12m += parseEuro(form.resultats.potentiel12m[i]);
-  }
+for (let i = 1; i < RESULT_ROWS; i += 1) {
+  totals.objectifsBureaux += parseEuro(
+    form.resultats.objectifsBureaux[i]
+  );
+  totals.realisesBureaux += parseEuro(
+    form.resultats.realisesBureaux[i]
+  );
+  totals.objectifsAccompagnement += parseEuro(
+    form.resultats.objectifs[i]
+  );
+  totals.realisesAccompagnement += parseEuro(
+    form.resultats.realises[i]
+  );
+  totals.potentiel12m += parseEuro(
+    form.resultats.potentiel12m[i]
+  );
+}
+
 
   // Vérifie que l'utilisateur est connecté
   useEffect(() => {
@@ -471,17 +486,12 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
     let rea = 0;
     let pot12 = 0;
 
-    // lignes 2 à 8 => index 1 à 7
-    for (let i = 1; i < 8; i += 1) {
-      // si Collecte All => on enlève Honoraires (5, index 4) et Arbitrages (6, index 5)
-      if (collecteAll && (i === 4 || i === 5)) {
-        continue;
-      }
-
-      obj += parseEuro(objectifs[i] || 0);
-      rea += parseEuro(realises[i] || 0);
-      pot12 += parseEuro(potentiel12m[i] || 0);
-    }
+  // lignes 2 et 3 => index 1 à RESULT_ROWS-1
+  for (let i = 1; i < RESULT_ROWS; i += 1) {
+    obj += parseEuro(objectifs[i] || 0);
+    rea += parseEuro(realises[i] || 0);
+    pot12 += parseEuro(potentiel12m[i] || 0);
+  }
 
     return {
       objectifs: obj,
@@ -972,239 +982,322 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
             <div className="section-title strong-title">Résultats</div>
           </div>
 
-          <div className="rapport-section-table">
-            <div className="rapport-table-header-top">
-              <span className="col-libelle"></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span
-                className="note-group-header"
-                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
-              >
-                Positionnement*
-              </span>
-            </div>
+<div className="rapport-section-table">
+  {/* Ligne d'en-tête groupée : Bureaux / Accompagnement / Positionnement */}
+  <div className="rapport-table-header-top">
+    <span className="col-libelle"></span>
+    <span className="note-group-header">Bureaux</span>
+    <span></span>
+    <span></span>
+    <span className="note-group-header">Accompagnement</span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span
+      className="note-group-header"
+      title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+    >
+      Positionnement*
+    </span>
+  </div>
 
-            <div className="rapport-table-header-sub">
-              <span className="col-libelle">Libellés</span>
-              <span>Objectifs</span>
-              <span>Réalisé</span>
-              <span className="col-potentiel-header">%</span>
-              <span className="col-potentiel-header">Potentiel 31/12</span>
-              <span>CPS</span>
-              <span>N+1</span>
-            </div>
+  {/* Ligne d'en-tête détaillée */}
+  <div className="rapport-table-header-sub">
+    <span className="col-libelle">Libellés</span>
+    <span>Objectifs</span>
+    <span>Réalisé</span>
+    <span>%</span>
+    <span>Objectifs</span>
+    <span>Réalisé</span>
+    <span>%</span>
+    <span className="col-potentiel-header">Potentiel 31/12</span>
+    <span>CPS</span>
+    <span>N+1</span>
+  </div>
+  {resultatsLabels.map((label, i) => {
+    const isTotalRow = i === 0;
 
-            {Array.from({ length: 9 }).map((_, i) => {
-              const isTotalRow = i === 0;
-              const isCampaignRow = i === 8;
-              const label = resultatsLabels[i];
+    return (
+      <div className="rapport-table-row" key={i}>
+        <span className="col-libelle">
+          {isTotalRow ? <strong>{label}</strong> : label}
+        </span>
 
-              return (
-                <div className="rapport-table-row" key={i}>
-                  <span className="col-libelle">
-                    {isTotalRow ? <strong>{label}</strong> : label}
-                  </span>
+        {/* Objectifs Bureaux (manager/admin seulement, ligne 1 = total auto) */}
+        {isTotalRow ? (
+          <input
+            className="rapport-input manager-cell total-cell"
+            type="text"
+            value={euroFromNumber(totals.objectifsBureaux)}
+            readOnly
+          />
+        ) : (
+          <input
+            className="rapport-input manager-cell"
+            type="text"
+            value={form.resultats.objectifsBureaux[i]}
+            readOnly={
+              currentUserRole !== 'manager' &&
+              currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateArrayField(
+                'resultats',
+                'objectifsBureaux',
+                i,
+                e2.target.value
+              )
+            }
+            onBlur={() => {
+              formatEuroField('objectifsBureaux', i);
+              handleAutoSave();
+            }}
+            placeholder="—"
+          />
+        )}
 
-                  {/* Objectifs */}
-                  {isCampaignRow ? (
-                    <span></span>
-                  ) : isTotalRow ? (
-                    <input
-                      className="rapport-input manager-cell total-cell"
-                      type="text"
-                      value={euroFromNumber(totals.objectifs)}
-                      readOnly={
-                        currentUserRole !== 'manager' &&
-                        currentUserRole !== 'admin'
-                      }
-                    />
-                  ) : (
-                    <input
-                      className="rapport-input manager-cell"
-                      type="text"
-                      value={form.resultats.objectifs[i]}
-                      readOnly={
-                        currentUserRole !== 'manager' &&
-                        currentUserRole !== 'admin'
-                      }
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'objectifs',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => {
-                        formatEuroField('objectifs', i);
-                        handleAutoSave();
-                      }}
-                      placeholder="—"
-                    />
-                  )}
+        {/* Réalisé Bureaux (non saisissable pour tous, ligne 1 = total) */}
+        {isTotalRow ? (
+          <input
+            className="rapport-input manager-cell total-cell"
+            type="text"
+            value={euroFromNumber(totals.realisesBureaux)}
+            readOnly
+          />
+        ) : (
+          <input
+            className="rapport-input manager-cell"
+            type="text"
+            value={form.resultats.realisesBureaux[i]}
+            readOnly
+            placeholder="—"
+          />
+        )}
 
-                  {/* Réalisé */}
-                  {isCampaignRow ? (
-                    <span></span>
-                  ) : isTotalRow ? (
-                    <input
-                      className="rapport-input manager-cell total-cell"
-                      type="text"
-                      value={euroFromNumber(totals.realises)}
-                      readOnly={
-                        currentUserRole !== 'manager' &&
-                        currentUserRole !== 'admin'
-                      }
-                    />
-                  ) : (
-                    <input
-                      className="rapport-input"
-                      type="text"
-                      value={form.resultats.realises[i]}
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'realises',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => {
-                        formatEuroField('realises', i);
-                        handleAutoSave();
-                      }}
-                    />
-                  )}
+        {/* % Bureaux (auto) */}
+        {(() => {
+          let objectifsValue;
+          let realisesValue;
 
-                  {/* % auto */}
-                  {(() => {
-                    if (isCampaignRow) {
-                      return <span></span>;
-                    }
+          if (isTotalRow) {
+            objectifsValue = totals.objectifsBureaux;
+            realisesValue = totals.realisesBureaux;
+          } else {
+            objectifsValue = parseEuro(
+              form.resultats.objectifsBureaux[i]
+            );
+            realisesValue = parseEuro(
+              form.resultats.realisesBureaux[i]
+            );
+          }
 
-                    let objectifsValue;
-                    let realisesValue;
+          const percent =
+            objectifsValue > 0
+              ? Math.round((realisesValue / objectifsValue) * 100)
+              : 0;
 
-                    if (isTotalRow) {
-                      objectifsValue = totals.objectifs;
-                      realisesValue = totals.realises;
-                    } else {
-                      objectifsValue = parseEuro(
-                        form.resultats.objectifs[i]
-                      );
-                      realisesValue = parseEuro(
-                        form.resultats.realises[i]
-                      );
-                    }
+          const display = `${percent} %`;
 
-                    const percent =
-                      objectifsValue > 0
-                        ? Math.round(
-                            (realisesValue / objectifsValue) * 100
-                          )
-                        : 0;
+          return (
+            <input
+              className={`rapport-input rapport-input-percent manager-cell${
+                isTotalRow ? ' total-cell' : ''
+              }`}
+              type="text"
+              value={display}
+              readOnly
+            />
+          );
+        })()}
 
-                    const display = `${percent} %`;
+        {/* Objectifs Accompagnement (manager/admin seulement, total auto) */}
+        {isTotalRow ? (
+          <input
+            className="rapport-input manager-cell total-cell"
+            type="text"
+            value={euroFromNumber(totals.objectifsAccompagnement)}
+            readOnly
+          />
+        ) : (
+          <input
+            className="rapport-input manager-cell"
+            type="text"
+            value={form.resultats.objectifs[i]}
+            readOnly={
+              currentUserRole !== 'manager' &&
+              currentUserRole !== 'admin'
+            }
+            onChange={(e2) =>
+              updateArrayField(
+                'resultats',
+                'objectifs',
+                i,
+                e2.target.value
+              )
+            }
+            onBlur={() => {
+              formatEuroField('objectifs', i);
+              handleAutoSave();
+            }}
+            placeholder="—"
+          />
+        )}
 
-                    return (
-                      <input
-                        className={`rapport-input rapport-input-percent manager-cell${
-                          isTotalRow ? ' total-cell' : ''
-                        }`}
-                        type="text"
-                        value={display}
-                        readOnly
-                      />
-                    );
-                  })()}
+        {/* Réalisé Accompagnement (saisissable par le CP Social uniquement) */}
+        {isTotalRow ? (
+          <input
+            className="rapport-input total-cell"
+            type="text"
+            value={euroFromNumber(totals.realisesAccompagnement)}
+            readOnly
+          />
+        ) : (
+          <input
+            className="rapport-input"
+            type="text"
+            value={form.resultats.realises[i]}
+            readOnly={
+              currentUserRole === 'manager' ||
+              currentUserRole === 'admin'
+            }
+            onChange={(e2) =>
+              updateArrayField(
+                'resultats',
+                'realises',
+                i,
+                e2.target.value
+              )
+            }
+            onBlur={() => {
+              formatEuroField('realises', i);
+              handleAutoSave();
+            }}
+          />
+        )}
 
-                  {/* Potentiel */}
-                  {isCampaignRow ? (
-                    <span></span>
-                  ) : isTotalRow ? (
-                    <input
-                      className="rapport-input rapport-input-potentiel manager-cell total-cell"
-                      type="text"
-                      value={euroFromNumber(totals.potentiel12m)}
-                      readOnly={
-                        currentUserRole !== 'manager' &&
-                        currentUserRole !== 'admin'
-                      }
-                    />
-                  ) : (
-                    <input
-                      className="rapport-input rapport-input-potentiel"
-                      type="text"
-                      value={form.resultats.potentiel12m[i]}
-                      onChange={(e2) =>
-                        updateArrayField(
-                          'resultats',
-                          'potentiel12m',
-                          i,
-                          e2.target.value
-                        )
-                      }
-                      onBlur={() => {
-                        formatEuroField('potentiel12m', i);
-                        handleAutoSave();
-                      }}
-                    />
-                  )}
+        {/* % Accompagnement (auto) */}
+        {(() => {
+          let objectifsValue;
+          let realisesValue;
 
-                  {/* Notes */}
-                  {isTotalRow ? (
-                    <>
-                      <span></span>
-                      <span></span>
-                    </>
-                  ) : (
-                    <>
-                      <input
-                        className="rapport-input rapport-input-note"
-                        type="number"
-                        min="0"
-                        max="10"
-                        value={form.resultats.notesCgp[i]}
-                        onChange={(e2) =>
-                          updateArrayField(
-                            'resultats',
-                            'notesCgp',
-                            i,
-                            clampNote(e2.target.value)
-                          )
-                        }
-                        onBlur={handleAutoSave}
-                      />
-                      <input
-                        className="rapport-input rapport-input-note manager-cell"
-                        type="number"
-                        min="0"
-                        max="10"
-                        readOnly={
-                          currentUserRole !== 'manager' &&
-                          currentUserRole !== 'admin'
-                        }
-                        value={form.resultats.notesManager?.[i] || ''}
-                        onChange={(e2) =>
-                          updateArrayField(
-                            'resultats',
-                            'notesManager',
-                            i,
-                            clampNote(e2.target.value)
-                          )
-                        }
-                        onBlur={handleAutoSave}
-                        placeholder="—"
-                      />
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          if (isTotalRow) {
+            objectifsValue = totals.objectifsAccompagnement;
+            realisesValue = totals.realisesAccompagnement;
+          } else {
+            objectifsValue = parseEuro(form.resultats.objectifs[i]);
+            realisesValue = parseEuro(form.resultats.realises[i]);
+          }
+
+          const percent =
+            objectifsValue > 0
+              ? Math.round((realisesValue / objectifsValue) * 100)
+              : 0;
+
+          const display = `${percent} %`;
+
+          return (
+            <input
+              className={`rapport-input rapport-input-percent manager-cell${
+                isTotalRow ? ' total-cell' : ''
+              }`}
+              type="text"
+              value={display}
+              readOnly
+            />
+          );
+        })()}
+
+        {/* Potentiel 31/12 (Accompagnement) – saisissable par le CP Social */}
+        {isTotalRow ? (
+          <input
+            className="rapport-input rapport-input-potentiel manager-cell total-cell"
+            type="text"
+            value={euroFromNumber(totals.potentiel12m)}
+            readOnly
+          />
+        ) : (
+          <input
+            className="rapport-input rapport-input-potentiel"
+            type="text"
+            value={form.resultats.potentiel12m[i]}
+            readOnly={
+              currentUserRole === 'manager' ||
+              currentUserRole === 'admin'
+            }
+            onChange={(e2) =>
+              updateArrayField(
+                'resultats',
+                'potentiel12m',
+                i,
+                e2.target.value
+              )
+            }
+            onBlur={() => {
+              formatEuroField('potentiel12m', i);
+              handleAutoSave();
+            }}
+          />
+        )}
+
+        {/* Positionnement CPS / N+1 */}
+        {isTotalRow ? (
+          <>
+            <span></span>
+            <span></span>
+          </>
+        ) : (
+          <>
+            {/* Positionnement CPS (CP Social) */}
+            <input
+              className="rapport-input rapport-input-note"
+              type="number"
+              min="0"
+              max="10"
+              value={form.resultats.notesCgp[i]}
+              readOnly={
+                currentUserRole === 'manager' ||
+                currentUserRole === 'admin'
+              }
+              onChange={(e2) =>
+                updateArrayField(
+                  'resultats',
+                  'notesCgp',
+                  i,
+                  clampNote(e2.target.value)
+                )
+              }
+              onBlur={handleAutoSave}
+            />
+
+            {/* N+1 (manager/admin) */}
+            <input
+              className="rapport-input rapport-input-note manager-cell"
+              type="number"
+              min="0"
+              max="10"
+              value={form.resultats.notesManager?.[i] || ''}
+              readOnly={
+                currentUserRole !== 'manager' &&
+                currentUserRole !== 'admin'
+              }
+              onChange={(e2) =>
+                updateArrayField(
+                  'resultats',
+                  'notesManager',
+                  i,
+                  clampNote(e2.target.value)
+                )
+              }
+              onBlur={handleAutoSave}
+              placeholder="—"
+            />
+          </>
+        )}
+      </div>
+    );
+  })}
+</div>
+
 
           <label>Stratégie d’amélioration (manager)</label>
           <textarea

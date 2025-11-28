@@ -10,6 +10,7 @@ import RapportForm from './pages/RapportForm';
 import ManagerReports from './pages/ManagerReports';
 import UsersAdmin from './pages/UsersAdmin';
 import CPSocial from './pages/CPSocial';
+import ManagerSocialReports from './pages/ManagerSocialReports';
 
 import './pages/Login.css';
 import './styles.css';
@@ -142,6 +143,7 @@ const [userInfo, setUserInfo] = useState({
      Charger infos utilisateur
   -------------------------- */
   useEffect(() => {
+     if (!session) return;        // 🔴 NE RIEN FAIRE TANT QU’ON N’A PAS DE SESSION
     const loadUser = async () => {
       const { data } = await supabase.auth.getUser();
       const user = data?.user;
@@ -200,9 +202,11 @@ const [userInfo, setUserInfo] = useState({
   /* --------------------------
      Routage Topbar
   -------------------------- */
-  const path = window.location.pathname;
-  const isManager = userRole === 'manager' || userRole === 'admin';
-   const isCPSocial = userPoste === 'CPSocial';
+const path = window.location.pathname;
+const isManager = userRole === 'manager' || userRole === 'admin';
+
+const normalizedPoste = (userPoste || '').toLowerCase();
+const isCPSocial = normalizedPoste === 'cpsocial';
   const isOwnRapport = path === '/rapport';
   const isManagerDetail = path.startsWith('/rapport/') && isManager;
 
@@ -363,7 +367,8 @@ const [userInfo, setUserInfo] = useState({
           .maybeSingle();
 
         const role = profile?.role || 'conseiller';
-        const poste = profile?.poste || user.user_metadata?.poste || '';
+        const rawPoste = profile?.poste || user.user_metadata?.poste || '';
+         const poste = rawPoste.toLowerCase();
 
         // on met aussi à jour le state, pour la topbar
         setUserRole(role);
@@ -372,7 +377,7 @@ const [userInfo, setUserInfo] = useState({
         const target =
           role === 'admin' || role === 'manager'
             ? '/manager'
-            : poste === 'CPSocial'
+            : poste === 'cpsocial'
             ? '/cpsocial'
             : '/rapport';
 
@@ -412,7 +417,10 @@ const [userInfo, setUserInfo] = useState({
 
         {/* Manager */}
         <Route path="/manager" element={<ManagerReports />} />
-
+         <Route
+           path="/manager-social"
+           element={<ManagerSocialReports />}
+         />
         {/* Gestion utilisateurs (manager/admin uniquement) */}
         <Route
           path="/users"

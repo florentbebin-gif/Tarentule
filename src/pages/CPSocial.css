@@ -58,27 +58,23 @@
   background-color: #fbfbfb;
 }
 
-/* En-tête groupée */
-.rapport-table-header-top {
-  display: grid;
-  /* 1 libellé + 3 (Bureaux) + 4 (Accompagnement) + 2 (Positionnement) */
-  grid-template-columns: minmax(0, 3fr) repeat(7, minmax(0, 1fr)) 70px 70px;
-  align-items: center;
-  column-gap: 8px;
-  font-size: 14px;
-  margin-bottom: 2px;
-}
-
-/* En-tête + lignes */
+/* Grille : 1 libellé + 3 (Bureaux) + 4 (Accompagnement) + 2 (Positionnement) */
+.rapport-table-header-top,
 .rapport-table-header-sub,
 .rapport-table-row {
   display: grid;
   grid-template-columns: minmax(0, 3fr) repeat(7, minmax(0, 1fr)) 70px 70px;
   align-items: center;
-  column-gap: 8px;
+  column-gap: 0; /* ❌ pas d'espace entre colonnes */
   font-size: 14px;
 }
 
+/* En-tête groupée (ligne 1) */
+.rapport-table-header-top {
+  margin-bottom: 2px;
+}
+
+/* En-tête détaillée (ligne 2) */
 .rapport-table-header-sub {
   font-weight: 600;
   padding-bottom: 4px;
@@ -86,23 +82,65 @@
   margin-bottom: 4px;
 }
 
-/* Centrage des titres (sauf libellé) */
+/* Cellules d'en-tête : texte centré sauf libellés */
 .rapport-table-header-sub span:not(.col-libelle),
-.rapport-table-header-top span {
+.rapport-table-header-top span:not(.col-libelle) {
   text-align: center;
 }
 
-.rapport-table-row + .rapport-table-row {
-  margin-top: 4px;
-}
-
+/* Libellés ligne de données */
 .col-libelle {
   font-size: 13px;
 }
 
-/* Texte des entêtes de groupe */
-.note-group-header {
+/* Ligne de données : petit espace vertical */
+.rapport-table-row + .rapport-table-row {
+  margin-top: 4px;
+}
+
+/* ===== Groupes de colonnes (couleurs) ===== */
+
+/* Bureaux */
+.group-bureaux {
+  background-color: #D9D9D9;
+}
+.group-bureaux.sub-header {
+  border-top-left-radius: 4px;
+}
+.group-bureaux.group-header {
+  border-top-left-radius: 8px;
+}
+
+/* Accompagnement */
+.group-accompagnement {
+  background-color: #EBEAEA;
+}
+.group-accompagnement.group-header {
+  border-top-left-radius: 8px;
+}
+.group-accompagnement.sub-header {
+  /* rien de spécial, même couleur sur toute la zone */
+}
+
+/* Positionnement */
+.group-positionnement {
+  background-color: #F5F3F0;
+}
+.group-positionnement.group-header {
+  border-top-right-radius: 8px;
+}
+.group-positionnement.sub-header:last-child {
+  border-top-right-radius: 4px;
+}
+
+/* Texte des titres de groupe */
+.group-header {
   font-weight: 600;
+}
+
+/* Sous-titres (ligne 2) */
+.sub-header {
+  padding: 4px 8px;
 }
 
 /* Champs de saisie */
@@ -113,6 +151,7 @@
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
+  background-color: #ffffff;
 }
 
 .rapport-input:focus {
@@ -142,6 +181,7 @@
   font-size: 14px;
 }
 
+/* Potentiel 31/12 */
 .rapport-input-potentiel {
   font-size: 14px;
   font-style: italic;

@@ -534,19 +534,20 @@ body {
   }
 
   .radar-card--resultats {
-    margin-top: 120px;     /* juste sous Performance globale */
+    margin-top: 8px;     /* juste sous Performance globale */
   }
 
+  /* Ces trois-là doivent descendre plus bas */
   .radar-card--partenariat {
-    margin-top: 120px;   
+    margin-top: 515px;   /* ajuste la valeur si nécessaire */
   }
 
   .radar-card--technique {
-    margin-top: 120px;   
+    margin-top: 365px;   /* même décalage pour Technique */
   }
 
   .radar-card--bienetre {
-    margin-top: 120px;   
+    margin-top: 445px;   /* et pour Bien-être */
   }
 }
 .save-message {
@@ -719,16 +720,4 @@ body {
 /* Couleur des cases à cocher des agences sur la page manager */
 .manager-filter-chip input[type="checkbox"] {
   accent-color: #2B3E37;
-}
-.rapport-strategie-manager {
-  width: 100%;           /* prend toute la largeur utile du cadre Résultats */
-  box-sizing: border-box;/* tient compte des marges internes (padding) */
-
-  min-height: 70px;      /* hauteur de base confortable */
-  resize: vertical;      /* on peut l'agrandir seulement en hauteur */
-  overflow: auto;        /* affiche une barre de scroll si nécessaire */
-
-  font-family: inherit;  /* même police que le reste du formulaire */
-  font-size: 14px;
-  padding: 8px 12px;     /* un peu de confort pour la saisie */
 }

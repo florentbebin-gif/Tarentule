@@ -330,18 +330,15 @@ body {
   background-color: #f3f4f6;
   color: #6b7280;
 }
+/* Potentiels : plus petit et en italique */
 .col-potentiel-header {
   font-style: italic;
-  font-size: 14px; 
+  font-size: 11px; 
 }
 
 .rapport-input-potentiel {
-  font-size: 14px;
+  font-size: 11px;
   font-style: italic;
-}
-/* Colonne % résultats (lecture seule) */
-.rapport-input-percent {
-  text-align: center;
 }
 /* PARTENARIAT : Libellé / Réalisé / CGP / N+1 */
 
@@ -385,10 +382,7 @@ body {
 
 .rapport-input-narrow {
   padding: 2px 6px;
-}
-/* Forcer taille uniforme du header Partenariat */
-.rapport-table-header-sub--part span {
-  font-size: 14px !important;
+  font-size: 12px;
 }
 /* BIEN-ÊTRE / TECHNIQUE : Libellé / CGP / N+1 */
 
@@ -535,20 +529,24 @@ body {
     margin-top: 0;
   }
 
+  .radar-card--perf {
+    margin-top: 0;       /* Performance globale : collé en haut */
+  }
+
   .radar-card--resultats {
-    margin-top: 690px;     /* juste sous Performance globale */
+    margin-top: 120px;     /* juste sous Performance globale */
   }
 
   .radar-card--partenariat {
-    margin-top: 210px;   
+    margin-top: 120px;   
   }
 
   .radar-card--technique {
-    margin-top: 260px;   
+    margin-top: 120px;   
   }
 
   .radar-card--bienetre {
-    margin-top: 230px;   
+    margin-top: 120px;   
   }
 }
 .save-message {

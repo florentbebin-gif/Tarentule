@@ -712,46 +712,56 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
             <div className="section-title strong-title">Résultats</div>
           </div>
 
-          <div className="rapport-section-table">
-            {/* Ligne d'en-tête groupée : Bureaux / Accompagnement / Positionnement */}
-            <div className="rapport-table-header-top">
-              {/* 1. Libellés */}
-              <span className="col-libelle" />
 
-              {/* 2–4 : Bureaux */}
-              <span className="note-group-header">Bureaux</span>
-              <span />
-              <span />
+            <div className="rapport-section-table">
+  {/* Ligne d'en-tête groupée : Bureaux / Accompagnement / Positionnement */}
+  <div className="rapport-table-header-top">
+    {/* 1. Libellés */}
+    <span className="col-libelle" />
 
-              {/* 5–8 : Accompagnement */}
-              <span className="note-group-header">Accompagnement</span>
-              <span />
-              <span />
-              <span />
+    {/* 2–4 : Bureaux */}
+    <span className="group-bureaux group-header">Bureaux</span>
+    <span className="group-bureaux" />
+    <span className="group-bureaux" />
 
-              {/* 9–10 : Positionnement* */}
-              <span
-                className="note-group-header"
-                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
-              >
-                Positionnement*
-              </span>
-              <span />
-            </div>
+    {/* 5–8 : Accompagnement */}
+    <span className="group-accompagnement group-header">Accompagnement</span>
+    <span className="group-accompagnement" />
+    <span className="group-accompagnement" />
+    <span className="group-accompagnement" />
 
-            {/* Ligne d'en-tête détaillée */}
-            <div className="rapport-table-header-sub">
-              <span className="col-libelle">Libellés</span>
-              <span>Objectifs</span>
-              <span>Réalisé</span>
-              <span>%</span>
-              <span>Objectifs</span>
-              <span>Réalisé</span>
-              <span>%</span>
-              <span className="col-potentiel-header">Potentiel 31/12</span>
-              <span>CPS</span>
-              <span>N+1</span>
-            </div>
+    {/* 9–10 : Positionnement* */}
+    <span
+      className="group-positionnement group-header"
+      title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+    >
+      Positionnement*
+    </span>
+    <span className="group-positionnement" />
+  </div>
+
+  {/* Ligne d'en-tête détaillée */}
+  <div className="rapport-table-header-sub">
+    <span className="col-libelle">Libellés</span>
+
+    {/* Bureaux */}
+    <span className="group-bureaux sub-header">Objectifs</span>
+    <span className="group-bureaux sub-header">Réalisé</span>
+    <span className="group-bureaux sub-header">%</span>
+
+    {/* Accompagnement */}
+    <span className="group-accompagnement sub-header">Objectifs</span>
+    <span className="group-accompagnement sub-header">Réalisé</span>
+    <span className="group-accompagnement sub-header">%</span>
+    <span className="group-accompagnement sub-header col-potentiel-header">
+      Potentiel 31/12
+    </span>
+
+    {/* Positionnement */}
+    <span className="group-positionnement sub-header">CPS</span>
+    <span className="group-positionnement sub-header">N+1</span>
+  </div>    
+            
 
             {resultatsLabels.map((label, i) => {
               const isTotalRow = i === 0;

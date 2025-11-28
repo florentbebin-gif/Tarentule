@@ -10,7 +10,6 @@ import RapportForm from './pages/RapportForm';
 import ManagerReports from './pages/ManagerReports';
 import UsersAdmin from './pages/UsersAdmin';
 import CPSocial from './pages/CPSocial';
-import ManagerSocialReports from './pages/ManagerSocialReports';
 
 import './pages/Login.css';
 import './styles.css';
@@ -143,7 +142,6 @@ const [userInfo, setUserInfo] = useState({
      Charger infos utilisateur
   -------------------------- */
   useEffect(() => {
-     if (!session) return;        // 🔴 NE RIEN FAIRE TANT QU’ON N’A PAS DE SESSION
     const loadUser = async () => {
       const { data } = await supabase.auth.getUser();
       const user = data?.user;
@@ -202,11 +200,9 @@ const [userInfo, setUserInfo] = useState({
   /* --------------------------
      Routage Topbar
   -------------------------- */
-const path = window.location.pathname;
-const isManager = userRole === 'manager' || userRole === 'admin';
-
-const normalizedPoste = (userPoste || '').toLowerCase();
-const isCPSocial = normalizedPoste === 'cpsocial';
+  const path = window.location.pathname;
+  const isManager = userRole === 'manager' || userRole === 'admin';
+   const isCPSocial = userPoste === 'CPSocial';
   const isOwnRapport = path === '/rapport';
   const isManagerDetail = path.startsWith('/rapport/') && isManager;
 
@@ -367,8 +363,7 @@ const isCPSocial = normalizedPoste === 'cpsocial';
           .maybeSingle();
 
         const role = profile?.role || 'conseiller';
-        const rawPoste = profile?.poste || user.user_metadata?.poste || '';
-         const poste = rawPoste.toLowerCase();
+        const poste = profile?.poste || user.user_metadata?.poste || '';
 
         // on met aussi à jour le state, pour la topbar
         setUserRole(role);
@@ -377,7 +372,7 @@ const isCPSocial = normalizedPoste === 'cpsocial';
         const target =
           role === 'admin' || role === 'manager'
             ? '/manager'
-            : poste === 'cpsocial'
+            : poste === 'CPSocial'
             ? '/cpsocial'
             : '/rapport';
 
@@ -417,10 +412,7 @@ const isCPSocial = normalizedPoste === 'cpsocial';
 
         {/* Manager */}
         <Route path="/manager" element={<ManagerReports />} />
-         <Route
-           path="/manager-social"
-           element={<ManagerSocialReports />}
-         />
+
         {/* Gestion utilisateurs (manager/admin uniquement) */}
         <Route
           path="/users"

@@ -330,15 +330,18 @@ body {
   background-color: #f3f4f6;
   color: #6b7280;
 }
-/* Potentiels : plus petit et en italique */
 .col-potentiel-header {
   font-style: italic;
-  font-size: 11px; 
+  font-size: 14px; 
 }
 
 .rapport-input-potentiel {
-  font-size: 11px;
+  font-size: 14px;
   font-style: italic;
+}
+/* Colonne % résultats (lecture seule) */
+.rapport-input-percent {
+  text-align: center;
 }
 /* PARTENARIAT : Libellé / Réalisé / CGP / N+1 */
 
@@ -382,7 +385,10 @@ body {
 
 .rapport-input-narrow {
   padding: 2px 6px;
-  font-size: 12px;
+}
+/* Forcer taille uniforme du header Partenariat */
+.rapport-table-header-sub--part span {
+  font-size: 14px !important;
 }
 /* BIEN-ÊTRE / TECHNIQUE : Libellé / CGP / N+1 */
 
@@ -529,25 +535,20 @@ body {
     margin-top: 0;
   }
 
-  .radar-card--perf {
-    margin-top: 0;       /* Performance globale : collé en haut */
-  }
-
   .radar-card--resultats {
-    margin-top: 8px;     /* juste sous Performance globale */
+    margin-top: 690px;     /* juste sous Performance globale */
   }
 
-  /* Ces trois-là doivent descendre plus bas */
   .radar-card--partenariat {
-    margin-top: 515px;   /* ajuste la valeur si nécessaire */
+    margin-top: 210px;   
   }
 
   .radar-card--technique {
-    margin-top: 365px;   /* même décalage pour Technique */
+    margin-top: 260px;   
   }
 
   .radar-card--bienetre {
-    margin-top: 445px;   /* et pour Bien-être */
+    margin-top: 230px;   
   }
 }
 .save-message {
@@ -720,4 +721,16 @@ body {
 /* Couleur des cases à cocher des agences sur la page manager */
 .manager-filter-chip input[type="checkbox"] {
   accent-color: #2B3E37;
+}
+.rapport-strategie-manager {
+  width: 100%;           /* prend toute la largeur utile du cadre Résultats */
+  box-sizing: border-box;/* tient compte des marges internes (padding) */
+
+  min-height: 70px;      /* hauteur de base confortable */
+  resize: vertical;      /* on peut l'agrandir seulement en hauteur */
+  overflow: auto;        /* affiche une barre de scroll si nécessaire */
+
+  font-family: inherit;  /* même police que le reste du formulaire */
+  font-size: 14px;
+  padding: 8px 12px;     /* un peu de confort pour la saisie */
 }

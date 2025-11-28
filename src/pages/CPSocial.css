@@ -9,7 +9,7 @@
 }
 
 /* Colonne principale */
-.rapport-main {
+.cpsocial-layout .rapport-main {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -19,7 +19,7 @@
    Cartes et titres (reprise styles globaux)
    ================================ */
 
-.section-card {
+.cpsocial-layout .section-card {
   background: #ffffff;
   border: 1px solid #D9D9D9;
   border-radius: 12px;
@@ -27,14 +27,14 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, .07);
 }
 
-.section-title {
+.cpsocial-layout .section-title {
   font-size: 26px;
   margin-bottom: 20px;
   position: relative;
   padding-bottom: 12px;
 }
 
-.section-title::after {
+.cpsocial-layout .section-title::after {
   content: '';
   display: block;
   height: 4px;
@@ -43,12 +43,12 @@
   margin-top: 8px;
 }
 
-.strong-title {
+.cpsocial-layout .strong-title {
   font-weight: 800;
 }
 
 /* Label "CP Social : NOM Prénom" en haut à droite */
-.conseiller-label {
+.cpsocial-layout .conseiller-label {
   font-size: 12px;
   color: #555;
   margin-bottom: 4px;
@@ -58,7 +58,7 @@
    Tableau Résultats CP Social
    ================================ */
 
-.rapport-section-table {
+.cpsocial-layout .rapport-section-table {
   margin-top: 16px;
   padding: 16px 20px;
   border-radius: 16px;
@@ -66,15 +66,15 @@
   background-color: #fbfbfb;
 }
 
-/* Grille : 
+/* Grille :
    1  = Libellés
    2–4 = Bureaux       (Obj, Réalisé, %)
    5–8 = Accompagnement (Obj, Réalisé, %, Potentiel)
    9–10 = Positionnement* (CPS, N+1)
 */
-.rapport-table-header-top,
-.rapport-table-header-sub,
-.rapport-table-row {
+.cpsocial-layout .rapport-table-header-top,
+.cpsocial-layout .rapport-table-header-sub,
+.cpsocial-layout .rapport-table-row {
   display: grid;
   grid-template-columns:
     minmax(0, 3fr)   /* Libellés */
@@ -93,12 +93,12 @@
 }
 
 /* Ligne 1 : titres de groupe (Bureaux / Accompagnement / Positionnement*) */
-.rapport-table-header-top {
+.cpsocial-layout .rapport-table-header-top {
   margin-bottom: 2px;
 }
 
 /* Ligne 2 : noms des colonnes */
-.rapport-table-header-sub {
+.cpsocial-layout .rapport-table-header-sub {
   font-weight: 600;
   padding-bottom: 4px;
   border-bottom: 1px solid #e5e7eb;
@@ -106,17 +106,17 @@
 }
 
 /* En-têtes : texte centré sauf libellés */
-.rapport-table-header-sub span:not(.col-libelle) {
+.cpsocial-layout .rapport-table-header-sub span:not(.col-libelle) {
   text-align: center;
 }
 
 /* Libellé des lignes */
-.col-libelle {
+.cpsocial-layout .col-libelle {
   font-size: 13px;
 }
 
 /* Lignes de données : petit espace vertical */
-.rapport-table-row + .rapport-table-row {
+.cpsocial-layout .rapport-table-row + .rapport-table-row {
   margin-top: 4px;
 }
 
@@ -124,12 +124,12 @@
    Groupes de colonnes (ligne 1)
    ================================ */
 
-.rapport-table-header-top .col-libelle {
+.cpsocial-layout .rapport-table-header-top .col-libelle {
   grid-column: 1 / 2;
 }
 
 /* Bureaux : colonnes 2 à 4 */
-.rapport-table-header-top .group-bureaux {
+.cpsocial-layout .rapport-table-header-top .group-bureaux {
   grid-column: 2 / 5;
   background-color: #D9D9D9;
   text-align: center;
@@ -138,7 +138,7 @@
 }
 
 /* Accompagnement : colonnes 5 à 8 */
-.rapport-table-header-top .group-accompagnement {
+.cpsocial-layout .rapport-table-header-top .group-accompagnement {
   grid-column: 5 / 9;
   background-color: #EBEAEA;
   text-align: center;
@@ -146,7 +146,7 @@
 }
 
 /* Positionnement* : colonnes 9 à 10 */
-.rapport-table-header-top .group-positionnement {
+.cpsocial-layout .rapport-table-header-top .group-positionnement {
   grid-column: 9 / 11;
   background-color: #F5F3F0;
   text-align: center;
@@ -154,7 +154,7 @@
   border-top-right-radius: 8px;
 }
 
-.group-header {
+.cpsocial-layout .group-header {
   font-weight: 600;
 }
 
@@ -164,23 +164,23 @@
 
 /* Sous-titres (Objectifs, Réalisé, %, Potentiel, CPS, N+1) */
 
-.rapport-table-header-sub .group-bureaux {
+.cpsocial-layout .rapport-table-header-sub .group-bureaux {
   background-color: #D9D9D9;
   padding: 4px 8px;
 }
 
-.rapport-table-header-sub .group-accompagnement {
+.cpsocial-layout .rapport-table-header-sub .group-accompagnement {
   background-color: #EBEAEA;
   padding: 4px 8px;
 }
 
-.rapport-table-header-sub .group-positionnement {
+.cpsocial-layout .rapport-table-header-sub .group-positionnement {
   background-color: #F5F3F0;
   padding: 4px 8px;
 }
 
 /* Potentiel 31/12 (texte en italique) */
-.col-potentiel-header {
+.cpsocial-layout .col-potentiel-header {
   font-style: italic;
 }
 
@@ -188,7 +188,7 @@
    Champs de saisie
    ================================ */
 
-.rapport-input {
+.cpsocial-layout .rapport-input {
   width: 100%;
   box-sizing: border-box;
   padding: 4px 8px;
@@ -198,35 +198,35 @@
   background-color: #ffffff;
 }
 
-.rapport-input:focus {
+.cpsocial-layout .rapport-input:focus {
   outline: none;
   border-color: #111827;
 }
 
 /* Notes (CPS / N+1) */
-.rapport-input-note {
+.cpsocial-layout .rapport-input-note {
   width: 100%;
 }
 
 /* Cellules réservées manager (objectifs, N+1, totaux, stratégie...) */
-.manager-cell {
+.cpsocial-layout .manager-cell {
   background-color: #f3f4f6;
   color: #6b7280;
 }
 
 /* Ligne 1 (totaux) en gras */
-.total-cell {
+.cpsocial-layout .total-cell {
   font-weight: 600;
 }
 
 /* Potentiel 31/12 */
-.rapport-input-potentiel {
+.cpsocial-layout .rapport-input-potentiel {
   font-size: 14px;
   font-style: italic;
 }
 
 /* Colonnes % (plus étroites, déjà gérées par la grille) */
-.rapport-input-percent {
+.cpsocial-layout .rapport-input-percent {
   text-align: center;
 }
 
@@ -234,7 +234,7 @@
    Zone stratégie manager
    ================================ */
 
-.rapport-strategie-manager {
+.cpsocial-layout .rapport-strategie-manager {
   width: 100%;
   box-sizing: border-box;
   min-height: 70px;

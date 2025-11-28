@@ -1,4 +1,7 @@
-/* Layout spécifique à la page CP Social */
+/* ================================
+   Layout spécifique à la page CP Social
+   ================================ */
+
 .cpsocial-layout {
   max-width: 1360px;
   margin: 24px auto 32px;
@@ -12,9 +15,12 @@
   gap: 24px;
 }
 
-/* Cartes et titres (reprise de styles.css) */
+/* ================================
+   Cartes et titres (reprise styles globaux)
+   ================================ */
+
 .section-card {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #D9D9D9;
   border-radius: 12px;
   padding: 28px;
@@ -41,14 +47,16 @@
   font-weight: 800;
 }
 
-/* Label CP Social en haut à droite */
+/* Label "CP Social : NOM Prénom" en haut à droite */
 .conseiller-label {
   font-size: 12px;
   color: #555;
   margin-bottom: 4px;
 }
 
-/* ====== Tableau Résultats CP Social ====== */
+/* ================================
+   Tableau Résultats CP Social
+   ================================ */
 
 .rapport-section-table {
   margin-top: 16px;
@@ -58,7 +66,12 @@
   background-color: #fbfbfb;
 }
 
-/* Grille : 1 libellé + 3 (Bureaux) + 4 (Accompagnement) + 2 (Positionnement) */
+/* Grille : 
+   1  = Libellés
+   2–4 = Bureaux       (Obj, Réalisé, %)
+   5–8 = Accompagnement (Obj, Réalisé, %, Potentiel)
+   9–10 = Positionnement* (CPS, N+1)
+*/
 .rapport-table-header-top,
 .rapport-table-header-sub,
 .rapport-table-row {
@@ -67,24 +80,24 @@
     minmax(0, 3fr)   /* Libellés */
     140px            /* Obj Bureaux */
     140px            /* Réalisé Bureaux */
-    70px             /* % Bureaux (plus étroit) */
-    140px            /* Obj Acc */
-    140px            /* Réalisé Acc */
-    70px             /* % Acc (plus étroit) */
+    70px             /* % Bureaux (étroit) */
+    140px            /* Obj Accompagnement */
+    140px            /* Réalisé Accompagnement */
+    70px             /* % Accompagnement (étroit) */
     180px            /* Potentiel 31/12 */
     90px             /* CPS */
     90px;            /* N+1 */
-  column-gap: 0;     /* pas d’espace entre colonnes */
+  column-gap: 0;     /* pas d'espace entre colonnes */
   align-items: center;
   font-size: 14px;
 }
 
-/* En-tête groupée (ligne 1) */
+/* Ligne 1 : titres de groupe (Bureaux / Accompagnement / Positionnement*) */
 .rapport-table-header-top {
   margin-bottom: 2px;
 }
 
-/* En-tête détaillée (ligne 2) */
+/* Ligne 2 : noms des colonnes */
 .rapport-table-header-sub {
   font-weight: 600;
   padding-bottom: 4px;
@@ -92,131 +105,24 @@
   margin-bottom: 4px;
 }
 
-/* Cellules d'en-tête : texte centré sauf libellés */
+/* En-têtes : texte centré sauf libellés */
 .rapport-table-header-sub span:not(.col-libelle) {
   text-align: center;
 }
 
-/* Libellés ligne de données */
+/* Libellé des lignes */
 .col-libelle {
   font-size: 13px;
 }
 
-/* Ligne de données : petit espace vertical */
+/* Lignes de données : petit espace vertical */
 .rapport-table-row + .rapport-table-row {
   margin-top: 4px;
 }
 
-/* ===== Groupes de colonnes (couleurs) ===== */
-
-/* Bureaux */
-.group-bureaux {
-  background-color: #D9D9D9;
-}
-.group-bureaux.sub-header {
-  border-top-left-radius: 4px;
-}
-.group-bureaux.group-header {
-  border-top-left-radius: 8px;
-}
-
-/* Accompagnement */
-.group-accompagnement {
-  background-color: #EBEAEA;
-}
-.group-accompagnement.group-header {
-  border-top-left-radius: 8px;
-}
-.group-accompagnement.sub-header {
-  /* rien de spécial, même couleur sur toute la zone */
-}
-
-/* Positionnement */
-.group-positionnement {
-  background-color: #F5F3F0;
-}
-.group-positionnement.group-header {
-  border-top-right-radius: 8px;
-}
-.group-positionnement.sub-header:last-child {
-  border-top-right-radius: 4px;
-}
-
-/* Texte des titres de groupe */
-.group-header {
-  font-weight: 600;
-}
-
-/* Sous-titres (ligne 2) */
-.sub-header {
-  padding: 4px 8px;
-}
-
-/* Champs de saisie */
-.rapport-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 4px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
-  background-color: #ffffff;
-}
-
-.rapport-input:focus {
-  outline: none;
-  border-color: #111827;
-}
-
-/* Notes */
-.rapport-input-note {
-  width: 100%;
-}
-
-/* Cellules réservées manager (objectifs, N+1, stratégie...) */
-.manager-cell {
-  background-color: #f3f4f6;
-  color: #6b7280;
-}
-
-/* Ligne totale (ligne 1) en gras */
-.total-cell {
-  font-weight: 600;
-}
-
-/* Colonne Potentiel */
-.col-potentiel-header {
-  font-style: italic;
-  font-size: 14px;
-}
-
-/* Potentiel 31/12 */
-.rapport-input-potentiel {
-  font-size: 14px;
-  font-style: italic;
-}
-
-/* Colonnes % (plus étroites) */
-.rapport-input-percent {
-  text-align: center;
-}
-
-/* Zone stratégie manager */
-.rapport-strategie-manager {
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 70px;
-  resize: vertical;
-  overflow: auto;
-  font-family: inherit;
-  font-size: 14px;
-  padding: 8px 12px;
-  background-color: #f3f4f6;
-  color: #6b7280;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-}
-/* Groupes de colonnes (ligne 1) */
+/* ================================
+   Groupes de colonnes (ligne 1)
+   ================================ */
 
 .rapport-table-header-top .col-libelle {
   grid-column: 1 / 2;
@@ -251,6 +157,11 @@
 .group-header {
   font-weight: 600;
 }
+
+/* ================================
+   Couleurs des sous-titres (ligne 2)
+   ================================ */
+
 /* Sous-titres (Objectifs, Réalisé, %, Potentiel, CPS, N+1) */
 
 .rapport-table-header-sub .group-bureaux {
@@ -268,6 +179,72 @@
   padding: 4px 8px;
 }
 
+/* Potentiel 31/12 (texte en italique) */
 .col-potentiel-header {
   font-style: italic;
+}
+
+/* ================================
+   Champs de saisie
+   ================================ */
+
+.rapport-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+.rapport-input:focus {
+  outline: none;
+  border-color: #111827;
+}
+
+/* Notes (CPS / N+1) */
+.rapport-input-note {
+  width: 100%;
+}
+
+/* Cellules réservées manager (objectifs, N+1, totaux, stratégie...) */
+.manager-cell {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Ligne 1 (totaux) en gras */
+.total-cell {
+  font-weight: 600;
+}
+
+/* Potentiel 31/12 */
+.rapport-input-potentiel {
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Colonnes % (plus étroites, déjà gérées par la grille) */
+.rapport-input-percent {
+  text-align: center;
+}
+
+/* ================================
+   Zone stratégie manager
+   ================================ */
+
+.rapport-strategie-manager {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 70px;
+  resize: vertical;
+  overflow: auto;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 12px;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
 }

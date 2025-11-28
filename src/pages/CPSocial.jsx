@@ -714,31 +714,26 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
 
 
             <div className="rapport-section-table">
-  {/* Ligne d'en-tête groupée : Bureaux / Accompagnement / Positionnement */}
-  <div className="rapport-table-header-top">
-    {/* 1. Libellés */}
-    <span className="col-libelle" />
+ {/* Ligne d'en-tête groupée : Bureaux / Accompagnement / Positionnement */}
+<div className="rapport-table-header-top">
+  {/* 1. Libellés */}
+  <span className="col-libelle" />
 
-    {/* 2–4 : Bureaux */}
-    <span className="group-bureaux group-header">Bureaux</span>
-    <span className="group-bureaux" />
-    <span className="group-bureaux" />
+  {/* Bureaux (colonnes 2 à 4) */}
+  <span className="group-header group-bureaux">Bureaux</span>
 
-    {/* 5–8 : Accompagnement */}
-    <span className="group-accompagnement group-header">Accompagnement</span>
-    <span className="group-accompagnement" />
-    <span className="group-accompagnement" />
-    <span className="group-accompagnement" />
+  {/* Accompagnement (colonnes 5 à 8) */}
+  <span className="group-header group-accompagnement">Accompagnement</span>
 
-    {/* 9–10 : Positionnement* */}
-    <span
-      className="group-positionnement group-header"
-      title="Positionnement : faculté à se sentir à l'aise avec la thématique"
-    >
-      Positionnement*
-    </span>
-    <span className="group-positionnement" />
-  </div>
+  {/* Positionnement* (colonnes 9 à 10) */}
+  <span
+    className="group-header group-positionnement"
+    title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+  >
+    Positionnement*
+  </span>
+</div>
+
 
   {/* Ligne d'en-tête détaillée */}
   <div className="rapport-table-header-sub">
@@ -900,7 +895,7 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
                   {/* Réalisé Accompagnement (saisissable par le CP Social uniquement) */}
                   {isTotalRow ? (
                     <input
-                      className="rapport-input total-cell"
+                      className="rapport-input manager-cell total-cell"
                       type="text"
                       value={euroFromNumber(
                         totals.realisesAccompagnement

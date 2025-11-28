@@ -63,9 +63,19 @@
 .rapport-table-header-sub,
 .rapport-table-row {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) repeat(7, minmax(0, 1fr)) 70px 70px;
+  grid-template-columns:
+    minmax(0, 3fr)   /* Libellés */
+    140px            /* Obj Bureaux */
+    140px            /* Réalisé Bureaux */
+    70px             /* % Bureaux (plus étroit) */
+    140px            /* Obj Acc */
+    140px            /* Réalisé Acc */
+    70px             /* % Acc (plus étroit) */
+    180px            /* Potentiel 31/12 */
+    90px             /* CPS */
+    90px;            /* N+1 */
+  column-gap: 0;     /* pas d’espace entre colonnes */
   align-items: center;
-  column-gap: 0; /* ❌ pas d'espace entre colonnes */
   font-size: 14px;
 }
 
@@ -83,8 +93,7 @@
 }
 
 /* Cellules d'en-tête : texte centré sauf libellés */
-.rapport-table-header-sub span:not(.col-libelle),
-.rapport-table-header-top span:not(.col-libelle) {
+.rapport-table-header-sub span:not(.col-libelle) {
   text-align: center;
 }
 
@@ -206,4 +215,59 @@
   color: #6b7280;
   border-radius: 6px;
   border: 1px solid #d1d5db;
+}
+/* Groupes de colonnes (ligne 1) */
+
+.rapport-table-header-top .col-libelle {
+  grid-column: 1 / 2;
+}
+
+/* Bureaux : colonnes 2 à 4 */
+.rapport-table-header-top .group-bureaux {
+  grid-column: 2 / 5;
+  background-color: #D9D9D9;
+  text-align: center;
+  padding: 4px 0;
+  border-top-left-radius: 8px;
+}
+
+/* Accompagnement : colonnes 5 à 8 */
+.rapport-table-header-top .group-accompagnement {
+  grid-column: 5 / 9;
+  background-color: #EBEAEA;
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* Positionnement* : colonnes 9 à 10 */
+.rapport-table-header-top .group-positionnement {
+  grid-column: 9 / 11;
+  background-color: #F5F3F0;
+  text-align: center;
+  padding: 4px 0;
+  border-top-right-radius: 8px;
+}
+
+.group-header {
+  font-weight: 600;
+}
+/* Sous-titres (Objectifs, Réalisé, %, Potentiel, CPS, N+1) */
+
+.rapport-table-header-sub .group-bureaux {
+  background-color: #D9D9D9;
+  padding: 4px 8px;
+}
+
+.rapport-table-header-sub .group-accompagnement {
+  background-color: #EBEAEA;
+  padding: 4px 8px;
+}
+
+.rapport-table-header-sub .group-positionnement {
+  background-color: #F5F3F0;
+  padding: 4px 8px;
+}
+
+.col-potentiel-header {
+  font-style: italic;
 }

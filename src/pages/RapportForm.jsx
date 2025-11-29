@@ -235,21 +235,24 @@ export default function RapportForm({ onSaved, resetKey }) {
     });
   };
 
-  // Totaux pour la ligne 1 (somme des lignes 2 à 8)
-  const totals = {
-    objectifs: 0,
-    realises: 0,
-    potentiel3m: 0,
-    potentiel12m: 0,
-  };
+// Totaux pour la ligne 1
+// Somme des lignes 2 à 9, en excluant la ligne 8 (index 7 = VP)
+const totals = {
+  objectifs: 0,
+  realises: 0,
+  potentiel3m: 0,
+  potentiel12m: 0,
+};
 
-  for (let i = 1; i < 8; i += 1) {
-    // i = 1 à 7 -> lignes 2 à 8
-    totals.objectifs += parseEuro(form.resultats.objectifs[i]);
-    totals.realises += parseEuro(form.resultats.realises[i]);
-    totals.potentiel3m += parseEuro(form.resultats.potentiel3m[i]);
-    totals.potentiel12m += parseEuro(form.resultats.potentiel12m[i]);
-  }
+for (let i = 1; i < resultatsLabels.length; i += 1) {
+  // On exclut la ligne "8 - VP : PER/Prévoyance pour le montant annualisé"
+  if (i === 7) continue;
+
+  totals.objectifs += parseEuro(form.resultats.objectifs[i]);
+  totals.realises += parseEuro(form.resultats.realises[i]);
+  totals.potentiel3m += parseEuro(form.resultats.potentiel3m[i]);
+  totals.potentiel12m += parseEuro(form.resultats.potentiel12m[i]);
+}
 
   // Vérifie que l'utilisateur est connecté
   useEffect(() => {

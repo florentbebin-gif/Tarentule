@@ -998,7 +998,7 @@ const boardTotals = (() => {
                 className="note-group-header"
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-                Positionnement*
+                1 = Pas à l’aise - 10 = Très à l’aise
               </span>
             </div>
 
@@ -1257,7 +1257,7 @@ const boardTotals = (() => {
                 className="note-group-header"
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-                Positionnement*
+                1 = Pas à l’aise - 10 = Très à l’aise
               </span>
             </div>
 
@@ -1382,7 +1382,7 @@ const boardTotals = (() => {
                 className="note-group-header"
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-                Positionnement*
+                1 = Pas à l’aise - 10 = Très à l’aise
               </span>
             </div>
 
@@ -1470,7 +1470,7 @@ const boardTotals = (() => {
                 className="note-group-header"
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
-                Positionnement*
+                1 = Pas à l’aise - 10 = Très à l’aise
               </span>
             </div>
 

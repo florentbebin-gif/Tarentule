@@ -517,7 +517,7 @@ body {
 
   /* 1) "Performances Résultats" → déjà aligné avec le Board Conseiller */
   .radar-card--perf {
-    margin-top: 100;
+    margin-top: 0;
   }
 
   /* 2) "Positions Résultats" → aligné avec le bloc Résultats (tableau) */

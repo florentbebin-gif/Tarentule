@@ -996,7 +996,7 @@ const boardTotals = (() => {
               <span></span>
               <span
                 className="note-group-header"
-                  style={{ fontSize: 9 }}
+                  style={{ fontSize: 9,textDecoration: 'underline', }}
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
                 1 = Pas à l’aise & 10 = Très à l’aise
@@ -1256,7 +1256,7 @@ const boardTotals = (() => {
               <span></span>
               <span
                 className="note-group-header"
-                  style={{ fontSize: 9 }}
+                  style={{ fontSize: 9,textDecoration: 'underline', }}
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
                 1 = Pas à l’aise & 10 = Très à l’aise
@@ -1382,7 +1382,7 @@ const boardTotals = (() => {
               <span className="col-libelle"></span>
               <span
                 className="note-group-header"
-                  style={{ fontSize: 9 }}
+                  style={{ fontSize: 9,textDecoration: 'underline', }}
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
                 1 = Pas à l’aise & 10 = Très à l’aise
@@ -1471,7 +1471,7 @@ const boardTotals = (() => {
               <span className="col-libelle"></span>
               <span
                 className="note-group-header"
-                  style={{ fontSize: 9 }}
+                  style={{ fontSize: 9,textDecoration: 'underline', }}
                 title="Positionnement : faculté à se sentir à l'aise avec la thématique"
               >
                 1 = Pas à l’aise & 10 = Très à l’aise

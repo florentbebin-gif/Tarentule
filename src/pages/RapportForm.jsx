@@ -84,7 +84,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     '5 - Honoraires : production / chiffre d’affaires généré',
     '6 - Arbitrages : gestion pilotée, structurés, Pams',
     '7 - PER : dispositifs d’épargne retraite',
-    '8 - VP : PER/Prévoyance nouveaux (montant annualisé)', // index 7 → EXCLU des totaux globaux
+    '8 - VP : Nouveaux Vst. Prog. PER/Prévoyance (montants annualisés)', // index 7 → EXCLU des totaux globaux
     '9 - Campagnes diverses : participation et efficacité',
   ];
 

@@ -483,6 +483,10 @@ body {
 .radar-card--perf .radar-title {
   font-weight: 600;
 }
+/* Titre "Performance Partenariats" en gras */
+.radar-card--part-perf .radar-title {
+  font-weight: 600;
+}
 .radar-chart {
   display: block;
   margin: 0 auto;
@@ -512,34 +516,41 @@ body {
 @media (min-width: 1200px) {
   /* base : aucun décalage par défaut */
   .radar-card {
-    margin-top: 100;
-  }
-
-  /* 1) "Performances Résultats" → déjà aligné avec le Board Conseiller */
-  .radar-card--perf {
     margin-top: 0;
   }
 
-  /* 2) "Positions Résultats" → aligné avec le bloc Résultats (tableau) */
+  /* 1) Performance Résultats
+     → aligné avec le Board Conseiller
+     → + espace au-dessus pour respiration visuelle */
+  .radar-card--perf {
+    margin-top: 24px; /* espace volontaire au-dessus */
+  }
+
+  /* 2) Positions Résultats
+     → aligné avec le bloc Résultats (tableau) */
   .radar-card--resultats {
-    margin-top: 200px;   /* à ajuster visuellement si besoin */
+    margin-top: 200px; /* à ajuster visuellement si besoin */
   }
 
-  /* 3) "Positions Partenariats" → aligné avec la section Partenariats */
+  /* 3) Positions Partenariats
+     → aligné avec la section Partenariats */
   .radar-card--partenariat {
-    margin-top: 200px;    /* décalage par rapport à "Positions Résultats" */
+    margin-top: 200px;
   }
 
-  /* 4) "Positions Techniques" → aligné avec la section Techniques */
+  /* 4) Positions Techniques
+     → aligné avec la section Techniques */
   .radar-card--technique {
     margin-top: 200px;
   }
 
-  /* 5) "Positions Bien-être" → aligné avec la section Bien-être */
+  /* 5) Positions Bien-être
+     → aligné avec la section Bien-être */
   .radar-card--bienetre {
     margin-top: 200px;
   }
 }
+
 
 
 .save-message {

@@ -415,6 +415,21 @@ export default function RapportForm({ onSaved, resetKey }) {
     Number(form.resultats.notesManager?.[i] || 0)
   );
 
+    // Radar "Performances Résultats" basé sur la colonne %
+  // => (Réalisé / Objectifs) exprimé sur 0–10
+  const resultatsPerfRadar = [1, 2, 3, 4, 5, 6, 7].map((i) => {
+    const obj = parseEuro(form.resultats.objectifs[i]);
+    const rea = parseEuro(form.resultats.realises[i]);
+
+    if (!obj || obj <= 0) return 0;
+
+    const ratio = (rea / obj) * 10; // 0–10 au lieu de 0–100%
+    if (Number.isNaN(ratio)) return 0;
+
+    const clamped = Math.max(0, Math.min(10, ratio));
+    return Number(clamped.toFixed(1));
+  });
+  
   const partenariatRadarLabels = ['Clubs Experts', 'Animation', 'Prospection'];
   const partenariatCgpRadar = [0, 1, 2].map((i) =>
     Number(form.partenariat.notesCgp[i] || 0)
@@ -1454,6 +1469,18 @@ export default function RapportForm({ onSaved, resetKey }) {
 
       {/* Colonne droite : graphiques (inchangée) */}
       <div className="rapport-charts">
+
+<div className="rapport-charts">
+  {/* Performance Résultats (basée sur %) */}
+  <div className="section-card radar-card radar-card--perf">
+    <div className="radar-title">Performance Résultats</div>
+    <RadarChart
+      labels={resultatsRadarLabels}
+      cgpValues={resultatsPerfRadar}
+      managerValues={[]}
+    />
+  </div>
+        
         {/* Notes Résultats */}
         <div className="section-card radar-card radar-card--resultats">
           <div className="radar-title">Positions Résultats</div>

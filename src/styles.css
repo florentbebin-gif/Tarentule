@@ -236,7 +236,8 @@ body {
 /* 1ère ligne d'en-tête : "Note" (au-dessus de CGP + N+1) */
 .rapport-table-header-top {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px 70px;
+  /* Libellé + Objectifs + Réalisé + % + Potentiel + CGP */
+  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
@@ -244,7 +245,7 @@ body {
 }
 
 .note-group-header {
-  grid-column: 6 / span 2;
+  grid-column: 6 / span 1;  /* au-dessus de la seule colonne CGP */
   text-align: center;
   font-weight: 600;
 }
@@ -253,11 +254,12 @@ body {
 .rapport-table-header-sub,
 .rapport-table-row {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px 70px;
+  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
 }
+
 
 .rapport-table-header-sub {
   font-weight: 600;
@@ -357,7 +359,8 @@ body {
 .rapport-table-header-sub--part,
 .rapport-table-row--part {
   display: grid;
-  grid-template-columns: minmax(0, 3.5fr) minmax(0, 0.9fr) minmax(0, 0.9fr) 60px 60px;
+  /* Libellé + Objectifs + Réalisé + CGP */
+  grid-template-columns: minmax(0, 3.5fr) minmax(0, 0.9fr) minmax(0, 0.9fr) 60px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
@@ -404,7 +407,8 @@ body {
 .rapport-table-header-sub--simple,
 .rapport-table-row--simple {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) 70px 70px;
+  /* Libellé + CGP */
+  grid-template-columns: minmax(0, 3fr) 70px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
@@ -434,12 +438,6 @@ body {
 .topbar-lastsave {
   font-size: 13px; /* même taille que Nom / Prénom */
   white-space: nowrap;
-}
-/* Centrage du titre "Note" au-dessus de CGP et N+1 */
-
-.rapport-table-header-top--part .note-group-header {
-  grid-column: 4 / span 2;   /* colonnes CGP + N+1 */
-  text-align: center;
 }
 
 .rapport-table-header-top--simple .note-group-header {

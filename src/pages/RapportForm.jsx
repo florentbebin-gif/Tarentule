@@ -1471,9 +1471,9 @@ export default function RapportForm({ onSaved, resetKey }) {
       <div className="rapport-charts">
 
 <div className="rapport-charts">
-  {/* Performance Résultats (basée sur %) */}
+  {/* Performances Résultats (basée sur %) */}
   <div className="section-card radar-card radar-card--perf">
-    <div className="radar-title">Performance Résultats</div>
+    <div className="radar-title">Performances Résultats</div>
     <RadarChart
       labels={resultatsRadarLabels}
       cgpValues={resultatsPerfRadar}

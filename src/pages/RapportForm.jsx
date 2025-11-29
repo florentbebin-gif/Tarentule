@@ -687,7 +687,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                   fontSize: 12,
                   padding: '4px 8px',
                   borderRadius: 6,
-                  border: '1px solid '#d1d5db',
+                  border: '1px solid #d1d5db',
                   backgroundColor: '#ffffff',
                 }}
               >

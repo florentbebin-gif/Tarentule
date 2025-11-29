@@ -1003,16 +1003,14 @@ const boardTotals = (() => {
               </span>
             </div>
 
-            <div className="rapport-table-header-sub">
-              <span className="col-libelle">Libellés</span>
-              <span>Objectifs</span>
-              <span>Réalisé</span>
-              <span className="col-potentiel-header">%</span>
-              <span className="col-potentiel-header">Potentiel 31/12</span>
-              <span>CGP</span>
-              <span>N+1</span>
-            </div>
-
+<div className="rapport-table-header-sub">
+  <span className="col-libelle">Libellés</span>
+  <span>Objectifs</span>
+  <span>Réalisé</span>
+  <span className="col-potentiel-header">%</span>
+  <span className="col-potentiel-header">Potentiel 31/12</span>
+  <span>CGP</span>
+</div>
             {Array.from({ length: 9 }).map((_, i) => {
               const isTotalRow = i === 0;
               const isCampaignRow = i === 8;
@@ -1170,53 +1168,28 @@ const boardTotals = (() => {
                     />
                   )}
 
-                  {/* Notes */}
-                  {isTotalRow ? (
-                    <>
-                      <span></span>
-                      <span></span>
-                    </>
-                  ) : (
-                    <>
-                      <input
-                        className="rapport-input rapport-input-note"
-                        type="number"
-                        min="0"
-                        max="10"
-                        value={form.resultats.notesCgp[i]}
-                        onChange={(e2) =>
-                          updateArrayField(
-                            'resultats',
-                            'notesCgp',
-                            i,
-                            clampNote(e2.target.value)
-                          )
-                        }
-                        onBlur={handleAutoSave}
-                      />
-                      <input
-                        className="rapport-input rapport-input-note manager-cell"
-                        type="number"
-                        min="0"
-                        max="10"
-                        readOnly={
-                          currentUserRole !== 'manager' &&
-                          currentUserRole !== 'admin'
-                        }
-                        value={form.resultats.notesManager?.[i] || ''}
-                        onChange={(e2) =>
-                          updateArrayField(
-                            'resultats',
-                            'notesManager',
-                            i,
-                            clampNote(e2.target.value)
-                          )
-                        }
-                        onBlur={handleAutoSave}
-                        placeholder="—"
-                      />
-                    </>
-                  )}
+{/* Notes (CGP uniquement) */}
+{isTotalRow ? (
+  <span></span>
+) : (
+  <input
+    className="rapport-input rapport-input-note"
+    type="number"
+    min="0"
+    max="10"
+    value={form.resultats.notesCgp[i]}
+    onChange={(e2) =>
+      updateArrayField(
+        'resultats',
+        'notesCgp',
+        i,
+        clampNote(e2.target.value)
+      )
+    }
+    onBlur={handleAutoSave}
+  />
+)}
+
                 </div>
               );
             })}
@@ -1263,13 +1236,12 @@ const boardTotals = (() => {
               </span>
             </div>
 
-            <div className="rapport-table-header-sub rapport-table-header-sub--part">
-              <span className="col-libelle">Libellés</span>
-              <span>Objectifs N (nb)</span>
-              <span>Réalisé N (nb)</span>
-              <span>CGP</span>
-              <span>N+1</span>
-            </div>
+<div className="rapport-table-header-sub rapport-table-header-sub--part">
+  <span className="col-libelle">Libellés</span>
+  <span>Objectifs N (nb)</span>
+  <span>Réalisé N (nb)</span>
+  <span>CGP</span>
+</div>
 
             {partenariatLabels.map((label, i) => (
               <div
@@ -1329,28 +1301,6 @@ const boardTotals = (() => {
                   }
                   onBlur={handleAutoSave}
                 />
-
-                <input
-                  className="rapport-input rapport-input-note manager-cell"
-                  type="number"
-                  min="0"
-                  max="10"
-                  value={form.partenariat.notesManager?.[i] || ''}
-                  readOnly={
-                    currentUserRole !== 'manager' &&
-                    currentUserRole !== 'admin'
-                  }
-                  onChange={(e2) =>
-                    updateArrayField(
-                      'partenariat',
-                      'notesManager',
-                      i,
-                      clampNote(e2.target.value)
-                    )
-                  }
-                  onBlur={handleAutoSave}
-                  placeholder="—"
-                />
               </div>
             ))}
           </div>
@@ -1389,11 +1339,10 @@ const boardTotals = (() => {
               </span>
             </div>
 
-            <div className="rapport-table-header-sub rapport-table-header-sub--simple">
-              <span className="col-libelle">Libellés</span>
-              <span>CGP</span>
-              <span>N+1</span>
-            </div>
+<div className="rapport-table-header-sub rapport-table-header-sub--simple">
+  <span className="col-libelle">Libellés</span>
+  <span>CGP</span>
+</div>
 
             {techniqueLabels.map((label, i) => (
               <div
@@ -1417,28 +1366,6 @@ const boardTotals = (() => {
                     )
                   }
                   onBlur={handleAutoSave}
-                />
-
-                <input
-                  className="rapport-input rapport-input-note manager-cell"
-                  type="number"
-                  min="0"
-                  max="10"
-                  value={form.technique.notesManager?.[i] || ''}
-                  readOnly={
-                    currentUserRole !== 'manager' &&
-                    currentUserRole !== 'admin'
-                  }
-                  onChange={(e2) =>
-                    updateArrayField(
-                      'technique',
-                      'notesManager',
-                      i,
-                      clampNote(e2.target.value)
-                    )
-                  }
-                  onBlur={handleAutoSave}
-                  placeholder="—"
                 />
               </div>
             ))}
@@ -1478,11 +1405,10 @@ const boardTotals = (() => {
               </span>
             </div>
 
-            <div className="rapport-table-header-sub rapport-table-header-sub--simple">
-              <span className="col-libelle">Libellés</span>
-              <span>CGP</span>
-              <span>N+1</span>
-            </div>
+<div className="rapport-table-header-sub rapport-table-header-sub--simple">
+  <span className="col-libelle">Libellés</span>
+  <span>CGP</span>
+</div>
 
             {bienEtreLabels.map((label, i) => (
               <div
@@ -1506,27 +1432,6 @@ const boardTotals = (() => {
                     )
                   }
                   onBlur={handleAutoSave}
-                />
-
-                <input
-                  className="rapport-input rapport-input-note manager-cell"
-                  type="number"
-                  min="0"
-                  max="10"
-                  value={form.bienEtre.notesManager?.[i] || ''}
-                  readOnly={
-                    currentUserRole !== 'manager' && currentUserRole !== 'admin'
-                  }
-                  onChange={(e2) =>
-                    updateArrayField(
-                      'bienEtre',
-                      'notesManager',
-                      i,
-                      clampNote(e2.target.value)
-                    )
-                  }
-                  onBlur={handleAutoSave}
-                  placeholder="—"
                 />
               </div>
             ))}

@@ -505,7 +505,38 @@ body {
   font-size: 13px;
 }
 
+/* Alignement vertical des graphiques avec les sections de gauche */
+@media (min-width: 1200px) {
+  /* base : aucun décalage par défaut */
+  .radar-card {
+    margin-top: 100;
+  }
 
+  /* 1) "Performances Résultats" → déjà aligné avec le Board Conseiller */
+  .radar-card--perf {
+    margin-top: 0;
+  }
+
+  /* 2) "Positions Résultats" → aligné avec le bloc Résultats (tableau) */
+  .radar-card--resultats {
+    margin-top: 260px;   /* à ajuster visuellement si besoin */
+  }
+
+  /* 3) "Positions Partenariats" → aligné avec la section Partenariats */
+  .radar-card--partenariat {
+    margin-top: 80px;    /* décalage par rapport à "Positions Résultats" */
+  }
+
+  /* 4) "Positions Techniques" → aligné avec la section Techniques */
+  .radar-card--technique {
+    margin-top: 80px;
+  }
+
+  /* 5) "Positions Bien-être" → aligné avec la section Bien-être */
+  .radar-card--bienetre {
+    margin-top: 80px;
+  }
+}
 
 
 .save-message {

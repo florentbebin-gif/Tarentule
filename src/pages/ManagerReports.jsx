@@ -1167,191 +1167,224 @@ const saveAgencyFilters = async (list) => {
 </div>
 
 
-        {/* Tableau de synthèse */}
-        <div className="manager-table-wrap">
-          <table className="manager-table">
-            <thead>
-              <tr>
-                <th
-                  rowSpan="2"
-                  onClick={() => handleSort('bureau')}
-                  style={{ backgroundColor: '#D9D9D9' }}
-                >
-                  Bureau
-                  {sortKey === 'bureau' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th
-                  rowSpan="2"
-                  onClick={() => handleSort('name')}
-                  style={{ backgroundColor: '#D9D9D9' }}
-                >
-                  Nom / Prénom
-                  {sortKey === 'name' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th
-                  rowSpan="2"
-                  onClick={() => handleSort('objectifs')}
-                  style={{ backgroundColor: '#D9D9D9' }}
-                >
-                  Objectifs
-                  {sortKey === 'objectifs' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th
-                  rowSpan="2"
-                  onClick={() => handleSort('realises')}
-                  style={{ backgroundColor: '#D9D9D9' }}
-                >
-                  Réalisé
-                  {sortKey === 'realises' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th
-                  rowSpan="2"
-                  onClick={() => handleSort('percentRealise')}
-                  style={{ backgroundColor: '#D9D9D9' }}
-                >
-                  %
-                  {sortKey === 'percentRealise' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th
-                  rowSpan="2"
-                  onClick={() => handleSort('potentiel12m')}
-                  style={{ backgroundColor: '#D9D9D9' }}
-                >
-                  Potentiel 31/12
-                  {sortKey === 'potentiel12m' &&
-                    (sortDirection === 'asc' ? ' ▲' : ' ▼')}
-                </th>
-                <th rowSpan="2" style={{ backgroundColor: '#D9D9D9' }}>
-                  Dernière actu.
-                </th>
-                <th
-                  colSpan="5"
-                  style={{
-                    backgroundColor: '#D9D9D9',
-                    textAlign: 'center',
-                  }}
-                >
-                  Notes CGP
-                </th>
+{/* Tableau de synthèse */}
+<div className="manager-table-wrap">
+  <table className="manager-table">
+    <thead>
+      <tr>
+        <th
+          rowSpan={2}
+          onClick={() => handleSort('bureau')}
+          style={{ backgroundColor: '#D9D9D9', cursor: 'pointer' }}
+        >
+          Bureau
+          {sortKey === 'bureau' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th
+          rowSpan={2}
+          onClick={() => handleSort('name')}
+          style={{ backgroundColor: '#D9D9D9', cursor: 'pointer' }}
+        >
+          Nom / Prénom
+          {sortKey === 'name' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th
+          rowSpan={2}
+          onClick={() => handleSort('objectifs')}
+          style={{ backgroundColor: '#D9D9D9', cursor: 'pointer' }}
+        >
+          Objectifs
+          {sortKey === 'objectifs' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th
+          rowSpan={2}
+          onClick={() => handleSort('realises')}
+          style={{ backgroundColor: '#D9D9D9', cursor: 'pointer' }}
+        >
+          Réalisé
+          {sortKey === 'realises' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th
+          rowSpan={2}
+          onClick={() => handleSort('percentRealise')}
+          style={{ backgroundColor: '#D9D9D9', cursor: 'pointer' }}
+        >
+          %
+          {sortKey === 'percentRealise' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th
+          rowSpan={2}
+          onClick={() => handleSort('potentiel12m')}
+          style={{ backgroundColor: '#D9D9D9', cursor: 'pointer' }}
+        >
+          Potentiel 31/12
+          {sortKey === 'potentiel12m' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th
+          rowSpan={2}
+          style={{ backgroundColor: '#D9D9D9' }}
+        >
+          Dernière actu.
+        </th>
+        <th
+          colSpan={5}
+          style={{
+            backgroundColor: '#D9D9D9',
+            textAlign: 'center',
+          }}
+        >
+          Notes CGP
+        </th>
+      </tr>
+      <tr>
+        <th
+          style={{ backgroundColor: '#F5F3F0', cursor: 'pointer' }}
+          onClick={() => handleSort('noteRes')}
+        >
+          Résultat
+          {sortKey === 'noteRes' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th
+          style={{ backgroundColor: '#F5F3F0', cursor: 'pointer' }}
+          onClick={() => handleSort('notePart')}
+        >
+          Pat.
+          {sortKey === 'notePart' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th
+          style={{ backgroundColor: '#F5F3F0', cursor: 'pointer' }}
+          onClick={() => handleSort('noteTech')}
+        >
+          Tech.
+          {sortKey === 'noteTech' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th
+          style={{ backgroundColor: '#F5F3F0', cursor: 'pointer' }}
+          onClick={() => handleSort('noteBien')}
+        >
+          Bien-être
+          {sortKey === 'noteBien' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+        </th>
+        <th style={{ backgroundColor: '#CEC1B6' }}>
+          Social
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {sortedRows.length === 0 && (
+        <tr>
+          <td
+            colSpan={12}
+            style={{ textAlign: 'center', padding: '16px' }}
+          >
+            Aucun utilisateur trouvé pour les agences sélectionnées.
+          </td>
+        </tr>
+      )}
 
-              </tr>
-              <tr>
-                <th style={{ backgroundColor: '#F5F3F0' }}>Résultat</th>
-                <th style={{ backgroundColor: '#F5F3F0' }}>Part.</th>
-                <th style={{ backgroundColor: '#F5F3F0' }}>Tech.</th>
-                <th style={{ backgroundColor: '#F5F3F0' }}>Bien-être</th>
-                <th style={{ backgroundColor: '#CEC1B6' }}>Social</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedRows.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={12}
-                    style={{ textAlign: 'center', padding: '16px' }}
-                  >
-                    Aucun utilisateur trouvé pour les agences sélectionnées.
-                  </td>
-                </tr>
-              )}
+      {sortedRows.map((row, idx) => (
+        <tr
+          key={row.userId}
+          className="manager-row"
+          onClick={() => handleRowClick(row.userId)}
+        >
+          <td>{row.bureau}</td>
+          <td>
+            {idx + 1}. {row.lastName.toUpperCase()} {row.firstName}
+          </td>
+          <td>{formatEuro(row.objectifs)}</td>
+          <td>{formatEuro(row.realises)}</td>
+          <td>
+            {row.percentRealise
+              ? `${Math.round(row.percentRealise)}%`
+              : '—'}
+          </td>
+          <td>{formatEuro(row.potentiel12m)}</td>
+          <td
+            style={{
+              color: isOlderThan15Days(row.lastSave)
+                ? '#b91c1c'
+                : undefined,
+            }}
+          >
+            {formatShortDate(row.lastSave)}
+          </td>
+          <td
+            style={{
+              color: row.noteRes < 50 ? '#b91c1c' : undefined,
+            }}
+          >
+            {row.noteRes ? `${Math.round(row.noteRes)}%` : '—'}
+          </td>
+          <td
+            style={{
+              color: row.notePart < 50 ? '#b91c1c' : undefined,
+            }}
+          >
+            {row.notePart ? `${Math.round(row.notePart)}%` : '—'}
+          </td>
+          <td
+            style={{
+              color: row.noteTech < 50 ? '#b91c1c' : undefined,
+            }}
+          >
+            {row.noteTech ? `${Math.round(row.noteTech)}%` : '—'}
+          </td>
+          <td
+            style={{
+              color: row.noteBien < 50 ? '#b91c1c' : undefined,
+            }}
+          >
+            {row.noteBien ? `${Math.round(row.noteBien)}%` : '—'}
+          </td>
+          <td
+            style={{
+              color: row.noteSocial < 50 ? '#b91c1c' : undefined,
+            }}
+          >
+            {row.noteSocial ? `${Math.round(row.noteSocial)}%` : '—'}
+          </td>
+        </tr>
+      ))}
 
-              {sortedRows.map((row, idx) => (
-                <tr
-                  key={row.userId}
-                  className="manager-row"
-                  onClick={() => handleRowClick(row.userId)}
-                >
-                  <td>{row.bureau}</td>
-                  <td>
-                    {idx + 1}. {row.lastName.toUpperCase()} {row.firstName}
-                  </td>
-                  <td>{formatEuro(row.objectifs)}</td>
-                  <td>{formatEuro(row.realises)}</td>
-                  <td>
-                    {row.percentRealise
-                      ? `${Math.round(row.percentRealise)}%`
-                      : '—'}
-                  </td>
-                  <td>{formatEuro(row.potentiel12m)}</td>
-                      <td
-      style={{
-        color: isOlderThan15Days(row.lastSave)
-          ? '#b91c1c'
-          : undefined,
-      }}
-    >
-      {formatShortDate(row.lastSave)}
-    </td>
-    <td
-      style={{
-        color: row.noteRes < 50 ? '#b91c1c' : undefined,
-      }}
-    >
-      {row.noteRes ? `${Math.round(row.noteRes)}%` : '—'}
-    </td>
-    <td
-      style={{
-        color: row.notePart < 50 ? '#b91c1c' : undefined,
-      }}
-    >
-      {row.notePart ? `${Math.round(row.notePart)}%` : '—'}
-    </td>
-    <td
-      style={{
-        color: row.noteTech < 50 ? '#b91c1c' : undefined,
-      }}
-    >
-      {row.noteTech ? `${Math.round(row.noteTech)}%` : '—'}
-    </td>
-    <td
-      style={{
-        color: row.noteBien < 50 ? '#b91c1c' : undefined,
-      }}
-    >
-      {row.noteBien ? `${Math.round(row.noteBien)}%` : '—'}
-    </td>
-    <td
-      style={{
-        color: row.noteSocial < 50 ? '#b91c1c' : undefined,
-      }}
-    >
-      {row.noteSocial ? `${Math.round(row.noteSocial)}%` : '—'}
-    </td>
-                </tr>
-              ))}
+      {sortedRows.length > 0 && (
+        <tr
+          className="manager-total-row"
+          style={{ backgroundColor: '#D9D9D9', fontWeight: '600' }}
+        >
+          <td colSpan={2}>TOTAL / MOYENNE</td>
+          <td>{formatEuro(totalObjectifs)}</td>
+          <td>{formatEuro(totalRealises)}</td>
+          <td>
+            {totalPercent ? `${Math.round(totalPercent)}%` : '—'}
+          </td>
+          <td>{formatEuro(totalPot12)}</td>
+          <td>—</td>
+          <td>{avgRes ? `${Math.round(avgRes)}%` : '—'}</td>
+          <td>{avgPart ? `${Math.round(avgPart)}%` : '—'}</td>
+          <td>{avgTech ? `${Math.round(avgTech)}%` : '—'}</td>
+          <td>{avgBien ? `${Math.round(avgBien)}%` : '—'}</td>
+          <td>{avgSocial ? `${Math.round(avgSocial)}%` : '—'}</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
 
-              {sortedRows.length > 0 && (
-                <tr
-                  className="manager-total-row"
-                  style={{ backgroundColor: '#D9D9D9', fontWeight: '600' }}
-                >
-                  <td colSpan={2}>TOTAL / MOYENNE</td>
-                  <td>{formatEuro(totalObjectifs)}</td>
-                  <td>{formatEuro(totalRealises)}</td>
-                  <td>
-                    {totalPercent ? `${Math.round(totalPercent)}%` : '—'}
-                  </td>
-                  <td>{formatEuro(totalPot12)}</td>
-                  <td>—</td>
-                  <td>{avgRes ? `${Math.round(avgRes)}%` : '—'}</td>
-                  <td>{avgPart ? `${Math.round(avgPart)}%` : '—'}</td>
-                  <td>{avgTech ? `${Math.round(avgTech)}%` : '—'}</td>
-                  <td>{avgBien ? `${Math.round(avgBien)}%` : '—'}</td>
-                  <td>{avgSocial ? `${Math.round(avgSocial)}%` : '—'}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+<p style={{ marginTop: 12, fontSize: 13, color: '#777' }}>
+  Cliquez sur une ligne pour accéder au rapport détaillé du conseiller.
+</p>
 
-        <p style={{ marginTop: 12, fontSize: 13, color: '#777' }}>
-          Cliquez sur une ligne pour accéder au rapport détaillé du conseiller.
-        </p>
       </div>
     </div>
   );

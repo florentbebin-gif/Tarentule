@@ -473,13 +473,16 @@ body {
 .radar-card {
   padding: 8px 6px;
 }
-
+/* Titres des graphiques radar : poids normal par défaut */
 .radar-title {
-  font-weight: 700;
+  font-weight: 400;
   margin-bottom: 8px;
   font-size: 14px;
 }
-
+/* Performance Résultats reste en gras */
+.radar-card--perf .radar-title {
+  font-weight: 600;
+}
 .radar-chart {
   display: block;
   margin: 0 auto;

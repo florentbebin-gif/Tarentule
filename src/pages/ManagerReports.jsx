@@ -1228,9 +1228,12 @@ const saveAgencyFilters = async (list) => {
         </th>
         <th
           rowSpan={2}
-          style={{ backgroundColor: '#D9D9D9' }}
+          onClick={() => handleSort('lastSave')}
+          style={{ backgroundColor: '#D9D9D9', cursor: 'pointer' }}
         >
           Dernière actu.
+          {sortKey === 'lastSave' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
         </th>
         <th
           colSpan={5}
@@ -1275,8 +1278,13 @@ const saveAgencyFilters = async (list) => {
           {sortKey === 'noteBien' &&
             (sortDirection === 'asc' ? ' ▲' : ' ▼')}
         </th>
-        <th style={{ backgroundColor: '#CEC1B6' }}>
+        <th
+          style={{ backgroundColor: '#CEC1B6', cursor: 'pointer' }}
+          onClick={() => handleSort('noteSocial')}
+        >
           Social
+          {sortKey === 'noteSocial' &&
+            (sortDirection === 'asc' ? ' ▲' : ' ▼')}
         </th>
       </tr>
     </thead>
@@ -1384,6 +1392,7 @@ const saveAgencyFilters = async (list) => {
 <p style={{ marginTop: 12, fontSize: 13, color: '#777' }}>
   Cliquez sur une ligne pour accéder au rapport détaillé du conseiller.
 </p>
+
 
       </div>
     </div>

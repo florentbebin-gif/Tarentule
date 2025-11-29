@@ -1467,20 +1467,18 @@ export default function RapportForm({ onSaved, resetKey }) {
         </div>
       </div>
 
-      {/* Colonne droite : graphiques (inchangée) */}
+      {/* Colonne droite : graphiques */}
       <div className="rapport-charts">
+        {/* Performances Résultats (basée sur %) */}
+        <div className="section-card radar-card radar-card--perf">
+          <div className="radar-title">Performances Résultats</div>
+          <RadarChart
+            labels={resultatsRadarLabels}
+            cgpValues={resultatsPerfRadar}
+            managerValues={[]}
+          />
+        </div>
 
-<div className="rapport-charts">
-  {/* Performances Résultats (basée sur %) */}
-  <div className="section-card radar-card radar-card--perf">
-    <div className="radar-title">Performances Résultats</div>
-    <RadarChart
-      labels={resultatsRadarLabels}
-      cgpValues={resultatsPerfRadar}
-      managerValues={[]}
-    />
-  </div>
-        
         {/* Notes Résultats */}
         <div className="section-card radar-card radar-card--resultats">
           <div className="radar-title">Positions Résultats</div>
@@ -1524,3 +1522,4 @@ export default function RapportForm({ onSaved, resetKey }) {
     </div>
   );
 }
+

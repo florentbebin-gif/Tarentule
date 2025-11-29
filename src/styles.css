@@ -523,28 +523,32 @@ body {
      → aligné avec le Board Conseiller
      → + espace au-dessus pour respiration visuelle */
   .radar-card--perf {
-    margin-top: 200px; /* espace volontaire au-dessus */
+    margin-top: 190px; /* espace volontaire au-dessus */
   }
 
   /* 2) Positions Résultats
      → aligné avec le bloc Résultats (tableau) */
   .radar-card--resultats {
-    margin-top: 200px; /* à ajuster visuellement si besoin */
+    margin-top: 300px; /* à ajuster visuellement si besoin */
   }
-
-  /* 3) Positions Partenariats
+/* 3) Positions Partenariats performance */
+  .radar-card--part-perf {
+  margin-top: 200px;
+  }
+  
+  /* 4) Positions Partenariats
      → aligné avec la section Partenariats */
   .radar-card--partenariat {
     margin-top: 200px;
   }
 
-  /* 4) Positions Techniques
+  /* 5) Positions Techniques
      → aligné avec la section Techniques */
   .radar-card--technique {
     margin-top: 200px;
   }
 
-  /* 5) Positions Bien-être
+  /* 6) Positions Bien-être
      → aligné avec la section Bien-être */
   .radar-card--bienetre {
     margin-top: 200px;

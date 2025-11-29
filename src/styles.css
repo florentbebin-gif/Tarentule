@@ -382,6 +382,11 @@ body {
   text-align: center;
 }
 
+/* Met "1=Pas à l’aise 10=Très à l’aise" au-dessus de la colonne CGP */
+.rapport-table-header-top--part .note-group-header {
+  grid-column: 4 / span 1;
+}
+
 .rapport-table-row--part + .rapport-table-row--part {
   margin-top: 4px;
 }
@@ -441,7 +446,7 @@ body {
 }
 
 .rapport-table-header-top--simple .note-group-header {
-  grid-column: 2 / span 2;   /* colonnes CGP + N+1 */
+  grid-column: 2 / span 1;  /* au-dessus de la colonne CGP */
   text-align: center;
 }
 

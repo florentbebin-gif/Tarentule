@@ -245,7 +245,7 @@ const totals = {
 };
 
 for (let i = 1; i < resultatsLabels.length; i += 1) {
-  // On exclut la ligne "8 - VP : PER/Prévoyance nouveaux (montant annualisé)"
+  // On exclut la ligne "8 - VP : PER/Prévoyance pour le montant annualisé"
   if (i === 7) continue;
 
   totals.objectifs += parseEuro(form.resultats.objectifs[i]);
@@ -464,34 +464,37 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
   Number(form.bienEtre.notesManager?.[i] || 0)
 );
 
-  // ---- Totaux Board Conseiller (avec Collecte All) ----
-  const boardTotals = (() => {
-    const objectifs = form.resultats.objectifs || [];
-    const realises = form.resultats.realises || [];
-    const potentiel12m = form.resultats.potentiel12m || [];
+const boardTotals = (() => {
+  const objectifs = form.resultats.objectifs || [];
+  const realises = form.resultats.realises || [];
+  const potentiel12m = form.resultats.potentiel12m || [];
 
-    let obj = 0;
-    let rea = 0;
-    let pot12 = 0;
+  let obj = 0;
+  let rea = 0;
+  let pot12 = 0;
 
-    // lignes 2 à 8 => index 1 à 7
-    for (let i = 1; i < 8; i += 1) {
-      // si Collecte All => on enlève Honoraires (5, index 4) et Arbitrages (6, index 5)
-      if (collecteAll && (i === 4 || i === 5)) {
-        continue;
-      }
+  // lignes 2 à 9 => index 1 à resultatsLabels.length - 1
+  for (let i = 1; i < resultatsLabels.length; i += 1) {
+    // On exclut la ligne 8 (index 7 = VP) du Board
+    if (i === 7) continue;
 
-      obj += parseEuro(objectifs[i] || 0);
-      rea += parseEuro(realises[i] || 0);
-      pot12 += parseEuro(potentiel12m[i] || 0);
+    // si Collecte All => on enlève Honoraires (5, index 4) et Arbitrages (6, index 5)
+    if (collecteAll && (i === 4 || i === 5)) {
+      continue;
     }
 
-    return {
-      objectifs: obj,
-      realises: rea,
-      potentiel12m: pot12,
-    };
-  })();
+    obj += parseEuro(objectifs[i] || 0);
+    rea += parseEuro(realises[i] || 0);
+    pot12 += parseEuro(potentiel12m[i] || 0);
+  }
+
+  return {
+    objectifs: obj,
+    realises: rea,
+    potentiel12m: pot12,
+  };
+})();
+
 
   const totalObjectifs = boardTotals.objectifs;
   const totalRealises = boardTotals.realises;

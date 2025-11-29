@@ -1223,18 +1223,18 @@ const boardTotals = (() => {
             Partenariats
           </div>
 
-          <div className="rapport-section-table rapport-section-table--part">
-            <div className="rapport-table-header-top rapport-table-header-top--part">
-              <span className="col-libelle"></span>
-              <span></span>
-              <span
-                className="note-group-header"
-                  style={{ fontSize: 9,textDecoration: 'underline',color: '#4b5563', }}
-                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
-              >
-                1=Pas à l’aise 10=Très à l’aise
-              </span>
-            </div>
+<div className="rapport-table-header-top rapport-table-header-top--part">
+  <span className="col-libelle"></span>
+  <span></span>
+  <span></span>
+  <span
+    className="note-group-header"
+    style={{ fontSize: 9, textDecoration: 'underline', color: '#4b5563' }}
+    title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+  >
+    1=Pas à l’aise 10=Très à l’aise
+  </span>
+</div>
 
 <div className="rapport-table-header-sub rapport-table-header-sub--part">
   <span className="col-libelle">Libellés</span>

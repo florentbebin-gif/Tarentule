@@ -998,7 +998,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                   textDecoration: 'underline',
                   color: '#4b5563',
                 }}
-                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+                title="Positionnement : capacité à se sentir à l'aise avec la thématique"
               >
                 1 = Pas à l’aise & 10 = Très à l’aise
               </span>
@@ -1010,7 +1010,7 @@ export default function RapportForm({ onSaved, resetKey }) {
               <span>Réalisé</span>
               <span className="col-potentiel-header">%</span>
               <span className="col-potentiel-header">Potentiel 31/12</span>
-              <span>CGP</span>
+              <span>Positions</span>
             </div>
 
             {Array.from({ length: 9 }).map((_, i) => {
@@ -1236,7 +1236,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                   textDecoration: 'underline',
                   color: '#4b5563',
                 }}
-                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+                title="Positionnement : capacité à se sentir à l'aise avec la thématique"
               >
                 1 = Pas à l’aise & 10 = Très à l’aise
               </span>
@@ -1246,7 +1246,7 @@ export default function RapportForm({ onSaved, resetKey }) {
               <span className="col-libelle">Libellés</span>
               <span>Objectifs N (nb)</span>
               <span>Réalisé N (nb)</span>
-              <span>CGP</span>
+              <span>Positions</span>
             </div>
 
             {partenariatLabels.map((label, i) => (
@@ -1343,7 +1343,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                   textDecoration: 'underline',
                   color: '#4b5563',
                 }}
-                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+                title="Positionnement : capacité à se sentir à l'aise avec la thématique"
               >
                 1 = Pas à l’aise & 10 = Très à l’aise
               </span>
@@ -1351,7 +1351,7 @@ export default function RapportForm({ onSaved, resetKey }) {
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
               <span className="col-libelle">Libellés</span>
-              <span>CGP</span>
+              <span>Positions</span>
             </div>
 
             {techniqueLabels.map((label, i) => (
@@ -1413,7 +1413,7 @@ export default function RapportForm({ onSaved, resetKey }) {
                   textDecoration: 'underline',
                   color: '#4b5563',
                 }}
-                title="Positionnement : faculté à se sentir à l'aise avec la thématique"
+                title="Positionnement : capacité à se sentir à l'aise avec la thématique"
               >
                 1 = Pas à l’aise & 10 = Très à l’aise
               </span>
@@ -1421,7 +1421,7 @@ export default function RapportForm({ onSaved, resetKey }) {
 
             <div className="rapport-table-header-sub rapport-table-header-sub--simple">
               <span className="col-libelle">Libellés</span>
-              <span>CGP</span>
+              <span>Positions</span>
             </div>
 
             {bienEtreLabels.map((label, i) => (

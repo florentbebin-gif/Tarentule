@@ -237,7 +237,7 @@ body {
 .rapport-table-header-top {
   display: grid;
   /* Libellé + Objectifs + Réalisé + % + Potentiel + CGP */
-  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px;
+  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 76px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
@@ -254,7 +254,7 @@ body {
 .rapport-table-header-sub,
 .rapport-table-row {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 70px;
+  grid-template-columns: minmax(0, 3fr) repeat(4, minmax(0, 1fr)) 76px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
@@ -360,7 +360,7 @@ body {
 .rapport-table-row--part {
   display: grid;
   /* Libellé + Objectifs + Réalisé + CGP */
-  grid-template-columns: minmax(0, 3.5fr) minmax(0, 0.9fr) minmax(0, 0.9fr) 60px;
+  grid-template-columns: minmax(0, 3.5fr) minmax(0, 0.9fr) minmax(0, 0.9fr) 66px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;
@@ -413,7 +413,7 @@ body {
 .rapport-table-row--simple {
   display: grid;
   /* Libellé + CGP */
-  grid-template-columns: minmax(0, 3fr) 70px;
+  grid-template-columns: minmax(0, 3fr) 76px;
   align-items: center;
   column-gap: 8px;
   font-size: 14px;

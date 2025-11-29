@@ -37,10 +37,22 @@ function computeTotalsFromReport(data, collecteAll = false) {
     potentiel12m: 0,
   };
 
-  // On somme les lignes 2 à 8 (index 1 à 7)
-  // Si "Collecte All" est actif, on enlève les lignes 5 et 6
-  // => index 4 (Honoraires) et 5 (Arbitrages)
-  for (let i = 1; i < 8; i += 1) {
+  // On somme les lignes 2 à 9 (index 1 à n-1),
+  // en excluant la ligne 8 (index 7 = VP).
+  // Si "Collecte All" est actif, on enlève en plus :
+  //  - index 4 (Honoraires)
+  //  - index 5 (Arbitrages)
+  const maxRows = Math.max(
+    objectifs.length,
+    realises.length,
+    potentiel12m.length
+  );
+
+  for (let i = 1; i < maxRows; i += 1) {
+    // Exclure VP (ligne 8)
+    if (i === 7) continue;
+
+    // Exclure Honoraires & Arbitrages quand Collecte All est actif
     if (collecteAll && (i === 4 || i === 5)) {
       continue;
     }
@@ -52,7 +64,6 @@ function computeTotalsFromReport(data, collecteAll = false) {
 
   return totals;
 }
-
 
 // Moyenne sécurisée (évite division par zéro)
 const average = (arr) => {
@@ -733,8 +744,8 @@ const saveAgencyFilters = async (list) => {
 
   <span style={{ fontSize: 12, color: '#4b5563' }}>
     {collecteAll
-      ? 'Sans les VP'
-      : 'Sans les VP & Honoraires & Arbitrages'}
+      ? 'Sans les VP & Honoraires & Arbitrages'
+      : 'Sans les VP'}
   </span>
 </div>
 

@@ -539,13 +539,13 @@ body {
   /* 5) Positions Techniques
      → aligné avec la section Techniques */
   .radar-card--technique {
-    margin-top: 80px;
+    margin-top: 70px;
   }
 
   /* 6) Positions Bien-être
      → aligné avec la section Bien-être */
   .radar-card--bienetre {
-    margin-top: 230px;
+    margin-top: 240px;
   }
 }
 

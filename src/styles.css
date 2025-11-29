@@ -523,7 +523,7 @@ body {
      → aligné avec le Board Conseiller
      → + espace au-dessus pour respiration visuelle */
   .radar-card--perf {
-    margin-top: 100px; /* espace volontaire au-dessus */
+    margin-top: 200px; /* espace volontaire au-dessus */
   }
 
   /* 2) Positions Résultats

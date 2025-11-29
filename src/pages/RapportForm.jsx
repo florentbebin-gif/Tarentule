@@ -437,6 +437,20 @@ export default function RapportForm({ onSaved, resetKey }) {
   const partenariatManagerRadar = [0, 1, 2].map((i) =>
     Number(form.partenariat.notesManager?.[i] || 0)
   );
+  // Radar "Performance Partenariats" basé sur Objectifs / Réalisé (nb)
+  // => (Réalisé / Objectifs) exprimé sur 0–10
+  const partenariatPerfRadar = [0, 1, 2].map((i) => {
+    const obj = Number(form.partenariat.objectifs[i] || 0);
+    const rea = Number(form.partenariat.realises[i] || 0);
+
+    if (!obj || obj <= 0) return 0;
+
+    const ratio = (rea / obj) * 10; // 0–10 au lieu de 0–100%
+    if (Number.isNaN(ratio)) return 0;
+
+    const clamped = Math.max(0, Math.min(10, ratio));
+    return Number(clamped.toFixed(1));
+  });
 
   const techniqueRadarLabels = [
     'Commercial',
@@ -1493,6 +1507,16 @@ export default function RapportForm({ onSaved, resetKey }) {
           />
         </div>
 
+        {/* Performance Partenariats */}
+        <div className="section-card radar-card radar-card--part-perf">
+          <div className="radar-title">Performance Partenariats</div>
+          <RadarChart
+            labels={partenariatRadarLabels}
+            cgpValues={partenariatPerfRadar}
+            managerValues={[]}
+          />
+        </div>
+        
         {/* Notes Partenariats */}
         <div className="section-card radar-card radar-card--partenariat">
           <div className="radar-title">Positions Partenariats</div>

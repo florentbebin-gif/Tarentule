@@ -84,7 +84,7 @@ export default function RapportForm({ onSaved, resetKey }) {
     '5 - Honoraires : production / chiffre d’affaires généré',
     '6 - Arbitrages : gestion pilotée, structurés, Pams',
     '7 - PER : dispositifs d’épargne retraite',
-    '8 - VP : réalisation/détection de VP PER/prévoyance',
+    '8 - VP : PER/Prévoyance pour le montant annualisé',
     '9 - Campagnes diverses : participation et efficacité',
   ];
 
@@ -656,21 +656,29 @@ const techniqueManagerRadar = [0, 1, 2, 3, 4, 5, 6].map((i) =>
               justifyContent: 'space-between',
             }}
           >
-<button
-  type="button"
-  onClick={() => setCollecteAll((prev) => !prev)}
-  style={{
-    padding: '4px 10px',
-    borderRadius: 9999,
-    border: '1px solid #9ca3af',
-    backgroundColor: collecteAll ? '#ffffff' : '#2B3E37',
-    color: collecteAll ? '#111827' : '#ffffff',
-    fontSize: 12,
-    cursor: 'pointer',
-  }}
->
-  Collecte All
-</button>
+<div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+  <button
+    type="button"
+    onClick={() => setCollecteAll((prev) => !prev)}
+    style={{
+      padding: '4px 10px',
+      borderRadius: 9999,
+      border: '1px solid #9ca3af',
+      backgroundColor: collecteAll ? '#ffffff' : '#2B3E37',
+      color: collecteAll ? '#111827' : '#ffffff',
+      fontSize: 12,
+      cursor: 'pointer',
+    }}
+  >
+    Collecte All
+  </button>
+
+  <span style={{ fontSize: 12, color: '#4b5563' }}>
+    {collecteAll
+      ? 'Sans les VP'
+      : 'Sans les VP & Honoraires & Arbitrages'}
+  </span>
+</div>
 
 
             <div

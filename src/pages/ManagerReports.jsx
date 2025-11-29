@@ -1135,23 +1135,37 @@ const saveAgencyFilters = async (list) => {
           </div>
         </div>
 
-                <div style={{ marginTop: '8px' }}>
-          <button
-            type="button"
-            onClick={() => setCollecteAll((prev) => !prev)}
-            style={{
-    padding: '4px 10px',
-    borderRadius: 9999,
-    border: '1px solid #9ca3af',
-    backgroundColor: collecteAll ? '#ffffff' : '#2B3E37',
-    color: collecteAll ? '#111827' : '#ffffff',
-    fontSize: 12,
-    cursor: 'pointer',
-            }}
-          >
-            Collecte All
-          </button>
-        </div>
+<div
+  style={{
+    marginTop: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+  }}
+>
+  <button
+    type="button"
+    onClick={() => setCollecteAll((prev) => !prev)}
+    style={{
+      padding: '4px 10px',
+      borderRadius: 9999,
+      border: '1px solid #9ca3af',
+      backgroundColor: collecteAll ? '#ffffff' : '#2B3E37',
+      color: collecteAll ? '#111827' : '#ffffff',
+      fontSize: 12,
+      cursor: 'pointer',
+    }}
+  >
+    Collecte All
+  </button>
+
+  <span style={{ fontSize: 12, color: '#4b5563' }}>
+    {collecteAll
+      ? 'Sans les VP & Honoraires & Arbitrages'
+      : 'Sans les VP'}
+  </span>
+</div>
+
 
         {/* Tableau de synthèse */}
         <div className="manager-table-wrap">

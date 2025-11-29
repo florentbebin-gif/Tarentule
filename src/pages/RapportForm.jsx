@@ -1000,7 +1000,8 @@ export default function RapportForm({ onSaved, resetKey }) {
                 }}
                 title="Positionnement : capacité à se sentir à l'aise avec la thématique"
               >
-                1 = Pas à l’aise 10 = Très à l’aise
+                1 = Pas à l’aise
+                10 = Très à l’aise
               </span>
             </div>
 
@@ -1238,7 +1239,8 @@ export default function RapportForm({ onSaved, resetKey }) {
                 }}
                 title="Positionnement : capacité à se sentir à l'aise avec la thématique"
               >
-                1 = Pas à l’aise 10 = Très à l’aise
+                1 = Pas à l’aise
+                10 = Très à l’aise
               </span>
             </div>
 
@@ -1345,7 +1347,8 @@ export default function RapportForm({ onSaved, resetKey }) {
                 }}
                 title="Positionnement : capacité à se sentir à l'aise avec la thématique"
               >
-                1 = Pas à l’aise 10 = Très à l’aise
+                1 = Pas à l’aise
+                10 = Très à l’aise
               </span>
             </div>
 
@@ -1415,7 +1418,8 @@ export default function RapportForm({ onSaved, resetKey }) {
                 }}
                 title="Positionnement : capacité à se sentir à l'aise avec la thématique"
               >
-                1 = Pas à l’aise 10 = Très à l’aise
+                1 = Pas à l’aise
+                10 = Très à l’aise
               </span>
             </div>
 

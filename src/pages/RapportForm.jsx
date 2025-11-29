@@ -681,8 +681,8 @@ const boardTotals = (() => {
 
   <span style={{ fontSize: 12, color: '#4b5563' }}>
     {collecteAll
-      ? 'Sans les VP'
-      : 'Sans les VP & Honoraires & Arbitrages'}
+      ? 'Sans les VP & Honoraires & Arbitrages'
+      : 'Sans les VP'}
   </span>
 </div>
 

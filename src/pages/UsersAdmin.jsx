@@ -58,23 +58,36 @@ export default function UsersAdmin() {
   const [lastName, setLastName] = useState('');
   const [bureau, setBureau] = useState('');
   const [poste, setPoste] = useState('');
+  const [role, setRole] = useState('conseiller');
   const [email, setEmail] = useState('');
   const [creating, setCreating] = useState(false);
   const [info, setInfo] = useState('');
 
   // Filtre d'affichage des comptes : tous / CGP / CPSocial
-  const [posteFilter, setPosteFilter] = useState('all'); // 'all' | 'CGP' | 'CPSocial'
+  const [posteFilter, setPosteFilter] = useState('all'); // 'all' | 'CGP' | 'CPSocial' | 'GP'
+  const [sortDirection, setSortDirection] = useState(null); // 'asc' | 'desc' | null
+
+  const [checkingAccess, setCheckingAccess] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(false);
+  const [editingUserId, setEditingUserId] = useState(null);
+  const [editForm, setEditForm] = useState({
+    first_name: '',
+    last_name: '',
+    bureau: '',
+    poste: '',
+    role: 'conseiller',
+  });
 
   const loadUsers = async () => {
     setLoadingList(true);
     setError('');
-const { data, error: profilesError } = await supabase
-  .from('profiles')
-  .select(
-    'id, first_name, last_name, bureau, poste, role, created_at, is_active, cp_social_approved'
-  )
-  .eq('is_active', true) // on n'affiche que les comptes actifs
-  .order('created_at', { ascending: true });
+    const { data, error: profilesError } = await supabase
+      .from('profiles')
+      .select(
+        'id, first_name, last_name, bureau, poste, role, created_at, is_active'
+      )
+      .eq('is_active', true) // on n'affiche que les comptes actifs
+      .order('created_at', { ascending: true });
 
 
     if (profilesError) {
@@ -114,31 +127,42 @@ const { data, error: profilesError } = await supabase
     await loadUsers();
   };
 
-  // Marquer un CP Social comme "approuvé"
-  const handleApproveCPSocial = async (userId) => {
-    setError('');
-    setInfo('');
+    useEffect(() => {
+    const checkAccess = async () => {
+      setCheckingAccess(true);
+      setAccessDenied(false);
+      const { data } = await supabase.auth.getUser();
+      const user = data?.user;
 
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ cp_social_approved: true })
-      .eq('id', userId);
+      if (!user) {
+        setAccessDenied(true);
+        setCheckingAccess(false);
+        setLoadingList(false);
+        return;
+      }
 
-    if (updateError) {
-      setError(
-        updateError.message ||
-          'Erreur lors de la validation CP Social.'
-      );
-      return;
-    }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
 
-    setInfo('CP Social approuvé.');
-    await loadUsers();
-  };
+      const roleValue = profile?.role || user.user_metadata?.role;
+      const isAdmin = roleValue === 'admin';
+
+      if (!isAdmin) {
+        setAccessDenied(true);
+        setCheckingAccess(false);
+        setLoadingList(false);
+        return;
+      }
+
+      await loadUsers();
+      setCheckingAccess(false);
+    };;
 
   
-  useEffect(() => {
-    loadUsers();
+    checkAccess();
   }, []);
 
   const handleCreateUser = async (e) => {
@@ -147,7 +171,7 @@ const { data, error: profilesError } = await supabase
     setInfo('');
     setCreating(true);
 
-    if (!firstName || !lastName || !email || !bureau || !poste) {
+    if (!firstName || !lastName || !email || !bureau || !poste || !role) {
       setError('Merci de remplir tous les champs.');
       setCreating(false);
       return;
@@ -177,6 +201,7 @@ const { data, error: profilesError } = await supabase
           last_name: lastName,
           bureau,
           poste,
+          role,
         },
       },
     });
@@ -199,7 +224,7 @@ const { data, error: profilesError } = await supabase
     }
 
     if (data?.user) {
-      // On force le rôle "conseiller"
+      // Mettre à jour le profil avec les valeurs sélectionnées
       await supabase
         .from('profiles')
         .update({
@@ -207,7 +232,7 @@ const { data, error: profilesError } = await supabase
           last_name: lastName,
           bureau,
           poste,
-          role: 'conseiller',
+          role,
         })
         .eq('id', data.user.id);
     }
@@ -222,6 +247,7 @@ const { data, error: profilesError } = await supabase
     setEmail('');
     setBureau('');
     setPoste('');
+    setRole('conseiller');
 
     // Recharger la liste
     await loadUsers();
@@ -229,7 +255,7 @@ const { data, error: profilesError } = await supabase
   }; // ✅ fermeture de handleCreateUser
 
   // ✅ calcul de la liste filtrée EN DEHORS de handleCreateUser
-  const displayedUsers =
+  const filteredUsers =
     posteFilter === 'all'
       ? users
       : users.filter(
@@ -237,17 +263,95 @@ const { data, error: profilesError } = await supabase
             (u.poste || '').toLowerCase() ===
             posteFilter.toLowerCase()
         );
+  const displayedUsers = sortDirection
+    ? [...filteredUsers].sort((a, b) => {
+        const nameA = (a.last_name || '').toLowerCase();
+        const nameB = (b.last_name || '').toLowerCase();
+        if (nameA === nameB) return 0;
+        const order = nameA.localeCompare(nameB, 'fr', {
+          sensitivity: 'base',
+        });
+        return sortDirection === 'asc' ? order : -order;
+      })
+    : filteredUsers;
 
+  const startEdit = (user) => {
+    setEditingUserId(user.id);
+    setEditForm({
+      first_name: user.first_name || '',
+      last_name: user.last_name || '',
+      bureau: user.bureau || '',
+      poste: user.poste || '',
+      role: user.role || 'conseiller',
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingUserId(null);
+    setEditForm({
+      first_name: '',
+      last_name: '',
+      bureau: '',
+      poste: '',
+      role: 'conseiller',
+    });
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveEdit = async (userId) => {
+    setError('');
+    setInfo('');
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({
+        first_name: editForm.first_name,
+        last_name: editForm.last_name,
+        bureau: editForm.bureau,
+        poste: editForm.poste,
+        role: editForm.role,
+      })
+      .eq('id', userId);
+
+    if (updateError) {
+      setError(
+        updateError.message ||
+          "Erreur lors de la mise à jour de l'utilisateur."
+      );
+      return;
+    }
+
+    setInfo('Utilisateur mis à jour.');
+    setEditingUserId(null);
+    await loadUsers();
+  };
+
+  const toggleSort = () => {
+    setSortDirection((prev) => {
+      if (prev === 'asc') return 'desc';
+      if (prev === 'desc') return 'asc';
+      return 'asc';
+    });
+  };
   return (
     <div className="settings-page">
       <div className="settings-card">
         <h2 className="section-title strong-title">
           Gestion des utilisateurs
         </h2>
-
+        {accessDenied && (
+          <div className="alert error">Accès refusé</div>
+        )}
         {error && <div className="alert error">{error}</div>}
         {info && <div className="alert success">{info}</div>}
-
+        
+        {checkingAccess ? (
+          <p>Chargement…</p>
+        ) : accessDenied ? null : (
+          <>
         {/* Formulaire de création */}
         <h3 style={{ marginTop: 0, fontSize: 18 }}>
           Créer un nouveau conseiller
@@ -323,6 +427,21 @@ const { data, error: profilesError } = await supabase
               <option value="">Sélectionner un poste</option>
               <option value="CGP">CGP</option>
               <option value="CPSocial">CPSocial</option>
+              <option value="GP">GP</option>
+            </select>
+          </div>
+
+          <div className="settings-field">
+            <label className="settings-label">Rôle</label>
+            <select
+              className="rapport-input"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              required
+            >
+              <option value="conseiller">conseiller</option>
+              <option value="manager">manager</option>
+              <option value="admin">admin</option>
             </select>
           </div>
 
@@ -382,6 +501,43 @@ const { data, error: profilesError } = await supabase
             >
               CGP
             </button>
+            {/* Bouton GP */}
+            <button
+              type="button"
+              onClick={() => setPosteFilter('GP')}
+              style={{
+                padding: '4px 10px',
+                borderRadius: 9999,
+                border: '1px solid #9ca3af',
+                backgroundColor:
+                  posteFilter === 'GP' ? '#2B3E37' : '#ffffff',
+                color:
+                  posteFilter === 'GP' ? '#ffffff' : '#111827',
+                fontSize: 12,
+                cursor: 'pointer',
+              }}
+            >
+              GP
+            </button>
+            
+            {/* Bouton GP */}
+            <button
+              type="button"
+              onClick={() => setPosteFilter('GP')}
+              style={{
+                padding: '4px 10px',
+                borderRadius: 9999,
+                border: '1px solid #9ca3af',
+                backgroundColor:
+                  posteFilter === 'GP' ? '#2B3E37' : '#ffffff',
+                color:
+                  posteFilter === 'GP' ? '#ffffff' : '#111827',
+                fontSize: 12,
+                cursor: 'pointer',
+              }}
+            >
+              GP
+            </button>
 
             {/* Bouton CP Social */}
             <button
@@ -438,7 +594,19 @@ const { data, error: profilesError } = await supabase
             <table className="manager-table">
 <thead>
   <tr>
-    <th>Nom</th>
+        <th
+      onClick={toggleSort}
+      style={{ cursor: 'pointer', userSelect: 'none' }}
+    >
+      Nom{' '}
+      <span style={{ fontSize: 11, marginLeft: 4 }}>
+        {sortDirection === 'asc'
+          ? '▲'
+          : sortDirection === 'desc'
+          ? '▼'
+          : ''}
+      </span>
+    </th>
     <th>Prénom</th>
     <th>Bureau</th>
     <th>Poste</th>
@@ -450,16 +618,94 @@ const { data, error: profilesError } = await supabase
 
 <tbody>
   {displayedUsers.map((u) => {
-    const posteLower = (u.poste || '').toLowerCase();
-    const isCPSocial = posteLower === 'cpsocial';
-
+    const isEditing = editingUserId === u.id;
+  
     return (
       <tr key={u.id}>
-        <td>{u.last_name || u.lastName}</td>
-        <td>{u.first_name || u.firstName}</td>
-        <td>{u.bureau || '—'}</td>
-        <td>{u.poste || '—'}</td>
-        <td>{u.role}</td>
+        <td>
+          {isEditing ? (
+            <input
+              className="rapport-input"
+              type="text"
+              value={editForm.last_name}
+              onChange={(e) =>
+                handleEditChange('last_name', e.target.value)
+              }
+              style={{ minWidth: 120 }}
+            />
+          ) : (
+            u.last_name || u.lastName
+          )}
+        </td>
+        <td>
+          {isEditing ? (
+            <input
+              className="rapport-input"
+              type="text"
+              value={editForm.first_name}
+              onChange={(e) =>
+                handleEditChange('first_name', e.target.value)
+              }
+              style={{ minWidth: 120 }}
+            />
+          ) : (
+            u.first_name || u.firstName
+          )}
+        </td>
+        <td>
+          {isEditing ? (
+            <select
+              className="rapport-input"
+              value={editForm.bureau}
+              onChange={(e) =>
+                handleEditChange('bureau', e.target.value)
+              }
+            >
+              <option value="">Sélectionner un bureau</option>
+              {BUREAUX.map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
+            </select>
+          ) : (
+            u.bureau || '—'
+          )}
+        </td>
+        <td>
+          {isEditing ? (
+            <select
+              className="rapport-input"
+              value={editForm.poste}
+              onChange={(e) =>
+                handleEditChange('poste', e.target.value)
+              }
+            >
+              <option value="CGP">CGP</option>
+              <option value="CPSocial">CPSocial</option>
+              <option value="GP">GP</option>
+            </select>
+          ) : (
+            u.poste || '—'
+          )}
+        </td>
+        <td>
+          {isEditing ? (
+            <select
+              className="rapport-input"
+              value={editForm.role}
+              onChange={(e) =>
+                handleEditChange('role', e.target.value)
+              }
+            >
+              <option value="conseiller">conseiller</option>
+              <option value="manager">manager</option>
+              <option value="admin">admin</option>
+            </select>
+          ) : (
+            u.role
+          )}
+        </td>
         <td>
           {u.created_at
             ? new Date(u.created_at).toLocaleDateString('fr-FR')
@@ -474,11 +720,43 @@ const { data, error: profilesError } = await supabase
               justifyContent: 'flex-start',
             }}
           >
-            {/* Bouton "Approuver" visible seulement pour CP Social non approuvé */}
-            {isCPSocial && !u.cp_social_approved && (
+            {isEditing ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => handleSaveEdit(u.id)}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: 9999,
+                    border: '1px solid #16a34a',
+                    backgroundColor: '#ffffff',
+                    color: '#16a34a',
+                    fontSize: 11,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Enregistrer
+                </button>
+                <button
+                  type="button"
+                  onClick={cancelEdit}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: 9999,
+                    border: '1px solid #9ca3af',
+                    backgroundColor: '#ffffff',
+                    color: '#111827',
+                    fontSize: 11,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Annuler
+                </button>
+              </>
+            ) : (
               <button
                 type="button"
-                onClick={() => handleApproveCPSocial(u.id)}
+                onClick={() => startEdit(u)}
                 style={{
                   padding: '4px 10px',
                   borderRadius: 9999,
@@ -489,24 +767,10 @@ const { data, error: profilesError } = await supabase
                   cursor: 'pointer',
                 }}
               >
-                Valider CP Social
+                Éditer
               </button>
             )}
 
-            {/* Badge quand CP Social est approuvé */}
-            {isCPSocial && u.cp_social_approved && (
-              <span
-                style={{
-                  padding: '2px 8px',
-                  borderRadius: 9999,
-                  backgroundColor: '#2B3E37',
-                  color: '#ffffff',
-                  fontSize: 11,
-                }}
-              >
-                CP Social approuvé
-              </span>
-            )}
 
             {/* Bouton "Supprimer" (désactiver) */}
             <button
@@ -533,6 +797,8 @@ const { data, error: profilesError } = await supabase
 
             </table>
           </div>
+        )}
+          </>
         )}
       </div>
     </div>

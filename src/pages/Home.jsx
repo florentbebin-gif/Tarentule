@@ -71,7 +71,6 @@ export default function Home({ userRole }) {
           </button>
           <span className="home-cta-note">
             {/* Redirection contextualisée selon le rôle/poste. */}
-            Destination adaptée à votre profil.
           </span>
         </section>
       </div>

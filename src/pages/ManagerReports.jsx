@@ -651,41 +651,6 @@ const saveAgencyFilters = async (list) => {
       Année sélectionnée&nbsp;: {selectedYear}
     </span>
   </div>
-
-  {/* Côté droit : boutons Patrimonial / Social */}
-  <div style={{ display: 'flex', gap: '8px' }}>
-    {/* On reprend EXACTEMENT le style des boutons années */}
-    <button
-      type="button"
-      style={{
-        padding: '4px 10px',
-        borderRadius: 9999,
-        border: '1px solid #9ca3af',
-        backgroundColor: '#2B3E37',  // actif (page actuelle)
-        color: '#ffffff',
-        fontSize: 12,
-        cursor: 'pointer',
-      }}
-    >
-      Patrimonial
-    </button>
-
-    <button
-      type="button"
-      onClick={() => navigate('/manager-social')}
-      style={{
-        padding: '4px 10px',
-        borderRadius: 9999,
-        border: '1px solid #9ca3af',
-        backgroundColor: '#ffffff',
-        color: '#111827',
-        fontSize: 12,
-        cursor: 'pointer',
-      }}
-    >
-      Social
-    </button>
-  </div>
 </div>
       
       {/* 1. BOARD MANAGER */}

@@ -1242,7 +1242,7 @@ const saveAgencyFilters = async (list) => {
             textAlign: 'center',
           }}
         >
-          Notes CGP
+          Positions CGP
         </th>
       </tr>
       <tr>
@@ -1258,7 +1258,7 @@ const saveAgencyFilters = async (list) => {
           style={{ backgroundColor: '#F5F3F0', cursor: 'pointer' }}
           onClick={() => handleSort('notePart')}
         >
-          Pat.
+          Part.
           {sortKey === 'notePart' &&
             (sortDirection === 'asc' ? ' ▲' : ' ▼')}
         </th>

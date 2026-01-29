@@ -37,7 +37,6 @@ const IconLogout = ({ className }) => (
     <path
       d="M15 12H4M11 8l-4 4 4 4M15 4h4v16h-4"
       fill="none"
-@@ -313,97 +314,91 @@ const isCPSocial = normalizedPoste === 'cpsocial';
             {/* Paramètres */}
             <button
               className="chip icon-btn"

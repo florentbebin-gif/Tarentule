@@ -30,12 +30,10 @@ const feedItems = [
   },
 ];
 
-export default function Home({ userRole, userPoste }) {
+export default function Home({ userRole }) {
   const navigate = useNavigate();
   const isManager = userRole === 'manager' || userRole === 'admin';
-  const normalizedPoste = (userPoste || '').toLowerCase();
-  const isCPSocial = normalizedPoste === 'cpsocial';
-  const target = isManager ? '/manager' : isCPSocial ? '/cpsocial' : '/rapport';
+ const target = isManager ? '/manager' : '/rapport';
 
   return (
     <div className="credit-panel">

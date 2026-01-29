@@ -217,6 +217,7 @@ export default function App() {
   -------------------------- */
   const path = window.location.pathname;
   const isManager = userRole === 'manager' || userRole === 'admin';
+   const isAdmin = userRole === 'admin';
    
   const isOwnRapport = path === '/rapport';
   const isConseillerReport = path === '/rapport' || path.startsWith('/rapport/');
@@ -310,8 +311,8 @@ export default function App() {
                     </button>
                      )}
 
-            {/* ADD USERS → uniquement manager/admin */}
-            {session && isManager && (
+            {/* ADD USERS → uniquement admin */}
+            {session && isAdmin && (
               <button
                 className="chip icon-btn"
                 title="Gestion utilisateurs"
@@ -425,11 +426,11 @@ export default function App() {
 
         {/* Manager */}
         <Route path="/manager" element={<ManagerReports />} />
-        {/* Gestion utilisateurs (manager/admin uniquement) */}
+        {/* Gestion utilisateurs (admin uniquement) */}
         <Route
           path="/users"
           element={
-            isManager ? <UsersAdmin /> : <Navigate to="/rapport" replace />
+            isAdmin ? <UsersAdmin /> : <Navigate to="/rapport" replace />
           }
         />
          

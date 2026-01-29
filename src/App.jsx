@@ -9,8 +9,6 @@ import Signup from './pages/Signup';
 import RapportForm from './pages/RapportForm';
 import ManagerReports from './pages/ManagerReports';
 import UsersAdmin from './pages/UsersAdmin';
-import CPSocial from './pages/CPSocial';
-import ManagerSocialReports from './pages/ManagerSocialReports';
 import Home from './pages/Home';
 
 import './pages/Login.css';
@@ -70,6 +68,19 @@ const IconFolder = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24">
     <path
       d="M3.5 6.5a1.5 1.5 0 0 1 1.5-1.5h4.2l1.6 2h8.7a1.5 1.5 0 0 1 1.5 1.5v8.5a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const IconDashboard = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24">
+    <path
+      d="M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.7"
@@ -207,10 +218,8 @@ export default function App() {
   const path = window.location.pathname;
   const isManager = userRole === 'manager' || userRole === 'admin';
    
-  const normalizedPoste = (userPoste || '').toLowerCase();
-  const isCPSocial = normalizedPoste === 'cpsocial';
   const isOwnRapport = path === '/rapport';
-  const isManagerDetail = path.startsWith('/rapport/') && isManager;
+  const isConseillerReport = path === '/rapport' || path.startsWith('/rapport/');
 
   const isPublicRoute =
     path === '/login' ||
@@ -268,23 +277,34 @@ export default function App() {
 
           <div className="top-actions">
 
-              {/* HOME : uniquement pour manager/admin */}
-              {session && isManager && (
+              {/* HOME : accessible pour tous */}
+              {session && (
                 <button
                   className="chip icon-btn"
-                  title="Accueil manager"
-                  onClick={() => navigate('/manager')}
+                  title="Accueil"
+                  onClick={() => navigate('/home')}
                 >
                   <IconHome className="icon" />
                 </button>
               )}
+    
+             {/* Retour manager : uniquement si manager/admin sur un rapport conseiller */}
+              {session && isManager && isConseillerReport && (
+                <button
+                  className="chip icon-btn"
+                  title="Retour manager"
+                  onClick={() => navigate('/manager')}
+                >
+                  <IconDashboard className="icon" />
+                </button>
+              )}
 
-               {/* FOLDER → mon espace (rapport ou page CP Social) */}
+               {/* FOLDER → mon espace (rapport) */}
                   {!isOwnRapport && session && (
                     <button
                       className="chip icon-btn"
                       title="Mon espace"
-                      onClick={() => navigate(isCPSocial ? '/cpsocial' : '/rapport')}
+                      onClick={() => navigate('/rapport')}
                     >
                    <IconFolder className="icon" />
                     </button>
@@ -377,11 +397,9 @@ export default function App() {
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        {/* Espace CP Social */}
-        <Route path="/cpsocial" element={<CPSocial />} />
         <Route
           path="/home"
-          element={<Home userRole={userRole} userPoste={userPoste} />}
+          element={<Home userRole={userRole} />}
         />
         {/* Rapport conseiller */}
         <Route
@@ -407,10 +425,6 @@ export default function App() {
 
         {/* Manager */}
         <Route path="/manager" element={<ManagerReports />} />
-         <Route
-           path="/manager-social"
-           element={<ManagerSocialReports />}
-         />
         {/* Gestion utilisateurs (manager/admin uniquement) */}
         <Route
           path="/users"

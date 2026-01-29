@@ -182,13 +182,17 @@ export default function App() {
 
 
       // Dernière sauvegarde
-      const { data: reports } = await supabase
+      const { data: reports, error: repErr } = await supabase
         .from('reports')
         .select('created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1);
-
+       if (repErr) {
+         console.error('Failed to load reports lastSave', repErr);
+           setLastSave(null);
+            return;
+       }
       if (reports?.length) {
         setLastSave(new Date(reports[0].created_at));
       }

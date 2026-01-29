@@ -11,6 +11,7 @@ import ManagerReports from './pages/ManagerReports';
 import UsersAdmin from './pages/UsersAdmin';
 import CPSocial from './pages/CPSocial';
 import ManagerSocialReports from './pages/ManagerSocialReports';
+import Home from './pages/Home';
 
 import './pages/Login.css';
 import './styles.css';
@@ -111,16 +112,17 @@ const IconPlus = ({ className }) => (
 export default function App() {
   const navigate = useNavigate();
 
-const [session, setSession] = useState(null);
-const [userRole, setUserRole] = useState('conseiller');
-const [userPoste, setUserPoste] = useState('');      // <-- nouveau
-const [resetRapportKey, setResetRapportKey] = useState(0);
+  const [session, setSession] = useState(null);
+  const [userRole, setUserRole] = useState('conseiller');
+  const [userPoste, setUserPoste] = useState('');      // <-- nouveau
+  const [resetRapportKey, setResetRapportKey] = useState(0);
 
-const [userInfo, setUserInfo] = useState({
-  firstName: '',
-  lastName: '',
-  bureau: '',
-});
+
+  const [userInfo, setUserInfo] = useState({
+    firstName: '',
+    lastName: '',
+    bureau: '',
+  });
 
   const [lastSave, setLastSave] = useState(null);
 
@@ -143,7 +145,7 @@ const [userInfo, setUserInfo] = useState({
      Charger infos utilisateur
   -------------------------- */
   useEffect(() => {
-     if (!session) return;        // 🔴 NE RIEN FAIRE TANT QU’ON N’A PAS DE SESSION
+         if (!session) return;        // 🔴 NE RIEN FAIRE TANT QU’ON N’A PAS DE SESSION
     const loadUser = async () => {
       const { data } = await supabase.auth.getUser();
       const user = data?.user;
@@ -157,15 +159,15 @@ const [userInfo, setUserInfo] = useState({
         bureau: user.user_metadata.bureau || '',
       });
 
-    // Rôle + poste (table profiles)
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role, poste')
-      .eq('id', user.id)
-      .maybeSingle();
+      // Rôle + poste (table profiles)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, poste')
+        .eq('id', user.id)
+        .maybeSingle();
 
-    setUserRole(profile?.role || 'conseiller');
-    setUserPoste(profile?.poste || '');
+      setUserRole(profile?.role || 'conseiller');
+      setUserPoste(profile?.poste || '');
 
 
       // Dernière sauvegarde
@@ -202,11 +204,11 @@ const [userInfo, setUserInfo] = useState({
   /* --------------------------
      Routage Topbar
   -------------------------- */
-const path = window.location.pathname;
-const isManager = userRole === 'manager' || userRole === 'admin';
-
-const normalizedPoste = (userPoste || '').toLowerCase();
-const isCPSocial = normalizedPoste === 'cpsocial';
+  const path = window.location.pathname;
+  const isManager = userRole === 'manager' || userRole === 'admin';
+   
+  const normalizedPoste = (userPoste || '').toLowerCase();
+  const isCPSocial = normalizedPoste === 'cpsocial';
   const isOwnRapport = path === '/rapport';
   const isManagerDetail = path.startsWith('/rapport/') && isManager;
 
@@ -336,63 +338,51 @@ const isCPSocial = normalizedPoste === 'cpsocial';
       ---------------------------------------------------- */}
       <Routes>
         <Route
-  path="/"
-  element={
-    <Navigate
-      to={
-        isManager
-          ? '/manager'
-          : isCPSocial
-          ? '/cpsocial'
-          : '/rapport'
-      }
-      replace
-    />
-  }
-/>
+          path="/"
+          element={
+            // Redirection vers la nouvelle page d'accueil post-login.
+            <Navigate to="/home" replace />
+          }
+        />
 
-<Route
-  path="/login"
-  element={
-    <Login
-      onLogin={async () => {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
+        <Route
+          path="/login"
+          element={
+            <Login
+              onLogin={async () => {
+                const {
+                  data: { user },
+                } = await supabase.auth.getUser();
 
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role, poste')
-          .eq('id', user.id)
-          .maybeSingle();
+                const { data: profile } = await supabase
+                  .from('profiles')
+                  .select('role, poste')
+                  .eq('id', user.id)
+                  .maybeSingle();
 
-        const role = profile?.role || 'conseiller';
-        const rawPoste = profile?.poste || user.user_metadata?.poste || '';
-         const poste = rawPoste.toLowerCase();
+                const role = profile?.role || 'conseiller';
+                const rawPoste = profile?.poste || user.user_metadata?.poste || '';
+                const poste = rawPoste.toLowerCase();
 
-        // on met aussi à jour le state, pour la topbar
-        setUserRole(role);
-        setUserPoste(poste);
+                // on met aussi à jour le state, pour la topbar
+                setUserRole(role);
+                setUserPoste(poste);
 
-        const target =
-          role === 'admin' || role === 'manager'
-            ? '/manager'
-            : poste === 'cpsocial'
-            ? '/cpsocial'
-            : '/rapport';
-
-        navigate(target);
-      }}
-    />
-  }
-/>
-
+                // Redirection post-login vers l'accueil.
+                navigate('/home');
+              }}
+            />
+          }
+        />
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-         {/* Espace CP Social */}
-         <Route path="/cpsocial" element={<CPSocial />} />
-
+        {/* Espace CP Social */}
+        <Route path="/cpsocial" element={<CPSocial />} />
+        <Route
+          path="/home"
+          element={<Home userRole={userRole} userPoste={userPoste} />}
+        />
         {/* Rapport conseiller */}
         <Route
           path="/rapport"

@@ -33,15 +33,14 @@ const feedItems = [
 export default function Home({ userRole }) {
   const navigate = useNavigate();
   const isManager = userRole === 'manager' || userRole === 'admin';
- const target = isManager ? '/manager' : '/rapport';
+  const target = isManager ? '/manager' : '/rapport';
 
   return (
     <div className="credit-panel">
       <div className="home-grid">
         <section className="section-card home-feed">
-          <h2 className="section-title strong-title">Fil d’actualité</h2>
-          <div className="home-feed-list">
-            {feedItems.map((item) => (
+          <h2 className="section-title strong-title">
+            Fil d’actualité
               <div key={`${item.date}-${item.title}`} className="home-feed-item">
                 <div className="home-feed-date">{item.date}</div>
                 <div className="home-feed-title">{item.title}</div>
@@ -56,9 +55,8 @@ export default function Home({ userRole }) {
             <span className="strong-title">Accès</span>{' '}
             <span className="normal-title">rapide</span>
           <h2 className="section-title strong-title">Accès rapide</h2>
-          <button
-            className="home-cta"
-            type="button"
+          <h2 className="section-title strong-title">
+            Accès rapide
             onClick={() => navigate(target)}
           >
             Accéder à mon rapport

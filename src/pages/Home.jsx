@@ -39,10 +39,7 @@ export default function Home({ userRole }) {
     <div className="credit-panel">
       <div className="home-grid">
         <section className="section-card home-feed">
-          <h2 className="section-title">
-            <span className="strong-title">Fil</span>{' '}
-            <span className="normal-title">d’actualité</span>
-          </h2>
+          <h2 className="section-title strong-title">Fil d’actualité</h2>
           <div className="home-feed-list">
             {feedItems.map((item) => (
               <div key={`${item.date}-${item.title}`} className="home-feed-item">
@@ -58,10 +55,7 @@ export default function Home({ userRole }) {
           <h2 className="section-title">
             <span className="strong-title">Accès</span>{' '}
             <span className="normal-title">rapide</span>
-          </h2>
-          <p className="home-quick-text">
-            Retrouvez votre espace prioritaire en un clic.
-          </p>
+          <h2 className="section-title strong-title">Accès rapide</h2>
           <button
             className="home-cta"
             type="button"

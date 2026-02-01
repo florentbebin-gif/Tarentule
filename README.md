@@ -47,6 +47,31 @@ L’outil est strictement réservé à un usage interne à l’entreprise.
 
 ---
 
+## 📰 Fil d’actualité (BOFiP / BOSS)
+
+Un fil d’actualité dynamique est alimenté via deux flux RSS officiels (BOFiP et BOSS) stockés en base dans `news_items` pour être affichés dans le Home.
+
+### Variables d’environnement (Vercel)
+
+Ajouter les variables suivantes dans les environnements Vercel :
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `NEWS_REFRESH_TOKEN`
+
+> ⚠️ La clé `SUPABASE_SERVICE_ROLE_KEY` ne doit jamais être exposée côté client.
+
+### Cron Vercel recommandé
+
+Créer un Cron Job Vercel (ou équivalent) qui appelle :
+
+- **URL** : `POST https://<domain>/api/news/refresh`
+- **Header** : `Authorization: Bearer <NEWS_REFRESH_TOKEN>`
+- **Fréquence** : toutes les heures (ou 1 fois/jour selon besoin)
+
+---
+
+
 ## 🗄️ Modèle de données
 
 ### Tables principales

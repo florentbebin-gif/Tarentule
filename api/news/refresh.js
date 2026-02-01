@@ -135,12 +135,60 @@ async function fetchWithTimeout(url, timeoutMs) {
       "User-Agent": "TarentuleNewsBot/1.0 (+https://<ton domaine>)",
       Accept:
         "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1",
+      "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.7",
+      "Cache-Control": "no-cache",
     };
     const response = await fetch(url, { signal: controller.signal, headers });
     return response;
   } finally {
     clearTimeout(timeout);
   }
+}
+function isRetryableFetchError(error) {
+  if (!error) {
+    return false;
+  }
+  if (error.name === "AbortError") {
+    return true;
+  }
+  return error instanceof TypeError && /fetch failed/i.test(error.message || "");
+}
+
+function buildCauseDetails(cause) {
+  if (!cause || typeof cause !== "object") {
+    return cause;
+  }
+  return {
+    code: cause.code,
+    errno: cause.errno,
+    address: cause.address,
+    port: cause.port,
+    syscall: cause.syscall,
+  };
+}
+
+async function fetchWithRetry(url, { timeoutMs = 20000, retries = 3 } = {}) {
+  const delays = [500, 1500, 3000];
+  const attempts = Math.max(1, retries);
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await fetchWithTimeout(url, timeoutMs);
+    } catch (error) {
+      console.error("[news.refresh] fetch failed", url, {
+        name: error?.name,
+        message: error?.message,
+        cause: buildCauseDetails(error?.cause),
+      });
+      const shouldRetry = isRetryableFetchError(error) && attempt < attempts;
+      if (!shouldRetry) {
+        throw error;
+      }
+      const delay = delays[attempt - 1] ?? delays[delays.length - 1];
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+  throw new Error("Fetch retries exhausted");
 }
 
 function extractItems(parsed) {
@@ -220,9 +268,47 @@ async function processSource(supabase, source) {
     throw new Error("URL RSS manquante");
   }
 
-  const response = await fetchWithTimeout(url, 20000);
-  if (!response.ok) {
-    throw new Error(`Erreur HTTP ${response.status}`);
+  const bossFallbacks = [
+    "https://boss.gouv.fr/portail/fil-rss/pagecontent/flux-actualites.rss",
+    "http://boss.gouv.fr/portail/fil-rss/pagecontent/flux-actualites.rss",
+    "https://r.jina.ai/http://boss.gouv.fr/portail/fil-rss/pagecontent/flux-actualites.rss",
+  ];
+
+  const candidateUrls =
+    source.key === "boss"
+      ? [url, ...bossFallbacks].filter(Boolean)
+      : [url];
+  const uniqueUrls = Array.from(new Set(candidateUrls));
+
+  let response;
+  let finalUrl = url;
+  let lastError;
+
+  for (const candidateUrl of uniqueUrls) {
+    try {
+      response = await fetchWithRetry(candidateUrl, {
+        timeoutMs: 20000,
+        retries: 3,
+      });
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP ${response.status}`);
+      }
+      finalUrl = candidateUrl;
+      break;
+    } catch (error) {
+      lastError = error;
+      if (source.key !== "boss") {
+        throw error;
+      }
+      console.warn(
+        "[news.refresh] boss fallback attempt failed",
+        candidateUrl,
+        error?.message || "Erreur inconnue"
+      );
+    }
+  }
+  if (!response) {
+    throw lastError || new Error("Fetch RSS failed");
   }
 
   const xml = await response.text();
@@ -260,6 +346,8 @@ async function processSource(supabase, source) {
   console.log(
     "[news.refresh] source",
     source.key,
+    "url",
+    finalUrl,
     "status",
     response.status,
     "items",

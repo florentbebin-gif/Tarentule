@@ -1,5 +1,6 @@
 const { createClient } = require("@supabase/supabase-js");
 const { XMLParser } = require("fast-xml-parser");
+const { Agent } = require("undici");
 
 const SOURCE_FALLBACKS = {
   bofip:
@@ -12,6 +13,8 @@ const parser = new XMLParser({
   attributeNamePrefix: "@_",
   trimValues: true,
 });
+
+const UNDICI_AGENT = new Agent({ connectTimeout: 20000 });
 
 const FISCAL_KEYWORDS = ["IR", "IFI", "PFU", "RSA", "BNC", "BIC", "IS"];
 const SOCIAL_KEYWORDS = [
@@ -90,7 +93,7 @@ function parseDate(value) {
   if (!value) {
     return null;
   }
-    if (value instanceof Date) {
+  if (value instanceof Date) {
     const date = new Date(value.getTime());
     return Number.isNaN(date.getTime()) ? null : date.toISOString();
   }
@@ -138,17 +141,25 @@ async function fetchWithTimeout(url, timeoutMs) {
       "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.7",
       "Cache-Control": "no-cache",
     };
-    const response = await fetch(url, { signal: controller.signal, headers });
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers,
+      dispatcher: UNDICI_AGENT,
+    });
     return response;
   } finally {
     clearTimeout(timeout);
   }
 }
+
 function isRetryableFetchError(error) {
   if (!error) {
     return false;
   }
   if (error.name === "AbortError") {
+    return true;
+  }
+    if (error?.cause?.code === "UND_ERR_CONNECT_TIMEOUT") {
     return true;
   }
   return error instanceof TypeError && /fetch failed/i.test(error.message || "");
@@ -167,28 +178,43 @@ function buildCauseDetails(cause) {
   };
 }
 
-async function fetchWithRetry(url, { timeoutMs = 20000, retries = 3 } = {}) {
+async function fetchWithRetry(
+  urls,
+  { timeoutMs = 20000, retries = 3, logLabel = "" } = {}
+) {
   const delays = [500, 1500, 3000];
   const attempts = Math.max(1, retries);
+  const targetUrls = Array.isArray(urls) ? urls : [urls];
+  let lastError;
 
-  for (let attempt = 1; attempt <= attempts; attempt += 1) {
-    try {
-      return await fetchWithTimeout(url, timeoutMs);
-    } catch (error) {
-      console.error("[news.refresh] fetch failed", url, {
-        name: error?.name,
-        message: error?.message,
-        cause: buildCauseDetails(error?.cause),
-      });
-      const shouldRetry = isRetryableFetchError(error) && attempt < attempts;
-      if (!shouldRetry) {
-        throw error;
+  for (const url of targetUrls) {
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      if (logLabel) {
+        console.log(`[news.refresh] ${logLabel} try`, url);
       }
-      const delay = delays[attempt - 1] ?? delays[delays.length - 1];
-      await new Promise((resolve) => setTimeout(resolve, delay));
+      try {
+        const response = await fetchWithTimeout(url, timeoutMs);
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP ${response.status}`);
+        }
+        return { response, finalUrl: url };
+      } catch (error) {
+        lastError = error;
+        console.error("[news.refresh] fetch failed", url, {
+          name: error?.name,
+          message: error?.message,
+          cause: buildCauseDetails(error?.cause),
+        });
+        const shouldRetry = isRetryableFetchError(error) && attempt < attempts;
+        if (!shouldRetry) {
+          break;
+        }
+        const delay = delays[attempt - 1] ?? delays[delays.length - 1];
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
     }
   }
-  throw new Error("Fetch retries exhausted");
+  throw lastError || new Error("Fetch retries exhausted");
 }
 
 function extractItems(parsed) {
@@ -201,7 +227,7 @@ function extractItems(parsed) {
   if (parsed?.channel?.item) {
     return normalizeArray(parsed.channel.item);
   }
-    if (parsed?.["rdf:RDF"]?.item) {
+  if (parsed?.["rdf:RDF"]?.item) {
     return normalizeArray(parsed["rdf:RDF"].item);
   }
   if (parsed?.RDF?.item) {
@@ -269,8 +295,8 @@ async function processSource(supabase, source) {
   }
 
   const bossFallbacks = [
-    "https://boss.gouv.fr/portail/fil-rss/pagecontent/flux-actualites.rss",
     "http://boss.gouv.fr/portail/fil-rss/pagecontent/flux-actualites.rss",
+    "https://boss.gouv.fr/portail/fil-rss/pagecontent/flux-actualites.rss",
     "https://r.jina.ai/http://boss.gouv.fr/portail/fil-rss/pagecontent/flux-actualites.rss",
   ];
 
@@ -280,37 +306,12 @@ async function processSource(supabase, source) {
       : [url];
   const uniqueUrls = Array.from(new Set(candidateUrls));
 
-  let response;
-  let finalUrl = url;
-  let lastError;
-
-  for (const candidateUrl of uniqueUrls) {
-    try {
-      response = await fetchWithRetry(candidateUrl, {
-        timeoutMs: 20000,
-        retries: 3,
-      });
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP ${response.status}`);
-      }
-      finalUrl = candidateUrl;
-      break;
-    } catch (error) {
-      lastError = error;
-      if (source.key !== "boss") {
-        throw error;
-      }
-      console.warn(
-        "[news.refresh] boss fallback attempt failed",
-        candidateUrl,
-        error?.message || "Erreur inconnue"
-      );
-    }
-  }
-  if (!response) {
-    throw lastError || new Error("Fetch RSS failed");
-  }
-
+    const { response, finalUrl } = await fetchWithRetry(uniqueUrls, {
+    timeoutMs: 20000,
+    retries: 3,
+    logLabel: source.key === "boss" ? "boss" : "",
+  });
+  
   const xml = await response.text();
   const parsed = parser.parse(xml);
   const items = extractItems(parsed);
@@ -389,7 +390,7 @@ module.exports = async (req, res) => {
 
   try {
     sources = await loadSources(supabase);
-        console.log(
+    console.log(
       "[news.refresh] loaded sources:",
       sources.map((source) => source.key)
     );
@@ -411,7 +412,7 @@ module.exports = async (req, res) => {
       inserted += result.value.inserted;
       updated += result.value.updated;
     } else {
-        console.error(
+      console.error(
         "[news.refresh] error",
         source?.key,
         result.reason?.message || "Erreur inconnue",

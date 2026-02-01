@@ -18,26 +18,33 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const expected = process.env.CRON_SECRET || process.env.NEWS_REFRESH_TOKEN;
+  const expected = process.env.NEWS_REFRESH_TOKEN;
+  const headerToken = (req.headers["x-refresh-token"] || "").toString().trim();
   const auth = (req.headers.authorization || "").trim();
-  const token = auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : auth;
-  const expectedFrom = process.env.CRON_SECRET ? "CRON_SECRET" : "NEWS_REFRESH_TOKEN";
+  const bearer = auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : "";
+  const token = headerToken || bearer;
 
   console.log("[news.refresh] auth check", {
     method: req.method,
     hasAuthorization: Boolean(req.headers.authorization),
     authorizationLength: auth.length,
-    expectedFrom,
+    hasXRefreshToken: Boolean(req.headers["x-refresh-token"]),
+    xRefreshTokenLength: headerToken.length,
     expectedLength: expected?.length || 0,
   });
 
-  if (!expected || token !== expected) {
+  if (!expected) {
+    res.status(500).json({ ok: false, error: "Missing refresh token configuration" });
+    return;
+  }
+
+  if (token !== expected) {
     res.status(401).json({ ok: false, error: "Unauthorized" });
     return;
   }
 
   const functionsBaseUrl = process.env.SUPABASE_FUNCTIONS_URL;
-  const refreshToken = process.env.NEWS_REFRESH_TOKEN || process.env.CRON_SECRET;
+  const refreshToken = process.env.NEWS_REFRESH_TOKEN;
 
   if (!functionsBaseUrl) {
     res.status(500).json({ ok: false, error: "Missing Supabase functions URL" });

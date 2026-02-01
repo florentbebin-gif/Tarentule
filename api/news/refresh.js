@@ -5,6 +5,13 @@
  * - Proxies a POST call to the Supabase Edge Function that refreshes RSS sources.
  */
 
+const crypto = require('crypto');
+
+function fingerprint(value) {
+  if (!value) return null;
+  return crypto.createHash('sha256').update(String(value)).digest('hex').slice(0, 8);
+}
+
 function json(res, status, body) {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -49,6 +56,8 @@ module.exports = async (req, res) => {
 
   const authorization = getHeader(req, 'authorization');
   const xRefreshToken = getHeader(req, 'x-refresh-token') || getHeader(req, 'X-Refresh-Token');
+  const userAgent = getHeader(req, 'user-agent') || '';
+  const isVercelCronUA = /vercel-cron/i.test(userAgent);
   const bearer = extractBearerToken(authorization);
   const provided = (xRefreshToken || bearer || '').trim();
 
@@ -61,6 +70,10 @@ module.exports = async (req, res) => {
     hasXRefreshToken: Boolean(xRefreshToken),
     xRefreshTokenLength: xRefreshToken ? String(xRefreshToken).length : 0,
     allowedTokenLengths: allowedTokens.map((t) => String(t).length),
+    isVercelCronUA,
+    providedFp: fingerprint(provided),
+    cronSecretFp: fingerprint(cronSecret),
+    edgeTokenFp: fingerprint(edgeToken),
   });
 
   if (allowedTokens.length === 0) {
@@ -70,7 +83,14 @@ module.exports = async (req, res) => {
     });
   }
 
-  if (!provided || !allowedTokens.includes(provided)) {
+  const allowCronUaBypass =
+    (process.env.ALLOW_VERCEL_CRON_UA_BYPASS || '').toLowerCase() === 'true';
+
+  const authOk =
+    (provided && allowedTokens.includes(provided)) ||
+    (allowCronUaBypass && isVercelCronUA);
+
+  if (!authOk) {
     return json(res, 401, { ok: false, error: 'Unauthorized' });
   }
   

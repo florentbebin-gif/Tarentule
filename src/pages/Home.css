@@ -34,8 +34,8 @@
 
 .home-feed-title {
   font-weight: 700;
-  font-size: 16px;
-  margin-bottom: 6px;
+  font-size: 12px;
+  margin-bottom: 4px;
 }
 .link-title {
   color: inherit;
@@ -58,7 +58,7 @@
 }
 
 .home-feed-description {
-  font-size: 14px;
+  font-size: 11px;
   color: #5b5b5b;
   line-height: 1.4;
     display: -webkit-box;
@@ -69,7 +69,7 @@
 
 .home-feed-empty,
 .home-feed-error {
-  font-size: 14px;
+  font-size: 11px;
   color: #7a7a7a;
 }
 
@@ -86,11 +86,11 @@
 }
 
 .home-feed-title.skeleton-line {
-  height: 16px;
+  height: 12px;
 }
 
 .home-feed-description.skeleton-line {
-  height: 14px;
+  height: 11px;
 }
 
 .home-feed-item .skeleton-line + .skeleton-line {

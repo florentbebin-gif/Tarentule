@@ -90,6 +90,20 @@ function parseDate(value) {
   if (!value) {
     return null;
   }
+    if (value instanceof Date) {
+    const date = new Date(value.getTime());
+    return Number.isNaN(date.getTime()) ? null : date.toISOString();
+  }
+  if (typeof value === "object") {
+    const extracted = extractText(value);
+    if (!extracted) {
+      return null;
+    }
+    return parseDate(extracted);
+  }
+  if (typeof value !== "string") {
+    return null;
+  }
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
     return null;
@@ -214,9 +228,11 @@ async function processSource(supabase, source) {
         stripHtml(extractText(item.content));
       const summary = description.slice(0, 350);
       const publishedAt =
-        parseDate(extractText(item.pubDate)) ||
-        parseDate(extractText(item.published)) ||
-        parseDate(extractText(item.updated));
+        parseDate(item.pubDate) ||
+        parseDate(item.published) ||
+        parseDate(item.updated) ||
+        parseDate(item["dc:date"]) ||
+        parseDate(item.isoDate);
 
       const combinedText = `${title} ${summary}`.trim();
       return {
@@ -224,12 +240,13 @@ async function processSource(supabase, source) {
         url: link,
         summary: summary || null,
         published_at: publishedAt,
-        source_key: source.key,
+        source: source.key,
         tags: combinedText ? buildTags(combinedText) : [],
       };
     })
     .filter((item) => item.url);
 
+  console.log("[news.refresh] source", source.key, "parsed", normalized.length);
   return upsertItems(supabase, normalized);
 }
 
@@ -264,6 +281,10 @@ module.exports = async (req, res) => {
 
   try {
     sources = await loadSources(supabase);
+        console.log(
+      "[news.refresh] loaded sources:",
+      sources.map((source) => source.key)
+    );
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || "Load sources failed" });
     return;
@@ -282,6 +303,12 @@ module.exports = async (req, res) => {
       inserted += result.value.inserted;
       updated += result.value.updated;
     } else {
+        console.error(
+        "[news.refresh] error",
+        source?.key,
+        result.reason?.message || "Erreur inconnue",
+        result.reason?.stack || ""
+      );
       errors.push({
         key: source?.key,
         message: result.reason?.message || "Erreur inconnue",

@@ -18,24 +18,51 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
 }
 
-.home-feed-meta {
+.home-feed-controls {
+  margin: 12px 0 16px;
+}
+
+.home-feed-filter-chip {
+  border-color: #d6dae0;
+  background: #f7f7f8;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.home-feed-filter-chip input {
+  accent-color: #2f4b7c;
+}
+
+.home-feed-filter-chip.is-active {
+  background: #eef4ff;
+  border-color: #c7d6f2;
+  box-shadow: inset 0 0 0 1px rgba(47, 75, 124, 0.15);
+}
+
+.home-feed-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
   margin-bottom: 6px;
 }
 
 .home-feed-date {
+ display: inline-block;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #7a7a7a;
+    margin-bottom: 6px;
 }
 
 .home-feed-title {
   font-weight: 700;
   font-size: 12px;
-  margin-bottom: 4px;
+    flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+  margin: 0;
 }
 .link-title {
   color: inherit;
@@ -55,6 +82,7 @@
   border-radius: 999px;
   background: #eef4ff;
   color: #2f4b7c;
+    flex-shrink: 0;
 }
 
 .home-feed-description {
@@ -87,6 +115,10 @@
 
 .home-feed-title.skeleton-line {
   height: 12px;
+}
+.home-feed-badge.skeleton-line {
+  width: 48px;
+  height: 16px;
 }
 
 .home-feed-description.skeleton-line {

@@ -1,6 +1,11 @@
 const { createClient } = require("@supabase/supabase-js");
 const { XMLParser } = require("fast-xml-parser");
-const { Agent } = require("undici");
+let Agent;
+try {
+  ({ Agent } = require("undici"));
+} catch (error) {
+  Agent = null;
+}
 
 const SOURCE_FALLBACKS = {
   bofip:
@@ -14,7 +19,7 @@ const parser = new XMLParser({
   trimValues: true,
 });
 
-const UNDICI_AGENT = new Agent({ connectTimeout: 20000 });
+const UNDICI_AGENT = Agent ? new Agent({ connectTimeout: 30000 }) : null;
 
 const FISCAL_KEYWORDS = ["IR", "IFI", "PFU", "RSA", "BNC", "BIC", "IS"];
 const SOCIAL_KEYWORDS = [
@@ -144,7 +149,7 @@ async function fetchWithTimeout(url, timeoutMs) {
     const response = await fetch(url, {
       signal: controller.signal,
       headers,
-      dispatcher: UNDICI_AGENT,
+      ...(UNDICI_AGENT ? { dispatcher: UNDICI_AGENT } : {}),
     });
     return response;
   } finally {
@@ -159,7 +164,7 @@ function isRetryableFetchError(error) {
   if (error.name === "AbortError") {
     return true;
   }
-    if (error?.cause?.code === "UND_ERR_CONNECT_TIMEOUT") {
+  if (error?.cause?.code === "UND_ERR_CONNECT_TIMEOUT") {
     return true;
   }
   return error instanceof TypeError && /fetch failed/i.test(error.message || "");
@@ -299,15 +304,20 @@ async function processSource(supabase, source) {
     "https://boss.gouv.fr/portail/fil-rss/pagecontent/flux-actualites.rss",
     "https://r.jina.ai/http://boss.gouv.fr/portail/fil-rss/pagecontent/flux-actualites.rss",
   ];
+  const bossOfficialUrls = bossFallbacks.slice(0, 2);
+  const bossFallbackProxy = bossFallbacks[2];
+  const isBossOfficial = bossOfficialUrls.includes(url);
 
   const candidateUrls =
     source.key === "boss"
-      ? [url, ...bossFallbacks].filter(Boolean)
+      ? isBossOfficial
+        ? [url, ...bossOfficialUrls.filter((item) => item !== url), bossFallbackProxy]
+        : [...bossOfficialUrls, bossFallbackProxy]
       : [url];
   const uniqueUrls = Array.from(new Set(candidateUrls));
 
-    const { response, finalUrl } = await fetchWithRetry(uniqueUrls, {
-    timeoutMs: 20000,
+  const { response, finalUrl } = await fetchWithRetry(uniqueUrls, {
+    timeoutMs: source.key === "boss" ? 30000 : 20000,
     retries: 3,
     logLabel: source.key === "boss" ? "boss" : "",
   });
@@ -356,6 +366,16 @@ async function processSource(supabase, source) {
     "normalized",
     normalized.length
   );
+    if (source.key === "boss") {
+    console.log(
+      "[news.refresh] boss finalUrl",
+      finalUrl,
+      "items",
+      items.length,
+      "normalized",
+      normalized.length
+    );
+  }
   return upsertItems(supabase, normalized);
 }
 
@@ -412,11 +432,16 @@ module.exports = async (req, res) => {
       inserted += result.value.inserted;
       updated += result.value.updated;
     } else {
+      const causeDetails = buildCauseDetails(result.reason?.cause);
       console.error(
         "[news.refresh] error",
         source?.key,
         result.reason?.message || "Erreur inconnue",
-        result.reason?.stack || ""
+        result.reason?.stack || "",
+        {
+          code: result.reason?.code,
+          cause: causeDetails,
+        }
       );
       errors.push({
         key: source?.key,

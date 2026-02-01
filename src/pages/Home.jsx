@@ -7,15 +7,6 @@ export default function Home({ userRole }) {
   const navigate = useNavigate();
   const isManager = userRole === "manager" || userRole === "admin";
   const target = isManager ? "/manager" : "/rapport";
-  const dateFormatter = useMemo(
-    () =>
-      new Intl.DateTimeFormat("fr-FR", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
-    []
-  );
   const fallbackSources = useMemo(
     () => [
       { key: "bofip", name: "BOFiP", category: "Fiscal" },
@@ -176,17 +167,6 @@ export default function Home({ userRole }) {
     return "Aucune actualité pour le moment";
   }, [newsFilter]);
 
-  const renderDate = (publishedAt) => {
-    if (!publishedAt) {
-      return "—";
-    }
-    const date = new Date(publishedAt);
-    if (Number.isNaN(date.getTime())) {
-      return "—";
-    }
-    return dateFormatter.format(date);
-  };
-
   return (
     <div className="credit-panel">
       <div className="home-grid">
@@ -220,12 +200,10 @@ export default function Home({ userRole }) {
             {feedState.loading
               ? Array.from({ length: 4 }).map((_, index) => (
                   <div key={`skeleton-${index}`} className="home-feed-item">
-                    <div className="home-feed-date skeleton-line" />
                     <div className="home-feed-row">
                       <div className="home-feed-badge skeleton-line" />
                       <div className="home-feed-title skeleton-line" />
                     </div>
-                    <div className="home-feed-description skeleton-line" />
                   </div>
                 ))
               : null}
@@ -239,18 +217,11 @@ export default function Home({ userRole }) {
             {!feedState.loading &&
               visibleItems.map((item) => {
                 const source = sourcesByKey.get(item.source_key) || {};
-                const summary =
-                  item.summary && item.summary.length > 280
-                    ? `${item.summary.slice(0, 280)}…`
-                    : item.summary || "—";
                 return (
                   <article
                     key={`${item.source_key}-${item.url}`}
                     className="home-feed-item"
                   >
-                    <div className="home-feed-date">
-                      {renderDate(item.published_at)}
-                    </div>
                     <div className="home-feed-row">
                       <span className="home-feed-badge">
                         {source.name || item.source_key}
@@ -264,7 +235,6 @@ export default function Home({ userRole }) {
                         {item.title}
                       </a>
                     </div>
-                    <div className="home-feed-description">{summary}</div>
                   </article>
                 );
               })}

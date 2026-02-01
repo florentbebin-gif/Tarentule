@@ -3,20 +3,26 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import "./Home.css";
 
-const DATE_FORMAT = new Intl.DateTimeFormat("fr-FR", {
-  day: "2-digit",
-  month: "short",
-  year: "numeric",
-});
-
-const FALLBACK_SOURCES = [
-  { key: "bofip", name: "BOFiP", category: "Fiscal" },
-  { key: "boss", name: "BOSS", category: "Social" },
-
-const Home = ({ userRole }) => {
+export default function Home({ userRole }) {
   const navigate = useNavigate();
   const isManager = userRole === "manager" || userRole === "admin";
   const target = isManager ? "/manager" : "/rapport";
+    const dateFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat("fr-FR", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+    []
+  );
+  const fallbackSources = useMemo(
+    () => [
+      { key: "bofip", name: "BOFiP", category: "Fiscal" },
+      { key: "boss", name: "BOSS", category: "Social" },
+    ],
+    []
+  );
     const [feedState, setFeedState] = useState({
     loading: true,
     error: null,
@@ -84,7 +90,7 @@ const Home = ({ userRole }) => {
     const map = new Map();
     const sources = feedState.sources.length
       ? feedState.sources
-      : FALLBACK_SOURCES;
+      : fallbackSources;
     sources.forEach((source) => {
       map.set(source.key, source);
     });
@@ -99,7 +105,7 @@ const Home = ({ userRole }) => {
     if (Number.isNaN(date.getTime())) {
       return "—";
     }
-    return DATE_FORMAT.format(date);
+    return dateFormatter.format(date);
   };
 
   return (
@@ -183,6 +189,4 @@ const Home = ({ userRole }) => {
       </div>
     </div>
   );
-};
-
-export default Home;
+}

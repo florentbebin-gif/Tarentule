@@ -13,7 +13,7 @@ const FALLBACK_SOURCES = [
   { key: "bofip", name: "BOFiP", category: "Fiscal" },
   { key: "boss", name: "BOSS", category: "Social" },
 
-export default function Home({ userRole }) {
+function Home({ userRole }) {
   const navigate = useNavigate();
   const isManager = userRole === "manager" || userRole === "admin";
   const target = isManager ? "/manager" : "/rapport";
@@ -184,3 +184,5 @@ export default function Home({ userRole }) {
     </div>
   );
 }
+
+export default Home;

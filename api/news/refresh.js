@@ -19,8 +19,17 @@ module.exports = async (req, res) => {
   }
 
   const expected = process.env.CRON_SECRET || process.env.NEWS_REFRESH_TOKEN;
-  const authHeader = req.headers.authorization || "";
-  const token = authHeader.replace("Bearer ", "");
+  const auth = (req.headers.authorization || "").trim();
+  const token = auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : auth;
+  const expectedFrom = process.env.CRON_SECRET ? "CRON_SECRET" : "NEWS_REFRESH_TOKEN";
+
+  console.log("[news.refresh] auth check", {
+    method: req.method,
+    hasAuthorization: Boolean(req.headers.authorization),
+    authorizationLength: auth.length,
+    expectedFrom,
+    expectedLength: expected?.length || 0,
+  });
 
   if (!expected || token !== expected) {
     res.status(401).json({ ok: false, error: "Unauthorized" });

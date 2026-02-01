@@ -131,7 +131,12 @@ async function fetchWithTimeout(url, timeoutMs) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const headers = {
+      "User-Agent": "TarentuleNewsBot/1.0 (+https://<ton domaine>)",
+      Accept:
+        "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1",
+    };
+    const response = await fetch(url, { signal: controller.signal, headers });
     return response;
   } finally {
     clearTimeout(timeout);
@@ -147,6 +152,12 @@ function extractItems(parsed) {
   }
   if (parsed?.channel?.item) {
     return normalizeArray(parsed.channel.item);
+  }
+    if (parsed?.["rdf:RDF"]?.item) {
+    return normalizeArray(parsed["rdf:RDF"].item);
+  }
+  if (parsed?.RDF?.item) {
+    return normalizeArray(parsed.RDF.item);
   }
   return [];
 }
@@ -209,7 +220,7 @@ async function processSource(supabase, source) {
     throw new Error("URL RSS manquante");
   }
 
-  const response = await fetchWithTimeout(url, 10000);
+  const response = await fetchWithTimeout(url, 20000);
   if (!response.ok) {
     throw new Error(`Erreur HTTP ${response.status}`);
   }
@@ -240,13 +251,22 @@ async function processSource(supabase, source) {
         url: link,
         summary: summary || null,
         published_at: publishedAt,
-        source: source.key,
+        source_key: source.key,
         tags: combinedText ? buildTags(combinedText) : [],
       };
     })
     .filter((item) => item.url);
 
-  console.log("[news.refresh] source", source.key, "parsed", normalized.length);
+  console.log(
+    "[news.refresh] source",
+    source.key,
+    "status",
+    response.status,
+    "items",
+    items.length,
+    "normalized",
+    normalized.length
+  );
   return upsertItems(supabase, normalized);
 }
 

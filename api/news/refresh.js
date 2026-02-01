@@ -234,14 +234,16 @@ async function processSource(supabase, source) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method !== "POST") {
+  if (req.method !== "POST" && req.method !== "GET") {
     res.status(405).json({ ok: false, error: "Method Not Allowed" });
     return;
   }
-
+  
+  const expected = process.env.CRON_SECRET || process.env.NEWS_REFRESH_TOKEN;
   const authHeader = req.headers.authorization || "";
   const token = authHeader.replace("Bearer ", "");
-  if (!process.env.NEWS_REFRESH_TOKEN || token !== process.env.NEWS_REFRESH_TOKEN) {
+
+  if (!expected || token !== expected) {
     res.status(401).json({ ok: false, error: "Unauthorized" });
     return;
   }

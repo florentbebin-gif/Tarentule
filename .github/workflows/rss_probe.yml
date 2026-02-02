@@ -1,0 +1,35 @@
+name: RSS Probe
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe RSS feeds (count items/entries)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BOFIP_URL="https://bofip.impots.gouv.fr/bofip/ext/rss.xml?series=IR:IR-CHAMP:IR-BASE:IR-LIQ:IR-RICI:IR-DECLA:IR-PAS:IR-PAIE:IR-PROCD:IR-CESS:IR-DOMIC:IR-CHR:RSA:RSA-CHAMP:RSA-GEO:RSA-BASE:RSA-PENS:RSA-GER:RPPM:RPPM-PVBMC:RPPM-RCM:RPPM-PVBMI:RFPI:RFPI-CHAMP:RFPI-BASE:RFPI-DECLA:RFPI-SPEC:RFPI-PROCD:RFPI-CTRL:RFPI-PVI:RFPI-PVINR:RFPI-SPI:RFPI-TDC:RFPI-TPVIE:BA:BA-CHAMP:BA-REG:BA-BASE:BA-LIQ:BA-RICI:BA-DECLA:BA-PROCD:BA-SECT:BA-CESS:BNC:BNC-CHAMP:BNC-BASE:BNC-RICI:BNC-DECLA:BNC-PROCD:BNC-SECT:BNC-CESS:BIC:BIC-CHAMP:BIC-BASE:BIC-PDSTK:BIC-CHG:BIC-PVMV:BIC-AMT:BIC-PROV:BIC-DEF:BIC-RICI:BIC-DECLA:BIC-PROCD:BIC-CESS:BIC-PTP:IS:IS-CHAMP:IS-BASE:IS-DEF:IS-LIQ:IS-RICI:IS-DECLA:IS-AUT:IS-PROCD:IS-GEO:IS-CESS:IS-FUS:IS-GPE:PAT:PAT-IFI:PAT-ISF:PAT-TPC:PAT-CAP&maxR=25&maxJ=14"
+          BOSS_URL="https://boss.gouv.fr/portail/fil-rss-boss-rescrit/pagecontent/flux-actualites.rss"
+
+          probe () {
+            local name="$1"
+            local url="$2"
+            echo "----- ${name} -----"
+            echo "URL: ${url}"
+
+            xml="$(curl -LfsS --max-time 25 "$url" || true)"
+            if [ -z "$xml" ]; then
+              echo "FETCH FAILED"
+              return 0
+            fi
+
+            items=$(echo "$xml" | grep -o "<item\\b"  | wc -l | tr -d ' ')
+            entries=$(echo "$xml" | grep -o "<entry\\b" | wc -l | tr -d ' ')
+            echo "items=${items} entries=${entries} total=$((items+entries))"
+          }
+
+          probe "BOFIP" "$BOFIP_URL"
+          probe "BOSS"  "$BOSS_URL"

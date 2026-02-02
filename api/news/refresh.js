@@ -56,8 +56,11 @@ module.exports = async (req, res) => {
 
   const authorization = getHeader(req, 'authorization');
   const xRefreshToken = getHeader(req, 'x-refresh-token') || getHeader(req, 'X-Refresh-Token');
-  const userAgent = getHeader(req, 'user-agent') || '';
-  const isVercelCronUA = /vercel-cron/i.test(userAgent);
+  const ua = String(req.headers['user-agent'] || '');
+  const isVercelCron = ua.startsWith('vercel-cron/');
+  const allowCronBypass = ['1', 'true', 'yes'].includes(
+    String(process.env.ALLOW_VERCEL_CRON_UA_BYPASS || '').toLowerCase(),
+  );
   const bearer = extractBearerToken(authorization);
   const provided = (xRefreshToken || bearer || '').trim();
 
@@ -70,7 +73,8 @@ module.exports = async (req, res) => {
     hasXRefreshToken: Boolean(xRefreshToken),
     xRefreshTokenLength: xRefreshToken ? String(xRefreshToken).length : 0,
     allowedTokenLengths: allowedTokens.map((t) => String(t).length),
-    isVercelCronUA,
+    isVercelCron,
+    allowCronBypass,
     providedFp: fingerprint(provided),
     cronSecretFp: fingerprint(cronSecret),
     edgeTokenFp: fingerprint(edgeToken),
@@ -83,15 +87,14 @@ module.exports = async (req, res) => {
     });
   }
 
-  const allowCronUaBypass =
-    (process.env.ALLOW_VERCEL_CRON_UA_BYPASS || '').toLowerCase() === 'true';
-
-  const authOk =
-    (provided && allowedTokens.includes(provided)) ||
-    (allowCronUaBypass && isVercelCronUA);
-
-  if (!authOk) {
-    return json(res, 401, { ok: false, error: 'Unauthorized' });
+  if (isVercelCron && allowCronBypass) {
+    console.log('[news.refresh] cron bypass enabled (vercel-cron)');
+    // on autorise sans tenir compte des headers auth
+  } else {
+    const authOk = provided && allowedTokens.includes(provided);
+    if (!authOk) {
+      return json(res, 401, { ok: false, error: 'Unauthorized' });
+    }
   }
   
   // 2) Supabase Edge Function target

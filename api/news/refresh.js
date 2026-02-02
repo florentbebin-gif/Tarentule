@@ -48,7 +48,7 @@ function resolveFunctionsBaseUrl() {
   return `${String(supabaseUrl).replace(/\/+$/, "")}/functions/v1`;
 }
 
-async function fetchWithTimeout(url, options = {}, timeoutMs = 55_000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 90_000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -162,7 +162,18 @@ module.exports = async (req, res) => {
 
     return json(res, 200, data);
   } catch (err) {
+    const isAbort = err?.name === "AbortError" || String(err).includes("AbortError");
     console.error("[news.refresh] proxy failed", err);
+
+    // Si c’est un timeout, on renvoie 202 (2xx) pour ne pas casser le cron
+    if (isAbort) {
+      return json(res, 202, {
+        ok: true,
+        accepted: true,
+        note: "Proxy timeout while waiting for edge function. The edge function may still be running.",
+      });
+    }
+
     return json(res, 500, {
       ok: false,
       error: "Request failed",

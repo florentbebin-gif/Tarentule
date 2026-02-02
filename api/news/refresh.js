@@ -6,6 +6,8 @@
  */
 
 const crypto = require("crypto");
+const { fetch: undiciFetch } = require("undici");
+const fetchImpl = globalThis.fetch || undiciFetch;
 
 function fingerprint(value) {
   if (!value) return null;
@@ -14,6 +16,7 @@ function fingerprint(value) {
 
 function json(res, status, body) {
   res.statusCode = status;
+  res.setHeader("Cache-Control", "no-store");
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.end(JSON.stringify(body));
 }
@@ -49,7 +52,7 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 55_000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...options, signal: controller.signal });
+    return await fetchImpl(url, { ...options, signal: controller.signal });
   } finally {
     clearTimeout(timeout);
   }
@@ -159,6 +162,12 @@ module.exports = async (req, res) => {
 
     return json(res, 200, data);
   } catch (err) {
-    return json(res, 500, { ok: false, error: "Request failed", detail: String(err) });
+    console.error("[news.refresh] proxy failed", err);
+    return json(res, 500, {
+      ok: false,
+      error: "Request failed",
+      detail: String(err),
+      stack: err?.stack || null,
+    });
   }
 };

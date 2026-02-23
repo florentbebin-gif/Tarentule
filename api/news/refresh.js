@@ -112,11 +112,15 @@ module.exports = async (req, res) => {
     });
   }
 
-  const functionName = process.env.SUPABASE_FUNCTION_NAME || "new-refresh";
+  // IMPORTANT : vérifier le nom exact de la fonction dans Supabase Dashboard > Edge Functions
+  // et le renseigner dans la variable SUPABASE_FUNCTION_NAME sur Vercel.
+  const functionName = process.env.SUPABASE_FUNCTION_NAME || "news-refresh";
   const targetUrl = resolveTargetUrl(functionsBaseUrl, functionName);
 
+  console.log("[news.refresh] calling edge function", { targetUrl, functionName });
+
   try {
-    // IMPORTANT: Supabase Edge Functions are JWT-protected by default
+    // Supabase Edge Functions sont protégées par JWT par défaut
     const supabaseAuthKey =
       process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -136,11 +140,16 @@ module.exports = async (req, res) => {
       edgeHeaders.apikey = supabaseAuthKey;
     }
 
-    const edgeRes = await fetchWithTimeout(targetUrl, {
-      method: "POST",
-      headers: edgeHeaders,
-      body: JSON.stringify({ triggeredAt: new Date().toISOString() }),
-    });
+    // Timeout proxy à 90s (les deux sources en parallèle : BOFiP 30s + BOSS 15s max)
+    const edgeRes = await fetchWithTimeout(
+      targetUrl,
+      {
+        method: "POST",
+        headers: edgeHeaders,
+        body: JSON.stringify({ triggeredAt: new Date().toISOString() }),
+      },
+      90_000
+    );
 
     const text = await edgeRes.text();
     let data;
@@ -151,6 +160,7 @@ module.exports = async (req, res) => {
     }
 
     if (!edgeRes.ok) {
+      console.error("[news.refresh] edge returned non-2xx", edgeRes.status, data);
       return json(res, edgeRes.status, {
         ok: false,
         error: "Edge function error",
@@ -160,12 +170,13 @@ module.exports = async (req, res) => {
       });
     }
 
+    console.log("[news.refresh] success", data);
     return json(res, 200, data);
   } catch (err) {
     const isAbort = err?.name === "AbortError" || String(err).includes("AbortError");
     console.error("[news.refresh] proxy failed", err);
 
-    // Si c’est un timeout, on renvoie 202 (2xx) pour ne pas casser le cron
+    // Si c'est un timeout proxy, on renvoie 202 (2xx) pour ne pas casser le cron Vercel
     if (isAbort) {
       return json(res, 202, {
         ok: true,

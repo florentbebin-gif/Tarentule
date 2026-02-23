@@ -8,6 +8,13 @@ const SOURCE_FALLBACKS: Record<string, string> = {
   boss: "https://boss.gouv.fr/portail/fil-rss-boss-rescrit/pagecontent/flux-actualites.rss",
 };
 
+// Timeout par source : BOSS est instable, on lui laisse moins de temps
+const SOURCE_TIMEOUTS: Record<string, number> = {
+  bofip: 30_000,
+  boss: 15_000,
+};
+const DEFAULT_TIMEOUT = 20_000;
+
 const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: "@_",
@@ -25,9 +32,7 @@ const SOCIAL_KEYWORDS = [
 ];
 
 function normalizeArray<T>(value: T | T[] | null | undefined): T[] {
-  if (!value) {
-    return [];
-  }
+  if (!value) return [];
   return Array.isArray(value) ? value : [value];
 }
 
@@ -42,40 +47,26 @@ function decodeEntities(text: string): string {
 }
 
 function stripHtml(input: string | null | undefined): string {
-  if (!input) {
-    return "";
-  }
+  if (!input) return "";
   const noTags = input.replace(/<[^>]+>/g, " ");
   return decodeEntities(noTags).replace(/\s+/g, " ").trim();
 }
 
 function extractText(value: unknown): string {
-  if (!value) {
-    return "";
-  }
-  if (typeof value === "string") {
-    return value;
-  }
+  if (!value) return "";
+  if (typeof value === "string") return value;
   if (typeof value === "object" && value !== null) {
     const record = value as Record<string, unknown>;
-    if (typeof record["#text"] === "string") {
-      return record["#text"];
-    }
-    if (typeof record.__cdata === "string") {
-      return record.__cdata;
-    }
-    if (typeof record.text === "string") {
-      return record.text;
-    }
+    if (typeof record["#text"] === "string") return record["#text"];
+    if (typeof record.__cdata === "string") return record.__cdata;
+    if (typeof record.text === "string") return record.text;
   }
   return "";
 }
 
 function extractLink(entry: Record<string, unknown>): string {
   const link = entry.link;
-  if (typeof link === "string") {
-    return link;
-  }
+  if (typeof link === "string") return link;
   if (link && typeof (link as Record<string, unknown>)["@_href"] === "string") {
     return (link as Record<string, unknown>)["@_href"] as string;
   }
@@ -83,33 +74,25 @@ function extractLink(entry: Record<string, unknown>): string {
     const href = link.find((item) =>
       item && typeof (item as Record<string, unknown>)["@_href"] === "string"
     ) as Record<string, unknown> | undefined;
-    return href?.["@_href"] as string ?? "";
+    return (href?.["@_href"] as string) ?? "";
   }
   return "";
 }
 
 function parseDate(value: unknown): string | null {
-  if (!value) {
-    return null;
-  }
+  if (!value) return null;
   if (value instanceof Date) {
     const date = new Date(value.getTime());
     return Number.isNaN(date.getTime()) ? null : date.toISOString();
   }
   if (typeof value === "object") {
     const extracted = extractText(value);
-    if (!extracted) {
-      return null;
-    }
+    if (!extracted) return null;
     return parseDate(extracted);
   }
-  if (typeof value !== "string") {
-    return null;
-  }
+  if (typeof value !== "string") return null;
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
+  if (Number.isNaN(date.getTime())) return null;
   return date.toISOString();
 }
 
@@ -117,15 +100,8 @@ function buildTags(text: string): string[] {
   const tags = new Set<string>();
   const upper = text.toUpperCase();
   const lower = text.toLowerCase();
-
-  if (FISCAL_KEYWORDS.some((keyword) => upper.includes(keyword))) {
-    tags.add("fiscal");
-  }
-
-  if (SOCIAL_KEYWORDS.some((keyword) => lower.includes(keyword))) {
-    tags.add("social");
-  }
-
+  if (FISCAL_KEYWORDS.some((keyword) => upper.includes(keyword))) tags.add("fiscal");
+  if (SOCIAL_KEYWORDS.some((keyword) => lower.includes(keyword))) tags.add("social");
   return Array.from(tags);
 }
 
@@ -134,37 +110,28 @@ async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Respons
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const headers = {
-      "User-Agent": "TarentuleNewsBot/1.0 (+https://<ton domaine>)",
-      Accept:
-        "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1",
+      "User-Agent": "TarentuleNewsBot/1.0",
+      Accept: "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1",
       "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.7",
       "Cache-Control": "no-cache",
     };
-    return await fetch(url, {
-      signal: controller.signal,
-      headers,
-    });
+    return await fetch(url, { signal: controller.signal, headers });
   } finally {
     clearTimeout(timeout);
   }
 }
 
 function extractItems(parsed: Record<string, unknown>): Record<string, unknown>[] {
-  if (parsed?.rss?.channel?.item) {
+  if (parsed?.rss?.channel?.item)
     return normalizeArray(parsed.rss.channel.item) as Record<string, unknown>[];
-  }
-  if (parsed?.feed?.entry) {
+  if (parsed?.feed?.entry)
     return normalizeArray(parsed.feed.entry) as Record<string, unknown>[];
-  }
-  if (parsed?.channel?.item) {
+  if (parsed?.channel?.item)
     return normalizeArray(parsed.channel.item) as Record<string, unknown>[];
-  }
-  if (parsed?.["rdf:RDF"]?.item) {
+  if (parsed?.["rdf:RDF"]?.item)
     return normalizeArray(parsed["rdf:RDF"].item) as Record<string, unknown>[];
-  }
-  if (parsed?.RDF?.item) {
+  if (parsed?.RDF?.item)
     return normalizeArray(parsed.RDF.item) as Record<string, unknown>[];
-  }
   return [];
 }
 
@@ -172,18 +139,12 @@ async function loadExistingUrls(
   supabase: ReturnType<typeof createClient>,
   urls: string[]
 ): Promise<Set<string>> {
-  if (!urls.length) {
-    return new Set();
-  }
+  if (!urls.length) return new Set();
   const { data, error } = await supabase
     .from("news_items")
     .select("url")
     .in("url", urls);
-
-  if (error) {
-    throw error;
-  }
-
+  if (error) throw error;
   return new Set((data || []).map((row: { url: string }) => row.url));
 }
 
@@ -191,28 +152,23 @@ async function upsertItems(
   supabase: ReturnType<typeof createClient>,
   items: Record<string, unknown>[]
 ): Promise<{ inserted: number; updated: number }> {
-  if (!items.length) {
-    return { inserted: 0, updated: 0 };
-  }
+  if (!items.length) return { inserted: 0, updated: 0 };
 
   const urls = items.map((item) => item.url).filter(Boolean) as string[];
   const existingUrls = await loadExistingUrls(supabase, urls);
 
-  const inserted = items.filter((item) =>
-    item.url && !existingUrls.has(item.url as string)
+  const inserted = items.filter(
+    (item) => item.url && !existingUrls.has(item.url as string)
   ).length;
-  const updated = items.filter((item) =>
-    item.url && existingUrls.has(item.url as string)
+  const updated = items.filter(
+    (item) => item.url && existingUrls.has(item.url as string)
   ).length;
 
   const { error } = await supabase
     .from("news_items")
     .upsert(items, { onConflict: "url" });
 
-  if (error) {
-    throw error;
-  }
-
+  if (error) throw error;
   return { inserted, updated };
 }
 
@@ -222,11 +178,7 @@ async function loadSources(supabase: ReturnType<typeof createClient>) {
     .select("key,name,category,type,url,is_active,weight")
     .in("key", ["bofip", "boss"])
     .eq("is_active", true);
-
-  if (error) {
-    throw error;
-  }
-
+  if (error) throw error;
   return data || [];
 }
 
@@ -235,12 +187,20 @@ async function processSource(
   source: { key: string; url?: string | null }
 ): Promise<{ inserted: number; updated: number; parsedCount: number }> {
   const url = source.url || SOURCE_FALLBACKS[source.key];
-  if (!url) {
-    throw new Error("URL RSS manquante");
+  if (!url) throw new Error("URL RSS manquante");
+
+  const timeoutMs = SOURCE_TIMEOUTS[source.key] ?? DEFAULT_TIMEOUT;
+  console.log(`[news-refresh] fetching ${source.key} (timeout ${timeoutMs}ms) ${url}`);
+
+  const response = await fetchWithTimeout(url, timeoutMs);
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} ${response.statusText} for ${url}`);
   }
 
-  const response = await fetchWithTimeout(url, 30000);
   const xml = await response.text();
+  console.log(`[news-refresh] ${source.key} xml length=${xml.length}`);
+
   const parsed = parser.parse(xml);
   const items = extractItems(parsed);
 
@@ -273,24 +233,12 @@ async function processSource(
     .filter((item) => item.url);
 
   console.log(
-    "[news-refresh] source",
-    source.key,
-    "status",
-    response.status,
-    "parsedCount",
-    items.length,
-    "normalized",
-    normalized.length
+    `[news-refresh] source=${source.key} status=${response.status} parsedCount=${items.length} normalizedCount=${normalized.length}`
   );
 
   const counts = await upsertItems(supabase, normalized);
   console.log(
-    "[news-refresh] upserted",
-    source.key,
-    "inserted",
-    counts.inserted,
-    "updated",
-    counts.updated
+    `[news-refresh] upserted source=${source.key} inserted=${counts.inserted} updated=${counts.updated}`
   );
 
   return { ...counts, parsedCount: items.length };
@@ -304,6 +252,7 @@ serve(async (req: Request) => {
     });
   }
 
+  // --- Auth ---
   const refreshToken = Deno.env.get("NEWS_REFRESH_TOKEN");
   const provided = req.headers.get("X-Refresh-Token");
 
@@ -314,16 +263,14 @@ serve(async (req: Request) => {
     });
   }
 
+  // --- Supabase client ---
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
   if (!supabaseUrl || !supabaseKey) {
     return new Response(
       JSON.stringify({ ok: false, error: "Missing Supabase credentials" }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 
@@ -333,20 +280,33 @@ serve(async (req: Request) => {
   let updated = 0;
   let sources: { key: string; url?: string | null }[] = [];
 
+  // --- Chargement des sources actives ---
   try {
     sources = await loadSources(supabase);
-    console.log(
-      "[news-refresh] loaded sources",
-      sources.map((source) => source.key)
-    );
+    console.log("[news-refresh] loaded sources", sources.map((s) => s.key));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Load sources failed";
+    console.error("[news-refresh] failed to load sources", message);
+
+    // Log le run en échec
+    try {
+      await supabase.from("news_refresh_runs").insert({
+        ran_at: new Date().toISOString(),
+        ok: false,
+        inserted: 0,
+        updated: 0,
+        errors: [{ key: "sources", message }],
+        sources: [],
+      });
+    } catch (_) { /* silencieux */ }
+
     return new Response(JSON.stringify({ ok: false, error: message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
 
+  // --- Traitement des sources en parallèle (mode dégradé : une source qui échoue ne bloque pas les autres) ---
   const results = await Promise.allSettled(
     sources.map(async (source) => {
       const counts = await processSource(supabase, source);
@@ -360,22 +320,46 @@ serve(async (req: Request) => {
       inserted += result.value.inserted;
       updated += result.value.updated;
     } else {
+      // Récupération robuste du message d'erreur (AbortError peut ne pas être instanceof Error dans Deno)
       const message =
         result.reason instanceof Error
           ? result.reason.message
-          : "Erreur inconnue";
-      console.error("[news-refresh] error", source?.key, message);
-      errors.push({
-        key: source?.key ?? "unknown",
-        message,
-      });
+          : String(result.reason ?? "Erreur inconnue");
+      console.error("[news-refresh] error source=" + source?.key, message);
+      errors.push({ key: source?.key ?? "unknown", message });
     }
   });
 
+  const ok = errors.length === 0;
+  const ranAt = new Date().toISOString();
+  const sourceKeys = sources.map((s) => s.key);
+
+  // --- Log du run dans news_refresh_runs ---
+  try {
+    const { error: logError } = await supabase.from("news_refresh_runs").insert({
+      ran_at: ranAt,
+      ok,
+      inserted,
+      updated,
+      errors: errors.length ? errors : [],
+      sources: sourceKeys,
+    });
+    if (logError) {
+      console.error("[news-refresh] failed to insert run log", logError.message);
+    } else {
+      console.log("[news-refresh] run logged ok=" + ok + " inserted=" + inserted + " updated=" + updated);
+    }
+  } catch (logErr) {
+    // Ne jamais faire échouer la réponse à cause du log
+    console.error("[news-refresh] exception logging run", String(logErr));
+  }
+
+  // --- Réponse finale ---
   return new Response(
     JSON.stringify({
-      ok: true,
-      sources: sources.map((source) => source.key),
+      ok,
+      ran_at: ranAt,
+      sources: sourceKeys,
       inserted,
       updated,
       errors,
